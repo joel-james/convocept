@@ -98,48 +98,55 @@ display polish, live updates via push.
 
 ```
 convocept/
-├── convocept.php          # bootstrap: header, constants, autoload, Plugin::boot()
+├── convocept.php                 # bootstrap: header, constants, autoloader, Plugin::boot()
 ├── uninstall.php
-├── readme.txt                   # WordPress.org readme
-├── CHANGELOG.md
-├── composer.json / package.json
-├── src/
-│   ├── Plugin.php               # service container / wiring
-│   ├── Settings/                # option schema, defaults, getters
-│   ├── Render/
-│   │   ├── ThreadRenderer.php   # builds thread HTML
-│   │   ├── TemplateLoader.php   # theme-overridable templates
-│   │   └── ThemeIntegration.php # classic comments_template + block render_block filter
-│   ├── Rest/
-│   │   ├── Controller.php       # route registration
-│   │   ├── SessionEndpoint.php
-│   │   ├── CommentsEndpoint.php
-│   │   ├── ReactionsEndpoint.php
-│   │   ├── SubscriptionsEndpoint.php
-│   │   └── ModerationEndpoint.php
-│   ├── Comments/                # submission, editing, pinning, sorting, queries
-│   ├── Markdown/                # safe Markdown → HTML (server side only)
-│   ├── Reactions/
-│   ├── Subscriptions/           # model, mailer, queue, manage page, tokens
-│   ├── Security/                # RateLimiter, Honeypot, IpResolver, Sanitizer
-│   ├── Schema/                  # structured data output
-│   ├── Import/                  # Importer interface + StCR, Disqus, wpDiscuz
-│   ├── Abilities/               # Abilities API registration (feature-detected)
-│   ├── Privacy/                 # personal data exporters/erasers, policy text
-│   ├── Admin/                   # menu, settings page loader, notices
-│   └── Database/                # schema, migrations, dbDelta
-├── templates/                   # PHP templates (theme can override in /convocept/)
-│   ├── thread.php
-│   ├── comment.php
-│   ├── composer.php
+├── readme.txt                    # WordPress.org readme
+├── README.md / CHANGELOG.md / LICENSE
+├── composer.json / package.json  # PHP and JS dev tooling
+├── src/                          # PHP, PSR-4 namespace Convocept\ (one class per file)
+│   ├── Plugin.php                # wiring: creates services, registers hooks per context
+│   ├── Lifecycle.php             # activation / deactivation
+│   ├── Settings/                 # option schema, defaults, sanitizing getters
+│   ├── Database/                 # migration runner, Migrations/, table schemas
+│   ├── Comments/                 # domain: queries (ThreadQuery, Thread), Sort, submission,
+│   │                             #   editing, pinning, scores
+│   ├── Render/                   # HTML output: ThreadRenderer, TemplateLoader, formatters
+│   ├── Integration/              # hooks into themes and other plugins
+│   │   ├── ClassicTheme.php      #   comments_template replacement
+│   │   ├── BlockTheme.php        #   core/comments block replacement
+│   │   └── …                     #   Akismet, Jetpack, WPML, ActivityPub, SEO plugins
+│   ├── Assets/                   # front-end/admin asset registration and the inline loader
+│   ├── Rest/                     # Controller + one class per endpoint group
+│   ├── Markdown/                 # safe Markdown → HTML (server side only)
+│   ├── Votes/                    # upvotes (1.0), reactions (1.2)
+│   ├── Subscriptions/            # model, mailer, queue, manage page, tokens
+│   ├── Security/                 # RateLimiter, Honeypot, IpResolver, Sanitizer
+│   ├── Schema/                   # structured data output
+│   ├── Import/                   # Importer interface + Disqus, StCR, wpDiscuz (admin/CLI only)
+│   ├── Insights/                 # stats rollup + Insights REST data (1.1)
+│   ├── Abilities/                # Abilities API registration (feature-detected)
+│   ├── Privacy/                  # personal data exporters/erasers, policy text
+│   ├── Admin/                    # menus, settings/insights screen loaders, notices
+│   └── Cli/                      # WP-CLI commands
+├── templates/                    # theme-overridable: copy to {theme}/convocept/{file}
+│   ├── thread.php                #   wrapper: header, composer, list, pagination
+│   ├── thread-header.php         #   count + sort navigation
+│   ├── comment.php               #   one comment (recursive for replies)
+│   ├── composer.php              #   the comment form (works without JS)
+│   ├── pagination.php
 │   ├── subscription-manage.php
 │   └── emails/
 ├── assets/
-│   ├── src/front/               # vanilla JS modules + CSS
-│   ├── src/admin/               # React settings app
-│   └── dist/
+│   ├── src/front/                # vanilla JS modules + CSS
+│   ├── src/admin/                # React settings / Insights apps
+│   └── dist/                     # build output (not committed)
 ├── languages/
-└── tests/ (php/, e2e/)
+├── docs/                         # decisions.md, hooks.md
+├── bin/                          # build and release scripts
+└── tests/
+    ├── php/                      # PHPUnit, mirrors src/ folders
+    ├── e2e/specs/                # Playwright
+    └── phpstan/
 ```
 
 ---
@@ -149,9 +156,13 @@ convocept/
 ### 5.1 Rendering (server first)
 - `ThreadRenderer` queries top-level comments (paged, sorted) plus their replies to a configurable
   depth, then renders `thread.php` → `comment.php` (recursive) → `composer.php`.
-- **Classic themes:** filter `comments_template` to return our `thread.php` wrapper.
-- **Block themes:** filter `render_block` for `core/comments` (and legacy `core/post-comments`) to
-  output our thread instead; also register a `convocept/thread` block for manual placement.
+- **Classic themes** (`Integration\ClassicTheme`): filter `comments_template` to return our
+  wrapper, and short-circuit core's own comment query inside `comments_template()` (via
+  `comments_template_query_args` + `comments_pre_query`) so comments are never queried twice.
+- **Block themes** (`Integration\BlockTheme`): `pre_render_block` for `core/comments`, legacy
+  `core/post-comments` and a standalone `core/post-comments-form` outputs our thread instead, so
+  core's inner blocks never run their queries. The thread renders once per post per request;
+  later matching blocks output nothing. A `convocept/thread` block for manual placement follows.
 - Output must contain **no per-user data**: no nonces, no "logged in as", no commenter-cookie
   values, no moderation links. These are hydrated after the session call (§5.3).
 - The composer is a real `<form action="wp-comments-post.php" method="post">` so it works with JS

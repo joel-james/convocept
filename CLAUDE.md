@@ -44,6 +44,30 @@ from M0 (PLAN.md §2 and §8). Record decisions not covered by the plan in `docs
 - Minimum: WordPress 6.5, PHP 7.4. Newer APIs (Abilities API, AI Client) via feature detection only.
 - Coding standards: WordPress Coding Standards (phpcs), PHPStan level 6, ESLint + Prettier for JS.
 - Hooks: every major step exposes `do_action` / `apply_filters` so add-ons can extend it.
+  Add every new hook to `docs/hooks.md`.
+
+## Coding and documentation standard
+- **WordPress Coding Standards everywhere.** `composer lint` (phpcs WPCS + PHPCompatibility,
+  PHPStan level 6) and `npm run lint` must pass with no ignores added without a `--` reason.
+  Tabs, Yoda conditions, `array()` syntax, snake_case functions/methods/variables, full words.
+  The only deliberate deviation: PSR-4 file names in `src/` (`src/Render/ThreadRenderer.php`),
+  as allowed by the phpcs config.
+- **Every file** starts with a file docblock: one-line summary, `@package Convocept`, `@since`.
+- **Every class, interface, method and function** has a docblock following the
+  [WordPress PHP documentation standards](https://developer.wordpress.org/coding-standards/inline-documentation-standards/php/):
+  summary line ending in a period; a longer description explaining *what it does, why, and any
+  side effects* when not obvious; `@since`; every `@param` with type and description (hash
+  params documented with `@type`); `@return` with type and meaning (`@return void` included).
+- **Every property and constant** has a docblock with `@since` and `@var`.
+- **Every hook** we fire gets a hook docblock directly above `do_action` / `apply_filters`
+  (summary, `@since`, all `@param`s), so it appears in generated docs.
+- **Inline comments** explain *why* (constraints, security, performance, core quirks), not what.
+- **Templates** start with a docblock listing every `$args` key the template receives, and note
+  how a theme overrides it.
+- **JavaScript and CSS** follow the WordPress JS/CSS standards; JS uses JSDoc for every function
+  (`@param`, `@return`) and a file header comment.
+- **Folder structure:** one class per file, grouped by domain under `src/` (see PLAN.md §4).
+  Keep `PLAN.md` §4 in sync when adding a folder.
 
 ## Commands
 - `composer install && npm install` — set up
