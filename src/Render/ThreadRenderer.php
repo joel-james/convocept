@@ -183,15 +183,7 @@ class ThreadRenderer {
 			return '';
 		}
 
-		$thread = $this->query->run(
-			$post_id,
-			array(
-				'sort'     => $this->requested_sort(),
-				'page'     => $this->requested_page(),
-				'per_page' => (int) $this->settings->get( 'per_page' ),
-			)
-		);
-
+		$thread  = $this->current_thread( $post_id );
 		$is_open = comments_open( $post_id );
 
 		if ( ! $is_open && $thread->is_empty() ) {
@@ -207,7 +199,7 @@ class ThreadRenderer {
 			'accent_color'  => (string) $this->settings->get( 'accent_color' ),
 			'header_html'   => $this->render_header( $thread ),
 			'composer_html' => $is_open ? $this->render_composer( $post_id ) : '',
-			'list_html'     => $this->render_items( $thread, $this->requested_expand() ),
+			'list_html'     => $this->render_items( $thread, $this->current_expand() ),
 			'pagination'    => $this->render_pagination( $thread ),
 		);
 
@@ -233,6 +225,110 @@ class ThreadRenderer {
 		 * @param int    $post_id Post ID.
 		 */
 		return (string) apply_filters( 'convocept_thread_html', $this->templates->render( 'thread', $args ), $post_id );
+	}
+
+	/**
+	 * Load the thread page the current request asks for.
+	 *
+	 * Uses the sort and comment page from the URL, so the thread and
+	 * anything describing it (structured data) always agree.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return Thread
+	 */
+	public function current_thread( int $post_id ): Thread {
+		return $this->query->run(
+			$post_id,
+			array(
+				'sort'     => $this->requested_sort(),
+				'page'     => $this->requested_page(),
+				'per_page' => (int) $this->settings->get( 'per_page' ),
+			)
+		);
+	}
+
+	/**
+	 * Get the top-level comment whose replies the current request shows in full.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int Comment ID, or 0.
+	 */
+	public function current_expand(): int {
+		return absint( get_query_var( self::EXPAND_QUERY_VAR ) );
+	}
+
+	/**
+	 * Get the IDs of every comment a thread page shows.
+	 *
+	 * Follows the same rules as the rendered list (reply limits, expanded
+	 * branch, flattening past the maximum depth), so structured data never
+	 * describes a reply hidden behind "Show more replies".
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Thread $thread The thread page.
+	 * @param int    $expand Top-level comment whose replies are all shown, or 0.
+	 * @return array<int, true> Visible comment IDs as keys.
+	 */
+	public function visible_ids( Thread $thread, int $expand = 0 ): array {
+		$ids = array();
+
+		foreach ( $thread->comments() as $comment ) {
+			$this->collect_visible( $comment, 1, $expand === (int) $comment->comment_ID, $ids );
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Add a comment and its visible replies to a list of IDs.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment       $comment  Comment.
+	 * @param int              $depth    Visual depth, starting at 1.
+	 * @param bool             $expanded Whether the comment's branch shows every reply.
+	 * @param array<int, true> $ids      Collected IDs, updated in place.
+	 * @return void
+	 */
+	private function collect_visible( WP_Comment $comment, int $depth, bool $expanded, array &$ids ): void {
+		$ids[ (int) $comment->comment_ID ] = true;
+
+		$replies = $this->visible_replies( $comment, $depth, $expanded );
+
+		foreach ( $replies['shown'] as $reply ) {
+			if ( $replies['flat'] ) {
+				$ids[ (int) $reply->comment_ID ] = true;
+				continue;
+			}
+
+			$this->collect_visible( $reply, $depth + 1, $expanded, $ids );
+		}
+	}
+
+	/**
+	 * Work out which replies to a comment are shown.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment  Comment.
+	 * @param int        $depth    Visual depth of the comment, starting at 1.
+	 * @param bool       $expanded Whether the branch shows every reply.
+	 * @return array{all: WP_Comment[], shown: WP_Comment[], flat: bool}
+	 */
+	private function visible_replies( WP_Comment $comment, int $depth, bool $expanded ): array {
+		$flat    = $depth >= (int) $this->settings->get( 'max_depth' );
+		$replies = $flat ? $this->flattened_descendants( $comment ) : $this->sorted_children( $comment );
+		$limit   = $expanded ? 0 : $this->replies_limit();
+
+		return array(
+			'all'   => $replies,
+			'shown' => $limit > 0 ? array_slice( $replies, 0, $limit ) : $replies,
+			'flat'  => $flat,
+		);
 	}
 
 	/**
@@ -487,14 +583,13 @@ class ThreadRenderer {
 	 * @param int    $post_id  Post ID.
 	 * @param string $page_url URL of the page the comments are shown on (no fragment).
 	 * @param int    $expand   Top-level comment whose replies are all shown, or 0.
-	 * @return array{post_id: int, page_url: string, is_open: bool, limit: int, expand: int, root: int}
+	 * @return array{post_id: int, page_url: string, is_open: bool, expand: int, root: int}
 	 */
 	private function context( int $post_id, string $page_url, int $expand ): array {
 		return array(
 			'post_id'  => $post_id,
 			'page_url' => $page_url,
 			'is_open'  => comments_open( $post_id ),
-			'limit'    => $this->replies_limit(),
 			'expand'   => $expand,
 			'root'     => 0,
 		);
@@ -526,12 +621,11 @@ class ThreadRenderer {
 				$context['root'] = (int) $comment->comment_ID;
 			}
 
-			$flat    = $depth >= $max_depth;
-			$replies = $flat ? $this->flattened_descendants( $comment ) : $this->sorted_children( $comment );
-			$limit   = $context['expand'] === $context['root'] ? 0 : (int) $context['limit'];
-			$shown   = $limit > 0 ? array_slice( $replies, 0, $limit ) : $replies;
+			$visible = $this->visible_replies( $comment, $depth, $context['expand'] === $context['root'] );
+			$flat    = $visible['flat'];
+			$shown   = $visible['shown'];
 			$more    = array(
-				'count'  => count( $replies ) - count( $shown ),
+				'count'  => count( $visible['all'] ) - count( $shown ),
 				'offset' => count( $shown ),
 				'url'    => add_query_arg( self::EXPAND_QUERY_VAR, $context['root'], $context['page_url'] ) . '#comment-' . (int) $comment->comment_ID,
 				'flat'   => $flat,
@@ -847,17 +941,6 @@ class ThreadRenderer {
 	 */
 	private function requested_page(): int {
 		return max( 1, absint( get_query_var( 'cpage' ) ) );
-	}
-
-	/**
-	 * Get the top-level comment whose replies should all be shown.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return int Comment ID, or 0.
-	 */
-	private function requested_expand(): int {
-		return absint( get_query_var( self::EXPAND_QUERY_VAR ) );
 	}
 
 	/**

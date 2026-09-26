@@ -97,6 +97,9 @@ class Settings {
 	 *     @type bool     $live_updates Whether open threads check for new comments while
 	 *                                  the tab is visible. Off by default.
 	 *     @type int      $poll_interval Seconds between checks (15–600).
+	 *     @type bool     $structured_data Whether comments are described in schema.org
+	 *                                  JSON-LD (added to Yoast SEO / Rank Math's graph
+	 *                                  when one is active).
 	 * }
 	 */
 	public function defaults(): array {
@@ -118,6 +121,7 @@ class Settings {
 			'batch_size'      => 50,
 			'live_updates'    => false,
 			'poll_interval'   => 60,
+			'structured_data' => true,
 		);
 
 		/**

@@ -6,6 +6,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M7 structured data: comments are described as schema.org `Comment` items nested under the
+  post's article (replies under their parent), only for the comments the page shows. With Yoast
+  SEO or Rank Math the comments join their schema graph instead of adding a second article.
+  `structured_data` setting and `convocept_structured_data_*` filters.
 - M6 subscriptions: "email me replies" / "email me all new comments" in the composer,
   "subscribe without commenting" (in the thread, `[convocept_subscribe]` shortcode and a block),
   double opt-in, one-click unsubscribe (RFC 8058 headers), a subscription page shown in the

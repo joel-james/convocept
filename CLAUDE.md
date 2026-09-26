@@ -11,15 +11,14 @@ native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as sepa
 unreleased React prototype (first git commit); the prototype's leftover files (`includes/`,
 `build/`, React files in `src/`) are unused and excluded from release zips, pending deletion.
 
-- **Done:** M0–M6 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
-  lazy loading + cache + live updates, votes/pins/moderation, subscriptions). Milestones are
+- **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
+  lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M7 structured data, then M8 (Disqus importer only for 1.0), M9 lite settings UI,
-  M11, M12. There is **no admin settings screen yet** (M9); settings live in the
+- **Next:** M8 (Disqus importer only for 1.0), then M9 lite settings UI, M11, M12. There is **no admin settings screen yet** (M9); settings live in the
   `convocept_settings` option.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M6 to `main`; delete the prototype files;
+- **Open items to raise with the owner:** merge M1–M7 to `main`; delete the prototype files;
   Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
   investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md).
 

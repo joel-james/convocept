@@ -50,6 +50,9 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_fragment_cache` | 1.0.0 | `bool $enabled` | Whether rendered comment lists are cached. |
 | `convocept_mailer` | 1.0.0 | `bool\|null $sent, array $message` | Send an email yourself (return true/false) instead of `wp_mail()`. |
 | `convocept_should_notify` | 1.0.0 | `bool $notify, WP_Comment $comment` | Whether subscribers hear about a comment (importers return false). |
+| `convocept_structured_data_enabled` | 1.0.0 | `bool $enabled, int $post_id` | Whether a post's comments are described in JSON-LD (setting `structured_data`). |
+| `convocept_structured_data_comments` | 1.0.0 | `array $items, int $post_id, Thread $thread` | The `Comment` items (replies nested under `comment`); runs after the cache. |
+| `convocept_structured_data_node` | 1.0.0 | `array $node, int $post_id` | Standalone article node printed in the footer when no SEO plugin graph carries the comments; `[]` prints nothing. |
 
 ## REST routes (`/wp-json/convocept/v1`)
 

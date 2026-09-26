@@ -375,7 +375,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** e2e covers subscribe → confirm → receive → unsubscribe; no email ever appears in a
   URL; sending 5,000 notifications doesn't time out a request.
 
-### M7 — Structured data & SEO
+### M7 — Structured data & SEO ✅ done (schema.org validator: 0 errors, 0 warnings)
 - Output schema.org `Comment` items nested under the post's `Article`/`BlogPosting` (JSON-LD),
   including author name, date, text, `upvoteCount` when votes enabled. Check Google's current
   structured data documentation (DiscussionForumPosting vs Comment) and follow it.

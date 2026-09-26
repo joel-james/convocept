@@ -2,6 +2,37 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M7 structured data
+- **`Comment` under the article, not `DiscussionForumPosting`.** Google's discussion forum docs say
+  not to use that markup for "an article or blog written directly by an agent for the website
+  (even with comments)", and recommend nesting comments under the item they belong to. Comments
+  are `Comment` items in the article's `comment` property; replies nest under their parent
+  (the real parent, even when the page shows them flattened past `max_depth`). Each carries
+  `author` (`Person`), `datePublished`, `text` (plain text as rendered), `url`/`@id`
+  (`#comment-N` on the page that shows it), `dateModified` when edited and `upvoteCount` when
+  votes are on.
+- **Only what the page shows:** the current comment page and sort, and replies visible before
+  "Show more replies" (the renderer and the schema share `ThreadRenderer::visible_ids()`).
+  Pending comments are never included. The article's `url` stays the first page, as Google asks
+  for multi-page threads.
+- **Yoast SEO / Rank Math:** comments are appended to the article node in their graph
+  (`wpseo_schema_graph`, `rank_math/json_ld` at 999), or to the `WebPage` node when there is no
+  article, so there is one entity per page. Otherwise a standalone node (`BlogPosting` for posts,
+  `WebPage` for pages, `Article` for other types) is printed in `wp_footer`, only when the page
+  actually rendered the thread. Yoast's graph is built in `wp_head`, before a classic theme
+  renders comments, so that path can't check "rendered"; it relies on the post being enabled.
+- **Guest websites are left out** of `author.url`: a JSON-LD URL can't carry
+  `rel="nofollow ugc"`, so it would hand spammers a followed link. Registered users' URLs stay.
+- Items are cached like the rendered list (keyed by `last_changed`), because turning comments into
+  text runs the Markdown parser / `comment_text` again. Output uses `JSON_HEX_TAG`, so comment
+  text can't close the script element. New setting `structured_data` (default on).
+- **Validation:** schema.org validator reports 0 errors and 0 warnings on the e2e fixture.
+  Google's Rich Results Test has no local/API access and shows no rich result for comments on an
+  article anyway (only its Article checks); recheck against the public site before release (M12).
+- **Crawlable pages** were already in place from M1/M3: plain `<a href>` links to core comment
+  page URLs (`cpage` / `comment-page-N`), `rel="prev/next"`, and `nofollow` on sort, reply and
+  "show more" links. An e2e test now covers it without JavaScript.
+
 ## 2026-09-26 — M6 subscriptions
 - **Signed link tokens instead of stored token hashes.** PLAN §7 asked for random tokens stored only
   as hashes, but notification emails must carry a working unsubscribe link long after the

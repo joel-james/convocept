@@ -18,6 +18,7 @@ use Convocept\Database\Migrator;
 use Convocept\Integration\BlockTheme;
 use Convocept\Integration\ClassicTheme;
 use Convocept\Integration\CommentLinks;
+use Convocept\Integration\SeoPlugins;
 use Convocept\Markdown\Parser;
 use Convocept\Moderation\Pipeline;
 use Convocept\Render\CommentPresenter;
@@ -25,6 +26,7 @@ use Convocept\Render\FragmentCache;
 use Convocept\Render\TemplateLoader;
 use Convocept\Render\ThreadRenderer;
 use Convocept\Rest\Controller;
+use Convocept\Schema\StructuredData;
 use Convocept\Security\FormToken;
 use Convocept\Security\IpResolver;
 use Convocept\Security\RateLimiter;
@@ -151,6 +153,8 @@ final class Plugin {
 			( new BlockTheme( $this->renderer() ) )->register();
 			( new FrontAssets( $this->renderer(), $this->edit_window(), $this->settings() ) )->register();
 			$this->manage_page()->register();
+			$this->structured_data()->register();
+			( new SeoPlugins( $this->structured_data() ) )->register();
 		}
 
 		/**
@@ -393,6 +397,28 @@ final class Plugin {
 			ManagePage::class,
 			function () {
 				return new ManagePage( $this->subscriptions(), new TemplateLoader() );
+			}
+		);
+	}
+
+	/**
+	 * Get the structured data service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return StructuredData
+	 */
+	public function structured_data(): StructuredData {
+		return $this->service(
+			StructuredData::class,
+			function () {
+				return new StructuredData(
+					$this->settings(),
+					$this->renderer(),
+					new CommentPresenter( $this->markdown(), $this->votes(), $this->settings() ),
+					$this->votes(),
+					new FragmentCache()
+				);
 			}
 		);
 	}
