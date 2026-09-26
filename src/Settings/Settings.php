@@ -78,6 +78,8 @@ class Settings {
 	 *     @type string[] $post_types   Post types Convocept renders comments for.
 	 *     @type int      $per_page     Top-level comments per page (1–100).
 	 *     @type int      $max_depth    Maximum reply nesting depth shown (1–10).
+	 *     @type int      $replies_shown Replies shown per reply list before "Show more"
+	 *                                  (0–50; 0 shows all).
 	 *     @type string   $default_sort Initial sort order: 'oldest', 'newest' or 'top'.
 	 *     @type string   $color_scheme 'auto' inherits the theme's colors, 'system' follows the
 	 *                                  visitor's OS light/dark preference, 'light' and
@@ -96,6 +98,7 @@ class Settings {
 			'post_types'      => array( 'post', 'page' ),
 			'per_page'        => 20,
 			'max_depth'       => 3,
+			'replies_shown'   => 5,
 			'default_sort'    => 'oldest',
 			'color_scheme'    => 'auto',
 			'accent_color'    => '#2563eb',
@@ -212,6 +215,9 @@ class Settings {
 
 			case 'max_depth':
 				return $this->int_in_range( $value, 1, 10, $fallback );
+
+			case 'replies_shown':
+				return $this->int_in_range( $value, 0, 50, $fallback );
 
 			case 'edit_window':
 				return $this->int_in_range( $value, 0, 1440, $fallback );

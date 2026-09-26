@@ -33,6 +33,33 @@ export function parseHtml( html ) {
 }
 
 /**
+ * Parse server-rendered HTML holding several elements (e.g. list items).
+ *
+ * @param {string} html Server-rendered HTML.
+ * @return {DocumentFragment} Parsed nodes.
+ */
+export function parseFragment( html ) {
+	const template = document.createElement( 'template' );
+	template.innerHTML = html.trim();
+
+	return template.content;
+}
+
+/**
+ * Move keyboard focus to a newly inserted element, e.g. loaded comments.
+ *
+ * @param {Element|null} element Element to focus.
+ */
+export function focusElement( element ) {
+	if ( ! element ) {
+		return;
+	}
+
+	element.setAttribute( 'tabindex', '-1' );
+	element.focus( { preventScroll: true } );
+}
+
+/**
  * Show a message in a live region so screen readers announce it.
  *
  * @param {Element|null} region  Element with role="status".

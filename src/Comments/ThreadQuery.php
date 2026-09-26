@@ -115,6 +115,39 @@ class ThreadQuery {
 	}
 
 	/**
+	 * Get the zero-based position of a top-level comment in a sort order.
+	 *
+	 * Loads only the IDs of the post's top-level comments (one indexed
+	 * query, cached by core's comment query cache until comments change),
+	 * so it is cheap even on large threads.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $post_id    Post ID.
+	 * @param int    $comment_id Top-level comment ID.
+	 * @param string $sort       Sort order.
+	 * @return int|null Position, or null when the comment is not a visible top-level comment.
+	 */
+	public function position( int $post_id, int $comment_id, string $sort ): ?int {
+		$ids = ( new WP_Comment_Query() )->query(
+			array_merge(
+				$this->base_args( $post_id ),
+				Sort::query_args( Sort::resolve( $sort, Sort::OLDEST ) ),
+				array(
+					'parent'                    => 0,
+					'fields'                    => 'ids',
+					'no_found_rows'             => true,
+					'update_comment_meta_cache' => false,
+				)
+			)
+		);
+
+		$index = array_search( $comment_id, array_map( 'intval', (array) $ids ), true );
+
+		return false === $index ? null : (int) $index;
+	}
+
+	/**
 	 * Get the query arguments every thread query shares.
 	 *
 	 * @since 1.0.0

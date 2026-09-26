@@ -33,6 +33,10 @@
  *     @type int         $timestamp    Unix time the comment was posted.
  *     @type string[]    $classes      CSS classes.
  *     @type string      $replies_html Rendered replies (already escaped), or empty.
+ *     @type bool        $replies_flat Whether the replies are a flat list (maximum depth).
+ *     @type array       $more_replies Replies not shown yet: 'count', 'offset' (replies
+ *                                     already shown) and 'url' (no-JS link that expands
+ *                                     the branch).
  * }
  */
 
@@ -138,8 +142,29 @@ $convocept_comment = $args['comment'];
 	</article>
 
 	<?php if ( $args['replies_html'] ) : ?>
-		<ol class="convocept-replies">
+		<ol class="convocept-replies<?php echo $args['replies_flat'] ? ' convocept-replies--flat' : ''; ?>">
 			<?php echo $args['replies_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in comment.php. ?>
 		</ol>
+	<?php endif; ?>
+
+	<?php if ( $args['more_replies']['count'] > 0 ) : ?>
+		<p class="convocept-more-replies">
+			<a
+				href="<?php echo esc_url( $args['more_replies']['url'] ); ?>"
+				rel="nofollow"
+				data-convocept-more-replies="<?php echo esc_attr( (string) $args['id'] ); ?>"
+				data-convocept-offset="<?php echo esc_attr( (string) $args['more_replies']['offset'] ); ?>"
+			>
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %s: Number of hidden replies. */
+						_n( 'Show %s more reply', 'Show %s more replies', $args['more_replies']['count'], 'convocept' ),
+						number_format_i18n( $args['more_replies']['count'] )
+					)
+				);
+				?>
+			</a>
+		</p>
 	<?php endif; ?>
 </li>

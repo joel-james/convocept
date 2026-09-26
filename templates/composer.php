@@ -76,15 +76,15 @@ do_action( 'comment_form_before' );
 			do_action( 'comment_form_top' );
 			?>
 
-			<?php if ( $args['parent_id'] ) : ?>
-				<p class="convocept-form__replying">
+			<p class="convocept-form__replying" data-convocept-replying <?php echo $args['parent_id'] ? '' : 'hidden'; ?>>
+				<span data-convocept-replying-to>
 					<?php
 					/* translators: %s: Name of the person being replied to. */
 					echo esc_html( sprintf( __( 'Replying to %s', 'convocept' ), $args['reply_to'] ) );
 					?>
-					<a class="convocept-form__cancel" href="<?php echo esc_url( $args['cancel_reply_url'] ); ?>" rel="nofollow"><?php esc_html_e( 'Cancel', 'convocept' ); ?></a>
-				</p>
-			<?php endif; ?>
+				</span>
+				<a class="convocept-form__cancel" href="<?php echo esc_url( $args['cancel_reply_url'] ); ?>" rel="nofollow" data-convocept-cancel-reply><?php esc_html_e( 'Cancel', 'convocept' ); ?></a>
+			</p>
 
 			<p class="convocept-form__user" data-convocept-user hidden></p>
 

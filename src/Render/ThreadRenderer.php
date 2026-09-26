@@ -36,6 +36,14 @@ defined( 'ABSPATH' ) || exit;
 class ThreadRenderer {
 
 	/**
+	 * Public query variable naming a top-level comment whose replies are all shown.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	const EXPAND_QUERY_VAR = 'convocept_expand';
+
+	/**
 	 * Settings service.
 	 *
 	 * @since 1.0.0
@@ -189,7 +197,7 @@ class ThreadRenderer {
 			'accent_color'  => (string) $this->settings->get( 'accent_color' ),
 			'header_html'   => $this->render_header( $thread ),
 			'composer_html' => $is_open ? $this->render_composer( $post_id ) : '',
-			'list_html'     => $this->render_list( $thread->comments(), 1, $thread, $is_open ),
+			'list_html'     => $this->render_items( $thread, $this->requested_expand() ),
 			'pagination'    => $this->render_pagination( $thread ),
 		);
 
@@ -232,6 +240,55 @@ class ThreadRenderer {
 	}
 
 	/**
+	 * Load and render one page of a post's thread for "load more".
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $post_id Post ID.
+	 * @param string $sort    Requested sort (validated).
+	 * @param int    $page    Page, starting at 1.
+	 * @return array{html: string, page: int, pages: int, total: int}
+	 */
+	public function render_page( int $post_id, string $sort, int $page ): array {
+		$thread = $this->query->run(
+			$post_id,
+			array(
+				'sort'     => Sort::resolve( $sort, (string) $this->settings->get( 'default_sort' ) ),
+				'page'     => $page,
+				'per_page' => (int) $this->settings->get( 'per_page' ),
+			)
+		);
+
+		// A page past the end would repeat the last page; return nothing instead.
+		return array(
+			'html'  => $page > $thread->pages() ? '' : $this->render_items( $thread ),
+			'page'  => $thread->page(),
+			'pages' => $thread->pages(),
+			'total' => $thread->total(),
+		);
+	}
+
+	/**
+	 * Render the comment list items for a thread page, without the wrapper.
+	 *
+	 * Used for the full page render and for "load more" REST responses,
+	 * which append the next page's items to the existing list.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Thread $thread The thread page.
+	 * @param int    $expand Top-level comment whose replies are all shown, or 0.
+	 * @return string Comment list items HTML.
+	 */
+	public function render_items( Thread $thread, int $expand = 0 ): string {
+		return $this->render_list(
+			$thread->comments(),
+			1,
+			$this->context( $thread->post_id(), $this->page_url( $thread->post_id(), $thread->page(), $thread->sort() ), $expand )
+		);
+	}
+
+	/**
 	 * Render one comment on its own, for REST responses.
 	 *
 	 * Used after posting or editing, when the browser inserts or replaces a
@@ -250,12 +307,80 @@ class ThreadRenderer {
 		$reply_to  = '';
 
 		if ( $depth > $max_depth ) {
-			$parent   = get_comment( (int) $comment->comment_parent );
-			$reply_to = $parent instanceof WP_Comment ? get_comment_author( $parent ) : '';
+			$reply_to = $this->parent_author( $comment );
 			$depth    = $max_depth;
 		}
 
-		return $this->render_comment( $comment, $depth, (string) get_permalink( $post_id ), comments_open( $post_id ), $reply_to, '' );
+		return $this->render_comment( $comment, $depth, $this->context( $post_id, (string) get_permalink( $post_id ), 0 ), $reply_to, '', array() );
+	}
+
+	/**
+	 * Render the replies of a comment that were not shown yet.
+	 *
+	 * Backs the "Show N more replies" button: renders the parent's replies
+	 * from $offset on, in the same shape the full thread uses, so the
+	 * browser can append them to the parent's reply list.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Parent comment.
+	 * @param int        $offset  Number of replies already shown.
+	 * @return array{html: string, remaining: int}
+	 */
+	public function render_more_replies( WP_Comment $comment, int $offset ): array {
+		$post_id   = (int) $comment->comment_post_ID;
+		$max_depth = (int) $this->settings->get( 'max_depth' );
+		$depth     = min( $this->depth_of( $comment, $max_depth ), $max_depth );
+		$context   = $this->context( $post_id, $this->comment_url( $comment, false ), 0 );
+		$limit     = $this->replies_limit();
+
+		$context['root'] = (int) $this->root_of( $comment )->comment_ID;
+
+		// At the maximum depth replies are a flat, chronological list.
+		$flat    = $depth >= $max_depth;
+		$replies = $flat ? $this->flattened_descendants( $comment ) : $this->sorted_children( $comment );
+		$batch   = array_slice( $replies, $offset, $limit > 0 ? $limit : null );
+		$html    = '';
+
+		foreach ( $batch as $reply ) {
+			$html .= $flat
+				? $this->render_comment( $reply, $max_depth, $context, $this->parent_author( $reply ), '', array() )
+				: $this->render_list( array( $reply ), $depth + 1, $context );
+		}
+
+		return array(
+			'html'      => $html,
+			'remaining' => max( 0, count( $replies ) - $offset - count( $batch ) ),
+		);
+	}
+
+	/**
+	 * Get the permanent link to a comment in Convocept's pagination.
+	 *
+	 * Points at the page that contains the comment in the default sort.
+	 * Links to replies also expand the reply's whole branch, so the reply is
+	 * on the page even if it would otherwise sit behind "Show more replies".
+	 * Works without JavaScript: the browser jumps to #comment-{ID}.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment       Comment.
+	 * @param bool       $with_fragment Whether to append #comment-{ID}.
+	 * @return string
+	 */
+	public function comment_url( WP_Comment $comment, bool $with_fragment = true ): string {
+		$post_id = (int) $comment->comment_post_ID;
+		$sort    = (string) $this->settings->get( 'default_sort' );
+		$root    = $this->root_of( $comment );
+		$index   = $this->query->position( $post_id, (int) $root->comment_ID, $sort );
+		$page    = null === $index ? 1 : intdiv( $index, max( 1, (int) $this->settings->get( 'per_page' ) ) ) + 1;
+		$url     = $this->page_url( $post_id, $page, $sort );
+
+		if ( $root->comment_ID !== $comment->comment_ID ) {
+			$url = add_query_arg( self::EXPAND_QUERY_VAR, (int) $root->comment_ID, $url );
+		}
+
+		return $with_fragment ? $url . '#comment-' . (int) $comment->comment_ID : $url;
 	}
 
 	/**
@@ -316,43 +441,73 @@ class ThreadRenderer {
 	}
 
 	/**
-	 * Render a list of comments and, recursively, their replies.
-	 *
-	 * Replies nest until the configured maximum depth. Deeper replies are
-	 * shown flattened at the maximum depth, in date order, with a "replying
-	 * to" label so the conversation stays readable on small screens.
+	 * Build the rendering context shared by a list render.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Comment[] $comments Comments at this level.
-	 * @param int          $depth    Visual depth of this level, starting at 1.
-	 * @param Thread       $thread   The thread being rendered.
-	 * @param bool         $is_open  Whether new comments are accepted.
+	 * @param int    $post_id  Post ID.
+	 * @param string $page_url URL of the page the comments are shown on (no fragment).
+	 * @param int    $expand   Top-level comment whose replies are all shown, or 0.
+	 * @return array{post_id: int, page_url: string, is_open: bool, limit: int, expand: int, root: int}
+	 */
+	private function context( int $post_id, string $page_url, int $expand ): array {
+		return array(
+			'post_id'  => $post_id,
+			'page_url' => $page_url,
+			'is_open'  => comments_open( $post_id ),
+			'limit'    => $this->replies_limit(),
+			'expand'   => $expand,
+			'root'     => 0,
+		);
+	}
+
+	/**
+	 * Render a list of comments and, recursively, their replies.
+	 *
+	 * Replies nest until the configured maximum depth. Deeper replies are
+	 * shown in one flat, chronological list at the maximum depth, each with
+	 * a "Replying to" label, so the conversation stays readable on small
+	 * screens. Each reply list shows the first few replies (the
+	 * `replies_shown` setting) and a "Show N more replies" link for the rest,
+	 * unless the branch is expanded.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment[]         $comments Comments at this level.
+	 * @param int                  $depth    Visual depth of this level, starting at 1.
+	 * @param array<string, mixed> $context  Rendering context from context().
 	 * @return string Comment list items HTML.
 	 */
-	private function render_list( array $comments, int $depth, Thread $thread, bool $is_open ): string {
+	private function render_list( array $comments, int $depth, array $context ): string {
 		$max_depth = (int) $this->settings->get( 'max_depth' );
-		$page_url  = $this->page_url( $thread->post_id(), $thread->page(), $thread->sort() );
 		$html      = '';
 
 		foreach ( $comments as $comment ) {
-			$children = $this->sorted_children( $comment );
-
-			if ( $depth < $max_depth ) {
-				$replies_html = $children ? $this->render_list( $children, $depth + 1, $thread, $is_open ) : '';
-				$html        .= $this->render_comment( $comment, $depth, $page_url, $is_open, '', $replies_html );
-				continue;
+			if ( 1 === $depth ) {
+				$context['root'] = (int) $comment->comment_ID;
 			}
 
-			// At the maximum depth: this comment, then all its descendants as siblings.
-			$html .= $this->render_comment( $comment, $depth, $page_url, $is_open, '', '' );
+			$flat    = $depth >= $max_depth;
+			$replies = $flat ? $this->flattened_descendants( $comment ) : $this->sorted_children( $comment );
+			$limit   = $context['expand'] === $context['root'] ? 0 : (int) $context['limit'];
+			$shown   = $limit > 0 ? array_slice( $replies, 0, $limit ) : $replies;
+			$more    = array(
+				'count'  => count( $replies ) - count( $shown ),
+				'offset' => count( $shown ),
+				'url'    => add_query_arg( self::EXPAND_QUERY_VAR, $context['root'], $context['page_url'] ) . '#comment-' . (int) $comment->comment_ID,
+				'flat'   => $flat,
+			);
 
-			foreach ( $this->flattened_descendants( $comment ) as $descendant ) {
-				$parent   = get_comment( (int) $descendant->comment_parent );
-				$reply_to = $parent instanceof WP_Comment ? get_comment_author( $parent ) : '';
-				$html    .= $this->render_comment( $descendant, $depth, $page_url, $is_open, $reply_to, '' );
+			$replies_html = '';
+
+			foreach ( $shown as $reply ) {
+				$replies_html .= $flat
+					? $this->render_comment( $reply, $max_depth, $context, $this->parent_author( $reply ), '', array() )
+					: $this->render_list( array( $reply ), $depth + 1, $context );
 			}
-		}
+
+			$html .= $this->render_comment( $comment, $depth, $context, '', $replies_html, $more );
+		}//end foreach
 
 		return $html;
 	}
@@ -362,19 +517,76 @@ class ThreadRenderer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_Comment $comment      Comment.
-	 * @param int        $depth        Visual depth.
-	 * @param string     $page_url     URL of the current thread page.
-	 * @param bool       $is_open      Whether replies are accepted.
-	 * @param string     $reply_to     Parent author name for flattened replies, or empty.
-	 * @param string     $replies_html Rendered replies, or empty.
+	 * @param WP_Comment           $comment      Comment.
+	 * @param int                  $depth        Visual depth.
+	 * @param array<string, mixed> $context      Rendering context from context().
+	 * @param string               $reply_to     Parent author name for flattened replies, or empty.
+	 * @param string               $replies_html Rendered replies, or empty.
+	 * @param array<string, mixed> $more         Hidden replies: 'count', 'offset', 'url', 'flat'.
 	 * @return string
 	 */
-	private function render_comment( WP_Comment $comment, int $depth, string $page_url, bool $is_open, string $reply_to, string $replies_html ): string {
-		$view                 = $this->presenter->present( $comment, $depth, $page_url, $is_open, $reply_to );
+	private function render_comment( WP_Comment $comment, int $depth, array $context, string $reply_to, string $replies_html, array $more ): string {
+		$view                 = $this->presenter->present( $comment, $depth, (string) $context['page_url'], (bool) $context['is_open'], $reply_to );
 		$view['replies_html'] = $replies_html;
+		$view['replies_flat'] = ! empty( $more['flat'] );
+		$view['more_replies'] = array(
+			'count'  => (int) ( $more['count'] ?? 0 ),
+			'offset' => (int) ( $more['offset'] ?? 0 ),
+			'url'    => (string) ( $more['url'] ?? '' ),
+		);
 
 		return $this->templates->render( 'comment', $view );
+	}
+
+	/**
+	 * Get how many replies each reply list shows before "Show more".
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int 0 means all.
+	 */
+	private function replies_limit(): int {
+		return (int) $this->settings->get( 'replies_shown' );
+	}
+
+	/**
+	 * Get the author name of a comment's parent.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Comment.
+	 * @return string
+	 */
+	private function parent_author( WP_Comment $comment ): string {
+		$parent = get_comment( (int) $comment->comment_parent );
+
+		return $parent instanceof WP_Comment ? get_comment_author( $parent ) : '';
+	}
+
+	/**
+	 * Get a comment's top-level ancestor (itself for top-level comments).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Comment.
+	 * @return WP_Comment
+	 */
+	private function root_of( WP_Comment $comment ): WP_Comment {
+		$root  = $comment;
+		$guard = 0;
+
+		// The guard stops a corrupted parent loop from spinning forever.
+		while ( (int) $root->comment_parent && $guard++ < 100 ) {
+			$parent = get_comment( (int) $root->comment_parent );
+
+			if ( ! $parent instanceof WP_Comment ) {
+				break;
+			}
+
+			$root = $parent;
+		}
+
+		return $root;
 	}
 
 	/**
@@ -595,6 +807,17 @@ class ThreadRenderer {
 	 */
 	private function requested_page(): int {
 		return max( 1, absint( get_query_var( 'cpage' ) ) );
+	}
+
+	/**
+	 * Get the top-level comment whose replies should all be shown.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int Comment ID, or 0.
+	 */
+	private function requested_expand(): int {
+		return absint( get_query_var( self::EXPAND_QUERY_VAR ) );
 	}
 
 	/**

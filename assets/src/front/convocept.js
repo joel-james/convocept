@@ -5,12 +5,17 @@
  * here upgrades markup that already works without JavaScript.
  */
 import { initComposer } from './composer';
+import { initDeepLink } from './deeplink';
 import { initEdit } from './edit';
+import { initMore } from './more';
+import { initReply } from './reply';
 
 /**
  * Initialise every thread on the page.
  */
 function init() {
+	initDeepLink();
+
 	document.querySelectorAll( '.convocept' ).forEach( ( root ) => {
 		if ( root.dataset.convoceptReady ) {
 			return;
@@ -18,6 +23,8 @@ function init() {
 
 		root.dataset.convoceptReady = '1';
 		initComposer( root );
+		initReply( root );
+		initMore( root );
 		initEdit( root );
 	} );
 }

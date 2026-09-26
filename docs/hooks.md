@@ -45,10 +45,18 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | Route | Method | Access | Purpose |
 |---|---|---|---|
 | `/session` | GET | public | Who is visiting: login state, name, REST nonce, moderator flag. |
+| `/posts/{id}/comments` | GET | public | One page of top-level comments (`page`, `sort`); returns `html`, `page`, `pages`, `total`. |
 | `/posts/{id}/comments` | POST | public (core rules apply) | Create a comment; returns `id`, `status`, `html`, `edit_token`, `edit_until`, `total`. |
 | `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. |
 | `/comments/{id}` | PATCH | author in window / moderator | Edit; returns `id`, `status`, `html`. |
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
+| `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`. |
+| `/comments/{id}/context` | GET | public (approved) | URL of the page showing the comment; returns `url`. |
+
+## Query variables
+
+- `convocept_sort` — `oldest`, `newest` or `top`.
+- `convocept_expand` — top-level comment ID whose whole reply branch is shown.
 
 ## Templates
 

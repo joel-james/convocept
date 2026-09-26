@@ -2,6 +2,24 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M3 replies, pagination and links
+- **Reply lists** show the first `replies_shown` replies (default 5, 0 = all) with a
+  "Show N more replies" link. Without JavaScript the link reloads with `?convocept_expand={root}`,
+  which shows that whole branch; with it, `GET /comments/{id}/replies?offset=` appends the rest.
+- **Beyond `max_depth`** replies render inside a flat `<ol class="convocept-replies--flat">`
+  (no extra indent) instead of as siblings, so every reply list has one shape for JS and CSS.
+- **Inline reply** moves the single server-rendered form under the comment (a comment node marks
+  its home), so there is never a second copy of the form markup.
+- **Load more** replaces the numbered links only on page 1; deeper entry pages keep them.
+- **Comment permalinks:** `get_comment_link` is filtered to our page (default sort) plus
+  `convocept_expand` for replies. That fixes the no-JS post-submit redirect, wp-admin "View"
+  links and emails. `ThreadQuery::position()` loads only top-level IDs (one cached query).
+- **Old `#comment-N` links** are followed by the script through `/comments/{id}/context`, with a
+  sessionStorage guard against redirect loops; highlighting is pure CSS (`:target`).
+- **Benchmark (M3 acceptance):** 2,000-comment post in wp-env (WP_DEBUG on, no persistent object
+  cache): first page renders in ~57 ms with 10 queries; full page TTFB 0.20 s vs 1.25 s with
+  core's comment template.
+
 ## 2026-09-26 — M2 composer and submission decisions
 - **Markdown storage:** the raw Markdown is stored in `comment_content` with `&`, `<`, `>`
   entity-encoded, plus `convocept_format = markdown` meta. wp-admin, feeds and other plugins show

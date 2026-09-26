@@ -9,6 +9,7 @@ import { config, t } from './config';
 import { announce, cloneTemplate, parseHtml, reveal } from './dom';
 import { getSession, savedGuest } from './session';
 import { addEditButton } from './edit';
+import { cancelReply } from './reply';
 import { saveEdit } from './store';
 
 /**
@@ -125,6 +126,10 @@ export function initComposer( root ) {
 			addEditButton( root, comment, result.edit_until );
 			updateCount( root, result.total );
 			reveal( comment );
+
+			if ( parent ) {
+				cancelReply( root );
+			}
 
 			input.value = '';
 			autoGrow( input );

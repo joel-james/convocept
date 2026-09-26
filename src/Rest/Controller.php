@@ -63,6 +63,7 @@ class Controller {
 		$session  = new SessionEndpoint( $this->plugin->edit_window() );
 		$comments = new CommentsEndpoint( $this->plugin );
 		$preview  = new PreviewEndpoint( $this->plugin );
+		$threads  = new ThreadEndpoint( $this->plugin->renderer() );
 
 		register_rest_route(
 			self::NAMESPACE,
@@ -79,10 +80,40 @@ class Controller {
 			self::NAMESPACE,
 			'/posts/(?P<post_id>\d+)/comments',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $comments, 'create' ),
-				'permission_callback' => array( $comments, 'can_create' ),
-				'args'                => $comments->create_args(),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $threads, 'page' ),
+					'permission_callback' => array( $threads, 'can_read_post' ),
+					'args'                => $threads->page_args(),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $comments, 'create' ),
+					'permission_callback' => array( $comments, 'can_create' ),
+					'args'                => $comments->create_args(),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/comments/(?P<id>\d+)/replies',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $threads, 'replies' ),
+				'permission_callback' => array( $threads, 'can_read_comment' ),
+				'args'                => $threads->replies_args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/comments/(?P<id>\d+)/context',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $threads, 'context' ),
+				'permission_callback' => array( $threads, 'can_read_comment' ),
+				'args'                => $threads->comment_args(),
 			)
 		);
 

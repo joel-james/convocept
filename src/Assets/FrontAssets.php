@@ -159,6 +159,12 @@ class FrontAssets {
 				/* translators: %s: Number of comments. */
 				'countMany'      => __( '%s comments', 'convocept' ),
 				'linkPrompt'     => __( 'Link address (https://…)', 'convocept' ),
+				/* translators: %s: Name of the person being replied to. */
+				'replyingTo'     => __( 'Replying to %s', 'convocept' ),
+				/* translators: %s: Number of hidden replies (one). */
+				'moreReply'      => __( 'Show %s more reply', 'convocept' ),
+				/* translators: %s: Number of hidden replies. */
+				'moreReplies'    => __( 'Show %s more replies', 'convocept' ),
 			),
 		);
 

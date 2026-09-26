@@ -6,6 +6,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M3 replies and navigation: inline reply (the composer moves under the comment, with Cancel),
+  "Load more comments", "Show N more replies" (`replies_shown` setting), and comment links that
+  open the right page and highlight the comment, with and without JavaScript. Core's
+  `get_comment_link()` now points at Convocept's pages (fixes post-submit redirects and
+  wp-admin/email links).
 - M2 composer: Markdown (safe subset, own parser) with toolbar and server-rendered preview,
   auto-growing textarea, character counter, REST submission with an instant placeholder,
   inline errors (duplicate, flood, required fields), "awaiting moderation" state, live-region

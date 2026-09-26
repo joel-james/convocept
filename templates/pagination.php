@@ -17,8 +17,24 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$convocept_thread = $args['thread'];
 ?>
-<nav class="convocept-pagination" aria-label="<?php esc_attr_e( 'Comment pages', 'convocept' ); ?>">
+<?php if ( $args['next_url'] ) : ?>
+	<?php
+	// Revealed by the script, which then hides the numbered links on the first page.
+	?>
+	<p class="convocept-load-more" data-convocept-load-more hidden>
+		<button
+			type="button"
+			class="convocept-button convocept-button--secondary"
+			data-convocept-next-page="<?php echo esc_attr( (string) ( $convocept_thread->page() + 1 ) ); ?>"
+			data-convocept-pages="<?php echo esc_attr( (string) $convocept_thread->pages() ); ?>"
+			data-convocept-sort="<?php echo esc_attr( $convocept_thread->sort() ); ?>"
+		><?php esc_html_e( 'Load more comments', 'convocept' ); ?></button>
+	</p>
+<?php endif; ?>
+<nav class="convocept-pagination" aria-label="<?php esc_attr_e( 'Comment pages', 'convocept' ); ?>" data-convocept-pagination>
 	<?php if ( $args['prev_url'] ) : ?>
 		<a class="convocept-pagination__prev" href="<?php echo esc_url( $args['prev_url'] ); ?>" rel="prev"><?php esc_html_e( 'Previous', 'convocept' ); ?></a>
 	<?php endif; ?>

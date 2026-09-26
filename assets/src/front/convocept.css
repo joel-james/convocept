@@ -295,6 +295,9 @@
 .convocept-comment {
 	margin: 0;
 	padding: 0;
+
+	/* Keep deep-linked comments clear of sticky site headers. */
+	scroll-margin-block-start: 5rem;
 }
 
 .convocept-list > .convocept-comment + .convocept-comment {
@@ -672,4 +675,75 @@
 	padding-inline-start: 0.9em;
 	border-inline-start: 3px solid var(--convocept-border);
 	color: var(--convocept-muted);
+}
+
+/* Replies, load more and deep links
+   ------------------------------------------------------------------ */
+
+/* At the maximum depth replies stay at the same level: no extra indent. */
+.convocept-replies--flat {
+	margin-inline-start: 0;
+	padding-inline-start: 0;
+	border-inline-start: 0;
+}
+
+.convocept-more-replies {
+	margin: 0.75rem 0 0 calc(var(--convocept-avatar) + 0.85rem);
+	font-size: 0.875em;
+}
+
+.convocept .convocept-more-replies a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.convocept .convocept-more-replies a[aria-busy] {
+	opacity: 0.6;
+}
+
+.convocept-load-more {
+	display: flex;
+	justify-content: center;
+	margin-block-start: 2rem;
+}
+
+.convocept .convocept-button--secondary {
+	border: 1px solid var(--convocept-border);
+	background: transparent;
+	color: inherit;
+}
+
+.convocept-composer.is-replying {
+	margin: 1rem 0 0 calc(var(--convocept-avatar) + 0.85rem);
+}
+
+/* A comment reached through a #comment-{ID} link. */
+.convocept-comment:target > .convocept-comment__body {
+	margin: -0.5rem;
+	padding: 0.5rem;
+	border-radius: var(--convocept-radius);
+	background: color-mix(in srgb, var(--convocept-accent) 10%, transparent);
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+
+	.convocept-comment:target > .convocept-comment__body {
+		animation: convocept-highlight 2.5s ease-out 1s both;
+	}
+
+	@keyframes convocept-highlight {
+
+		to {
+			background: transparent;
+		}
+	}
+}
+
+@media (max-width: 480px) {
+
+	.convocept-more-replies,
+	.convocept-composer.is-replying {
+		margin-inline-start: 0;
+	}
 }

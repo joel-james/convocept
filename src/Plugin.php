@@ -16,6 +16,7 @@ use Convocept\Comments\ThreadQuery;
 use Convocept\Database\Migrator;
 use Convocept\Integration\BlockTheme;
 use Convocept\Integration\ClassicTheme;
+use Convocept\Integration\CommentLinks;
 use Convocept\Markdown\Parser;
 use Convocept\Moderation\Pipeline;
 use Convocept\Render\CommentPresenter;
@@ -118,6 +119,9 @@ final class Plugin {
 		// Submissions can arrive on any request type (wp-comments-post.php, REST).
 		$this->submission()->register();
 
+		// Comment links appear everywhere: redirects, wp-admin, emails, feeds.
+		( new CommentLinks( $this->renderer() ) )->register();
+
 		// Theme output only exists outside wp-admin; admin requests skip it entirely.
 		if ( ! is_admin() ) {
 			( new ClassicTheme( $this->renderer() ) )->register();
@@ -158,6 +162,7 @@ final class Plugin {
 	 */
 	public function register_query_vars( $vars ) {
 		$vars[] = Sort::QUERY_VAR;
+		$vars[] = ThreadRenderer::EXPAND_QUERY_VAR;
 
 		return $vars;
 	}
