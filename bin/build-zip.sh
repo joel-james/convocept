@@ -24,18 +24,22 @@ readonly STAGE="${DIST}/${PLUGIN_SLUG}"
 
 cd "${ROOT}"
 
-# Files and directories that ship in the release. src/ is included
+# Files and directories that ship in the release. assets/src is included
 # deliberately: WordPress.org requires the uncompiled sources for any
 # compiled asset, and the GPL expects the preferred form for modification.
+# vendor/ is not copied; a clean autoloader is generated in the stage below.
 readonly INCLUDE=(
 	"convocept.php"
 	"uninstall.php"
 	"readme.txt"
-	"includes"
-	"build"
-	"src"
-	"languages"
+	"CHANGELOG.md"
+	"composer.json"
 	"package.json"
+	"src"
+	"templates"
+	"assets/src"
+	"assets/dist"
+	"languages"
 )
 
 info()  { printf '\033[0;34m==>\033[0m %s\n' "$1"; }
@@ -59,8 +63,13 @@ stable_tag=$( grep -m1 '^Stable tag:' readme.txt | sed -E 's/.*Stable tag:[[:spa
 [[ -n "${header_version}" ]] || fail "Could not read Version from convocept.php header."
 [[ "${header_version}" == "${const_version}" ]] \
 	|| fail "Version mismatch: plugin header ${header_version} vs CONVOCEPT_VERSION ${const_version}."
-[[ "${header_version}" == "${stable_tag}" ]] \
-	|| fail "Version mismatch: plugin header ${header_version} vs readme.txt stable tag ${stable_tag}."
+# CI builds -dev versions for Plugin Check; those never match the stable tag.
+if [[ "${ALLOW_DEV_VERSION:-0}" == "1" && "${header_version}" == *-dev ]]; then
+	warn "Development version ${header_version}; skipping stable tag check"
+else
+	[[ "${header_version}" == "${stable_tag}" ]] \
+		|| fail "Version mismatch: plugin header ${header_version} vs readme.txt stable tag ${stable_tag}."
+fi
 
 readonly VERSION="${header_version}"
 ok "Version ${VERSION} consistent across header, constant, and readme"
@@ -77,7 +86,7 @@ if command -v php >/dev/null 2>&1; then
 	lint_failed=0
 	while IFS= read -r file; do
 		php -l "${file}" >/dev/null 2>&1 || { warn "Syntax error in ${file}"; lint_failed=1; }
-	done < <( find convocept.php uninstall.php includes -name '*.php' )
+	done < <( find convocept.php uninstall.php src templates -name '*.php' 2>/dev/null )
 
 	[[ "${lint_failed}" -eq 0 ]] || fail "PHP lint failed."
 	ok "No syntax errors"
@@ -115,10 +124,16 @@ else
 	rm -f "${build_log}"
 fi
 
-# The app cannot run without these, and Assets::register_assets() bails
-# silently when they are missing — which would ship a dead plugin.
-[[ -f build/index.js && -f build/index.asset.php && -f build/style-index.css ]] \
-	|| fail "build/ is incomplete. Run without SKIP_BUILD."
+# The front end cannot work without these, so never ship a zip missing them.
+for asset in assets/dist/loader.js assets/dist/convocept.js assets/dist/convocept.css; do
+	[[ -f "${asset}" ]] || fail "${asset} is missing. Run without SKIP_BUILD."
+done
+
+if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
+	info "Checking size budget"
+	npx --no-install size-limit >/dev/null || fail "Size budget exceeded. Run npm run size for details."
+	ok "Within size budget"
+fi
 
 # ---------------------------------------------------------------------------
 # 4. Refresh the translation template.
@@ -129,7 +144,7 @@ if [[ "${SKIP_POT:-0}" == "1" ]]; then
 elif command -v wp >/dev/null 2>&1; then
 	info "Generating translation template"
 	mkdir -p languages
-	wp i18n make-pot . languages/convocept.pot --exclude=node_modules,build,dist,bin --allow-root >/dev/null 2>&1 \
+	wp i18n make-pot . languages/convocept.pot --exclude=node_modules,vendor,assets/dist,dist,bin,tests --allow-root >/dev/null 2>&1 \
 		&& ok "languages/convocept.pot updated" \
 		|| warn "make-pot failed; shipping the existing .pot"
 else
@@ -147,11 +162,24 @@ mkdir -p "${STAGE}"
 
 for item in "${INCLUDE[@]}"; do
 	if [[ -e "${item}" ]]; then
-		cp -R "${item}" "${STAGE}/"
+		mkdir -p "${STAGE}/$( dirname "${item}" )"
+		cp -R "${item}" "${STAGE}/${item}"
 	else
 		warn "Skipping missing ${item}"
 	fi
 done
+
+# Generate a production autoloader: no dev packages, authoritative classmap.
+command -v composer >/dev/null 2>&1 || fail "composer is required to build the autoloader."
+composer install --working-dir="${STAGE}" --no-dev --classmap-authoritative --no-interaction --quiet \
+	|| fail "composer install failed in the stage directory."
+rm -f "${STAGE}/composer.lock"
+[[ -f "${STAGE}/vendor/autoload.php" ]] || fail "Autoloader was not generated."
+ok "Production autoloader generated"
+
+# src/ holds PHP only; anything else there is a leftover and must not ship.
+find "${STAGE}/src" -type f ! -name '*.php' -delete
+find "${STAGE}/src" -type d -empty -delete
 
 # Strip artifacts that ride along inside copied directories.
 find "${STAGE}" -name '.DS_Store' -delete

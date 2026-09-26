@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+	bootstrap="tests/php/bootstrap.php"
+	colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	convertDeprecationsToExceptions="true"
+>
+	<testsuites>
+		<testsuite name="convocept">
+			<directory suffix="Test.php">tests/php</directory>
+		</testsuite>
+	</testsuites>
+	<coverage includeUncoveredFiles="true">
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+	</coverage>
+</phpunit>

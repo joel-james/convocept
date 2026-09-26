@@ -1,18 +1,33 @@
 {
 	"name": "convocept",
-	"version": "1.0.0",
-	"description": "Convocept: a fast, self-hosted comment system for WordPress.",
+	"version": "2.0.0-dev",
+	"description": "The fastest comment system for WordPress.",
 	"license": "GPL-2.0-or-later",
 	"private": true,
 	"scripts": {
-		"build": "wp-scripts build",
-		"start": "wp-scripts start",
-		"lint:js": "wp-scripts lint-js",
-		"lint:css": "wp-scripts lint-style",
-		"zip": "bash bin/build-zip.sh",
-		"zip:fast": "SKIP_BUILD=1 SKIP_POT=1 bash bin/build-zip.sh"
+		"build": "npm run build:front && npm run build:admin",
+		"build:front": "node bin/build-front.mjs",
+		"build:admin": "wp-scripts build assets/src/admin/index.js --output-path=assets/dist/admin",
+		"start": "node bin/build-front.mjs --watch",
+		"size": "size-limit",
+		"lint": "npm run lint:js && npm run lint:css && npm run format:check",
+		"lint:js": "wp-scripts lint-js assets/src tests/e2e bin",
+		"lint:css": "wp-scripts lint-style \"assets/src/**/*.css\"",
+		"format": "wp-scripts format assets/src tests/e2e bin",
+		"format:check": "wp-scripts format --check assets/src tests/e2e bin",
+		"env:start": "wp-env start",
+		"env:stop": "wp-env stop",
+		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/convocept composer test",
+		"test:e2e": "wp-scripts test-playwright",
+		"release": "bash bin/build-zip.sh"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.0.0"
+		"@playwright/test": "^1.63.0",
+		"@size-limit/file": "^14.0.1",
+		"@wordpress/e2e-test-utils-playwright": "^2.1.0",
+		"@wordpress/env": "^11.16.0",
+		"@wordpress/scripts": "^36.0.0",
+		"esbuild": "^0.28.2",
+		"size-limit": "^14.0.1"
 	}
 }

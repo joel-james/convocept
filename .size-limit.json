@@ -1,0 +1,20 @@
+[
+	{
+		"name": "Inline loader",
+		"path": "assets/dist/loader.js",
+		"limit": "1 KB",
+		"gzip": true
+	},
+	{
+		"name": "Front-end JS",
+		"path": "assets/dist/convocept.js",
+		"limit": "8 KB",
+		"gzip": true
+	},
+	{
+		"name": "Front-end CSS",
+		"path": "assets/dist/convocept.css",
+		"limit": "5 KB",
+		"gzip": true
+	}
+]

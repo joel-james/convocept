@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: composer install --no-interaction --no-progress
+      - run: npm ci
+      - run: composer lint
+      - run: npm run lint
+
+  size:
+    name: Size budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run size
+
+  php-tests:
+    name: PHPUnit (WP ${{ matrix.wp }}, PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { wp: '6.5', php: '7.4' }
+          - { wp: 'latest', php: '8.1' }
+          - { wp: 'latest', php: '8.3' }
+          - { wp: 'latest', php: '8.4' }
+          - { wp: 'trunk', php: '8.4' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: composer install --no-interaction --no-progress
+      - run: npm ci
+      - name: Configure wp-env
+        run: |
+          case "${{ matrix.wp }}" in
+            latest) core=null ;;
+            trunk) core='"WordPress/WordPress#master"' ;;
+            *) core="\"WordPress/WordPress#${{ matrix.wp }}\"" ;;
+          esac
+          echo "{\"core\": ${core}, \"phpVersion\": \"${{ matrix.php }}\"}" > .wp-env.override.json
+      - run: npm run env:start
+      - run: npm run test:php
+
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: composer install --no-dev --no-interaction --no-progress
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - run: npm run build
+      - run: npm run env:start
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-artifacts
+          path: artifacts/
+          if-no-files-found: ignore
+
+  release-zip:
+    name: Release zip + Plugin Check
+    needs: [lint, size, php-tests, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2, wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Build zip (version check skipped for -dev builds)
+        run: ALLOW_DEV_VERSION=1 npm run release
+      - name: Unpack for Plugin Check
+        run: unzip -q dist/convocept-*.zip -d build-release
+      - uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: build-release/convocept
+      - uses: actions/upload-artifact@v4
+        with:
+          name: convocept-zip
+          path: dist/convocept-*.zip

@@ -1,0 +1,9 @@
+parameters:
+    level: 6
+    paths:
+        - convocept.php
+        - uninstall.php
+        - src
+    bootstrapFiles:
+        - tests/phpstan/bootstrap.php
+    treatPhpDocTypesAsCertain: false

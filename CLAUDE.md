@@ -50,7 +50,9 @@ from M0 (PLAN.md §2 and §8). Record decisions not covered by the plan in `docs
 - `npm run build` — build JS/CSS with esbuild into `assets/dist/`
 - `npm run size` — check bundle sizes against the budget
 - `npm run env:start` — start `wp-env`
-- `composer test` — PHPUnit (inside wp-env)
+- `npm run test:php` — PHPUnit (runs `composer test` inside wp-env; it reinstalls the tests site DB,
+  so e2e specs set up their own plugin/theme state)
+- `composer lint` — phpcs + PHPStan; `npm run release` — build the release zip into `dist/`
 - `npm run test:e2e` — Playwright
 - `composer lint && npm run lint` — all linters
 

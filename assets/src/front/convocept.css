@@ -1,0 +1,7 @@
+/*
+ * Convocept front-end styles, scoped under .convocept.
+ * Design tokens and thread layout arrive in M1.
+ */
+.convocept {
+	--convocept-accent: #2563eb;
+}

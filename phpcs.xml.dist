@@ -2,21 +2,37 @@
 <ruleset name="Convocept">
 	<description>WordPress Coding Standards for the Convocept plugin.</description>
 
-	<file>.</file>
+	<file>convocept.php</file>
+	<file>uninstall.php</file>
+	<file>src</file>
+	<file>templates</file>
+	<file>tests/php</file>
 
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
-	<exclude-pattern>/build/*</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>
+	<arg name="parallel" value="8"/>
 	<arg value="ps"/>
 
+	<config name="minimum_wp_version" value="6.5"/>
+	<config name="testVersion" value="7.4-"/>
+
 	<rule ref="WordPress"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- PSR-4 file names (src/Plugin.php) instead of class-plugin.php. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/src/*</exclude-pattern>
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="convocept"/>
+			<property name="text_domain" type="array">
+				<element value="convocept"/>
+			</property>
 		</properties>
 	</rule>
 
@@ -29,6 +45,14 @@
 		</properties>
 	</rule>
 
-	<config name="minimum_wp_version" value="6.5"/>
-	<config name="testVersion" value="7.4-"/>
+	<!-- Tests use PHPUnit's camelCase API and are not shipped. -->
+	<rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting.DocComment.MissingShort">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
 </ruleset>

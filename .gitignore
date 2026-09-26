@@ -3,3 +3,9 @@ vendor/
 dist/
 .DS_Store
 *.log
+/assets/dist/
+/artifacts/
+/test-results/
+/playwright-report/
+.phpunit.result.cache
+.wp-env.override.json
