@@ -345,7 +345,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** 2,000-comment fixture renders first page < 150 ms server time with object cache;
   deep links work with and without JS.
 
-### M4 — Lazy loading & performance hardening
+### M4 — Lazy loading & performance hardening ✅ done (Lighthouse 99–100 vs 100 baseline, 0 requests before scroll)
 - Inline loader (< 1 KB) with IntersectionObserver + interaction triggers; loads `convocept.js`/`convocept.css`
   once; `convocept_front_modules` hook.
 - Dequeue `comment-reply.js` when thread renders; no jQuery dependency anywhere.
@@ -472,7 +472,8 @@ comparisons; CSV export; weekly email reports.
 ## 10. Performance acceptance (publishable benchmark)
 Fixture post, 200 comments, Twenty Twenty-Five, no page cache vs. comments disabled:
 - Transferred JS before scroll: 0 KB. After thread visible: ≤ 8 KB gzipped.
-- CSS: ≤ 5 KB gzipped (lazy) — only minimal inline critical styles for layout reservation.
+- CSS: ≤ 5 KB gzipped, inlined immediately before the thread (no request, not render-blocking;
+  see `docs/decisions.md`).
 - Lighthouse Performance within 2 points of the no-comments baseline; CLS 0; INP < 100 ms on
   mid-range mobile emulation for reply/submit.
 - Server render of first page of comments < 50 ms with object cache.

@@ -9,6 +9,7 @@
 namespace Convocept\Rest;
 
 use Convocept\Comments\Sort;
+use Convocept\Comments\ThreadQuery;
 use Convocept\Render\ThreadRenderer;
 use WP_Comment;
 use WP_Error;
@@ -111,6 +112,28 @@ class ThreadEndpoint {
 	}
 
 	/**
+	 * Get the argument schema for new-comment checks.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	public function updates_args(): array {
+		return array(
+			'post_id' => array(
+				'type'     => 'integer',
+				'required' => true,
+				'minimum'  => 1,
+			),
+			'after'   => array(
+				'type'    => 'integer',
+				'default' => 0,
+				'minimum' => 0,
+			),
+		);
+	}
+
+	/**
 	 * Permission check: the post's thread is public and handled by Convocept.
 	 *
 	 * @since 1.0.0
@@ -201,6 +224,53 @@ class ThreadEndpoint {
 				'url' => $comment instanceof WP_Comment ? $this->renderer->comment_url( $comment ) : '',
 			)
 		);
+	}
+
+	/**
+	 * Handle GET /posts/{post_id}/updates: comments newer than `after`.
+	 *
+	 * Built for cheap polling: the response carries an ETag derived from the
+	 * thread's state, and a request whose If-None-Match matches gets an
+	 * empty 304 without rendering anything.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response Response data: 'items' (each 'id', 'parent', 'html') and 'total'.
+	 */
+	public function updates( WP_REST_Request $request ): WP_REST_Response {
+		$post_id = (int) $request->get_param( 'post_id' );
+		$after   = (int) $request->get_param( 'after' );
+		$query   = new ThreadQuery();
+		$total   = $query->total( $post_id );
+		$etag    = '"' . md5( $post_id . '|' . $after . '|' . $total . '|' . $query->latest_id( $post_id ) ) . '"';
+
+		if ( $etag === $request->get_header( 'if_none_match' ) ) {
+			$response = Controller::response( array(), 304 );
+			$response->header( 'ETag', $etag );
+
+			return $response;
+		}
+
+		$items = array();
+
+		foreach ( $query->newer_than( $post_id, $after ) as $comment ) {
+			$items[] = array(
+				'id'     => (int) $comment->comment_ID,
+				'parent' => (int) $comment->comment_parent,
+				'html'   => $this->renderer->render_single( $comment ),
+			);
+		}
+
+		$response = Controller::response(
+			array(
+				'items' => $items,
+				'total' => $total,
+			)
+		);
+		$response->header( 'ETag', $etag );
+
+		return $response;
 	}
 
 	/**

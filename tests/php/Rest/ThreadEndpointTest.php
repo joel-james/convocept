@@ -86,4 +86,32 @@ class ThreadEndpointTest extends RestTestCase {
 		$this->assertSame( 404, $this->dispatch( 'GET', "comments/{$pending}/context" )->get_status() );
 		$this->assertSame( 404, $this->dispatch( 'GET', "comments/{$pending}/replies" )->get_status() );
 	}
+
+	public function test_updates_return_newer_comments_with_etag(): void {
+		$post_id = self::factory()->post->create();
+		$old     = $this->comment( $post_id );
+		$new     = $this->comment( $post_id, array( 'comment_content' => 'Fresh' ) );
+
+		$response = $this->dispatch( 'GET', "posts/{$post_id}/updates", array( 'after' => $old ) );
+		$data     = $response->get_data();
+		$etag     = $response->get_headers()['ETag'];
+
+		$this->assertSame( array( $new ), wp_list_pluck( $data['items'], 'id' ) );
+		$this->assertStringContainsString( 'Fresh', $data['items'][0]['html'] );
+		$this->assertSame( 2, $data['total'] );
+
+		$unchanged = $this->dispatch( 'GET', "posts/{$post_id}/updates", array( 'after' => $old ), array( 'If-None-Match' => $etag ) );
+		$this->assertSame( 304, $unchanged->get_status() );
+
+		$this->comment( $post_id );
+		$changed = $this->dispatch( 'GET', "posts/{$post_id}/updates", array( 'after' => $old ), array( 'If-None-Match' => $etag ) );
+		$this->assertSame( 200, $changed->get_status() );
+	}
+
+	public function test_updates_never_include_pending_comments(): void {
+		$post_id = self::factory()->post->create();
+		$this->comment( $post_id, array( 'comment_approved' => 0 ) );
+
+		$this->assertSame( array(), $this->dispatch( 'GET', "posts/{$post_id}/updates" )->get_data()['items'] );
+	}
 }

@@ -6,6 +6,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M4 performance: no Convocept request on page load. The stylesheet is inlined just before the
+  thread; a ~440-byte inline loader fetches the script only when the reader nears the comments
+  or interacts with them. Rendered comment lists are cached and invalidated automatically.
+  Optional live updates (off by default) check for new comments while the tab is visible,
+  using ETag/304. Lighthouse on a 200-comment post matches the same post without comments.
 - M3 replies and navigation: inline reply (the composer moves under the comment, with Cancel),
   "Load more comments", "Show N more replies" (`replies_shown` setting), and comment links that
   open the right page and highlight the comment, with and without JavaScript. Core's
@@ -34,7 +39,7 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Page-cache safety: no nonces, identity, commenter cookie values or pending comments in the
   HTML; core's unfiltered-HTML nonce is detached from our form.
 - `comment-reply.js` is no longer loaded on posts that use Convocept.
-- Settings: `post_types`, `per_page`, `max_depth`, `default_sort`, `color_scheme`,
+- Settings: `replies_shown`, `live_updates`, `poll_interval`, `post_types`, `per_page`, `max_depth`, `default_sort`, `color_scheme`,
   `accent_color`, with sanitizing on read.
 - M0 scaffolding: PSR-4 autoloading via Composer, `Plugin::boot()`, activation/deactivation
   handlers, versioned database migration runner with a concurrency lock.

@@ -39,6 +39,10 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_rate_limit` | 1.0.0 | `int $limit, string $action, int $window` | Adjust or disable (0) a rate limit. |
 | `convocept_session_data` | 1.0.0 | `array $data, WP_REST_Request $request` | Session data sent to the script. |
 | `convocept_front_config` | 1.0.0 | `array $config` | Static script configuration (never per-visitor). |
+| `convocept_front_modules` | 1.0.0 | `string[] $scripts` | Scripts the inline loader injects after Convocept's (lazy add-on modules). |
+| `convocept_inline_css` | 1.0.0 | `string $css` | Inline stylesheet; return `''` to style the thread yourself. |
+| `convocept_thread_html` | 1.0.0 | `string $html, int $post_id` | Complete thread HTML (assets are added here). |
+| `convocept_fragment_cache` | 1.0.0 | `bool $enabled` | Whether rendered comment lists are cached. |
 
 ## REST routes (`/wp-json/convocept/v1`)
 
@@ -50,6 +54,7 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. |
 | `/comments/{id}` | PATCH | author in window / moderator | Edit; returns `id`, `status`, `html`. |
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
+| `/posts/{id}/updates` | GET | public | Comments newer than `after`; ETag + 304 when unchanged. Returns `items`, `total`. |
 | `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`. |
 | `/comments/{id}/context` | GET | public (approved) | URL of the page showing the comment; returns `url`. |
 

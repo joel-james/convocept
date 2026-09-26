@@ -11,30 +11,29 @@ namespace Convocept\Assets;
 use Convocept\Comments\EditWindow;
 use Convocept\Render\ThreadRenderer;
 use Convocept\Rest\Controller;
+use Convocept\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Loads the thread stylesheet and script, and removes core's comment-reply.
+ * Delivers Convocept's CSS and JavaScript without a single request on page load.
  *
- * For now both files are enqueued on posts that show the thread (the
- * script deferred, in the footer). M4 replaces this with the inline lazy
- * loader, so nothing is fetched until the reader nears the comments.
+ * Around the first thread on a page it prints:
  *
- * The inline configuration is identical for every visitor, so pages stay
- * cacheable; per-visitor state comes from the session endpoint.
+ * - the stylesheet, inline, just before the thread. Nothing is added to
+ *   <head>, so the content above the comments renders without waiting for
+ *   it, the thread is styled with or without JavaScript, and there is no
+ *   extra request or layout shift;
+ * - the configuration, as an inert JSON block after the thread;
+ * - the inline loader (under 1 KB), which fetches the interaction script
+ *   only when the reader nears the comments or starts interacting.
+ *
+ * Everything printed is identical for every visitor, so pages stay
+ * cacheable. Core's comment-reply.js is removed where Convocept renders.
  *
  * @since 1.0.0
  */
 class FrontAssets {
-
-	/**
-	 * Style and script handle.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	const HANDLE = 'convocept';
 
 	/**
 	 * Thread renderer.
@@ -53,16 +52,34 @@ class FrontAssets {
 	private $edit_window;
 
 	/**
+	 * Settings service.
+	 *
+	 * @since 1.0.0
+	 * @var Settings
+	 */
+	private $settings;
+
+	/**
+	 * Whether the assets were already printed on this page.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	private $printed = false;
+
+	/**
 	 * Create the asset service.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param ThreadRenderer $renderer    Thread renderer.
 	 * @param EditWindow     $edit_window Edit window service.
+	 * @param Settings       $settings    Settings service.
 	 */
-	public function __construct( ThreadRenderer $renderer, EditWindow $edit_window ) {
+	public function __construct( ThreadRenderer $renderer, EditWindow $edit_window, Settings $settings ) {
 		$this->renderer    = $renderer;
 		$this->edit_window = $edit_window;
+		$this->settings    = $settings;
 	}
 
 	/**
@@ -73,7 +90,7 @@ class FrontAssets {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
+		add_filter( 'convocept_thread_html', array( $this, 'wrap' ) );
 
 		// Late, after themes enqueue comment-reply at the default priority.
 		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_comment_reply' ), 100 );
@@ -84,42 +101,21 @@ class FrontAssets {
 	}
 
 	/**
-	 * Enqueue the stylesheet and script on singular views that show the thread.
+	 * Add the stylesheet, configuration and loader around the first thread.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void
+	 * @param string $html Thread HTML.
+	 * @return string
 	 */
-	public function enqueue(): void {
-		if ( ! $this->is_thread_page() ) {
-			return;
+	public function wrap( $html ) {
+		if ( $this->printed || '' === $html ) {
+			return $html;
 		}
 
-		$css = CONVOCEPT_DIR . 'assets/dist/convocept.css';
-		$js  = CONVOCEPT_DIR . 'assets/dist/convocept.js';
+		$this->printed = true;
 
-		// A git checkout without `npm run build` has no built files.
-		if ( is_readable( $css ) ) {
-			wp_enqueue_style( self::HANDLE, CONVOCEPT_URL . 'assets/dist/convocept.css', array(), $this->version( $css ) );
-
-			// Lets core inline the small stylesheet instead of making a request.
-			wp_style_add_data( self::HANDLE, 'path', $css );
-		}
-
-		if ( is_readable( $js ) ) {
-			wp_enqueue_script(
-				self::HANDLE,
-				CONVOCEPT_URL . 'assets/dist/convocept.js',
-				array(),
-				$this->version( $js ),
-				array(
-					'in_footer' => true,
-					'strategy'  => 'defer',
-				)
-			);
-
-			wp_add_inline_script( self::HANDLE, 'window.convoceptConfig = ' . wp_json_encode( $this->config() ) . ';', 'before' );
-		}
+		return $this->style() . $html . $this->config_block() . $this->loader();
 	}
 
 	/**
@@ -132,21 +128,17 @@ class FrontAssets {
 	public function config(): array {
 		$config = array(
 			'rest'       => esc_url_raw( rest_url( Controller::NAMESPACE . '/' ) ),
+			'scripts'    => $this->scripts(),
 			'editWindow' => $this->edit_window->minutes(),
 			'maxLength'  => (int) Controller::content_arg( true )['maxLength'],
+			'poll'       => $this->settings->get( 'live_updates' ) ? (int) $this->settings->get( 'poll_interval' ) : 0,
 			'i18n'       => array(
 				'posting'        => __( 'Posting…', 'convocept' ),
 				'posted'         => __( 'Your comment was posted.', 'convocept' ),
 				'pending'        => __( 'Your comment is awaiting moderation.', 'convocept' ),
 				'failed'         => __( 'Your comment could not be posted.', 'convocept' ),
-				'retry'          => __( 'Try again', 'convocept' ),
 				'network'        => __( 'Could not reach the site. Check your connection and try again.', 'convocept' ),
-				'write'          => __( 'Write', 'convocept' ),
-				'preview'        => __( 'Preview', 'convocept' ),
 				'nothingPreview' => __( 'Nothing to preview yet.', 'convocept' ),
-				'edit'           => __( 'Edit', 'convocept' ),
-				'save'           => __( 'Save', 'convocept' ),
-				'cancel'         => __( 'Cancel', 'convocept' ),
 				'saved'          => __( 'Your changes were saved.', 'convocept' ),
 				/* translators: %s: Remaining time, e.g. 4:59. */
 				'editFor'        => __( 'Edit (%s)', 'convocept' ),
@@ -165,6 +157,8 @@ class FrontAssets {
 				'moreReply'      => __( 'Show %s more reply', 'convocept' ),
 				/* translators: %s: Number of hidden replies. */
 				'moreReplies'    => __( 'Show %s more replies', 'convocept' ),
+				/* translators: %s: Number of new comments. */
+				'newComments'    => __( 'New comments: %s', 'convocept' ),
 			),
 		);
 
@@ -192,31 +186,111 @@ class FrontAssets {
 	 * @return void
 	 */
 	public function dequeue_comment_reply(): void {
-		if ( $this->is_thread_page() ) {
+		if ( is_singular() && $this->renderer->is_enabled_for( (int) get_queried_object_id() ) ) {
 			wp_dequeue_script( 'comment-reply' );
 		}
 	}
 
 	/**
-	 * Build a cache-busting version string for a built file.
+	 * Get the scripts the loader injects, in order.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $path Absolute file path.
-	 * @return string
+	 * @return string[] Script URLs.
 	 */
-	private function version( string $path ): string {
-		return CONVOCEPT_VERSION . '-' . (string) filemtime( $path );
+	private function scripts(): array {
+		$main    = 'assets/dist/convocept.js';
+		$scripts = is_readable( CONVOCEPT_DIR . $main )
+			? array( CONVOCEPT_URL . $main . '?ver=' . rawurlencode( CONVOCEPT_VERSION . '-' . (string) filemtime( CONVOCEPT_DIR . $main ) ) )
+			: array();
+
+		/**
+		 * Filters the scripts the inline loader injects after Convocept's own.
+		 *
+		 * Add-ons append their module URL here instead of enqueueing a script
+		 * on every page, so they load lazily together with Convocept.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string[] $scripts Script URLs, Convocept's first.
+		 */
+		$scripts = (array) apply_filters( 'convocept_front_modules', $scripts );
+
+		return array_values( array_filter( array_map( 'esc_url_raw', $scripts ) ) );
 	}
 
 	/**
-	 * Whether the current request is a singular view that shows the thread.
+	 * Build the inline stylesheet.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	private function is_thread_page(): bool {
-		return is_singular() && $this->renderer->is_enabled_for( (int) get_queried_object_id() );
+	private function style(): string {
+		$css = $this->read( 'assets/dist/convocept.css' );
+
+		/**
+		 * Filters the inline stylesheet.
+		 *
+		 * Return an empty string for themes that style the thread themselves.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $css Minified CSS.
+		 */
+		$css = (string) apply_filters( 'convocept_inline_css', $css );
+
+		// The CSS must never be able to close its own <style> element.
+		$css = str_ireplace( '</style', '', $css );
+
+		return '' === $css ? '' : '<style id="convocept-css">' . $css . '</style>';
+	}
+
+	/**
+	 * Build the JSON configuration block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	private function config_block(): string {
+		// Hex-escaping <, >, & and quotes keeps the JSON inert inside <script>.
+		$json = wp_json_encode( $this->config(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+		return '<script type="application/json" id="convocept-config">' . $json . '</script>';
+	}
+
+	/**
+	 * Build the inline loader.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	private function loader(): string {
+		$js = $this->read( 'assets/dist/loader.js' );
+
+		return '' === $js ? '' : '<script id="convocept-loader">' . $js . '</script>';
+	}
+
+	/**
+	 * Read a built asset, once per request.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $relative Path relative to the plugin folder.
+	 * @return string Contents, or empty when the file is missing (unbuilt checkout).
+	 */
+	private function read( string $relative ): string {
+		static $files = array();
+
+		if ( ! isset( $files[ $relative ] ) ) {
+			$path = CONVOCEPT_DIR . $relative;
+
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local plugin file.
+			$files[ $relative ] = is_readable( $path ) ? trim( (string) file_get_contents( $path ) ) : '';
+		}
+
+		return $files[ $relative ];
 	}
 }

@@ -20,6 +20,7 @@ use Convocept\Integration\CommentLinks;
 use Convocept\Markdown\Parser;
 use Convocept\Moderation\Pipeline;
 use Convocept\Render\CommentPresenter;
+use Convocept\Render\FragmentCache;
 use Convocept\Render\TemplateLoader;
 use Convocept\Render\ThreadRenderer;
 use Convocept\Rest\Controller;
@@ -126,7 +127,7 @@ final class Plugin {
 		if ( ! is_admin() ) {
 			( new ClassicTheme( $this->renderer() ) )->register();
 			( new BlockTheme( $this->renderer() ) )->register();
-			( new FrontAssets( $this->renderer(), $this->edit_window() ) )->register();
+			( new FrontAssets( $this->renderer(), $this->edit_window(), $this->settings() ) )->register();
 		}
 
 		/**
@@ -199,7 +200,8 @@ final class Plugin {
 					new TemplateLoader(),
 					new ThreadQuery(),
 					new CommentPresenter( $this->markdown() ),
-					new FormToken()
+					new FormToken(),
+					new FragmentCache()
 				);
 			}
 		);

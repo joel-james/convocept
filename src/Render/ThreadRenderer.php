@@ -84,6 +84,14 @@ class ThreadRenderer {
 	private $tokens;
 
 	/**
+	 * Rendered HTML cache.
+	 *
+	 * @since 1.0.0
+	 * @var FragmentCache
+	 */
+	private $cache;
+
+	/**
 	 * Post IDs whose thread was already rendered in this request.
 	 *
 	 * Themes and blocks can ask for comments more than once on a page; the
@@ -104,13 +112,15 @@ class ThreadRenderer {
 	 * @param ThreadQuery      $query     Thread query.
 	 * @param CommentPresenter $presenter Comment presenter.
 	 * @param FormToken        $tokens    Form token service.
+	 * @param FragmentCache    $cache     Rendered HTML cache.
 	 */
-	public function __construct( Settings $settings, TemplateLoader $templates, ThreadQuery $query, CommentPresenter $presenter, FormToken $tokens ) {
+	public function __construct( Settings $settings, TemplateLoader $templates, ThreadQuery $query, CommentPresenter $presenter, FormToken $tokens, FragmentCache $cache ) {
 		$this->settings  = $settings;
 		$this->templates = $templates;
 		$this->query     = $query;
 		$this->presenter = $presenter;
 		$this->tokens    = $tokens;
+		$this->cache     = $cache;
 	}
 
 	/**
@@ -211,7 +221,18 @@ class ThreadRenderer {
 		 */
 		$args = (array) apply_filters( 'convocept_thread_template_args', $args, $thread );
 
-		return $this->templates->render( 'thread', $args );
+		/**
+		 * Filters the complete thread HTML.
+		 *
+		 * The asset loader uses it to add the stylesheet and the inline
+		 * loader around the first thread on a page.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $html    Thread HTML.
+		 * @param int    $post_id Post ID.
+		 */
+		return (string) apply_filters( 'convocept_thread_html', $this->templates->render( 'thread', $args ), $post_id );
 	}
 
 	/**
@@ -281,11 +302,29 @@ class ThreadRenderer {
 	 * @return string Comment list items HTML.
 	 */
 	public function render_items( Thread $thread, int $expand = 0 ): string {
-		return $this->render_list(
-			$thread->comments(),
-			1,
-			$this->context( $thread->post_id(), $this->page_url( $thread->post_id(), $thread->page(), $thread->sort() ), $expand )
+		$post    = get_post( $thread->post_id() );
+		$context = $this->context( $thread->post_id(), $this->page_url( $thread->post_id(), $thread->page(), $thread->sort() ), $expand );
+		$key     = $this->cache->key(
+			array(
+				'post'     => $thread->post_id(),
+				'modified' => $post ? $post->post_modified_gmt : '',
+				'page'     => $thread->page(),
+				'sort'     => $thread->sort(),
+				'expand'   => $expand,
+				'open'     => $context['is_open'],
+				'settings' => $this->settings->all(),
+				'template' => $this->templates->fingerprint( 'comment' ),
+			)
 		);
+
+		$html = $this->cache->get( $key );
+
+		if ( null === $html ) {
+			$html = $this->render_list( $thread->comments(), 1, $context );
+			$this->cache->set( $key, $html );
+		}
+
+		return $html;
 	}
 
 	/**

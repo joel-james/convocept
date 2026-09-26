@@ -2,6 +2,30 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M4 loading, caching and live updates
+- **CSS is inlined right before the first thread** (`<style id="convocept-css">`, 2.6 KB
+  gzipped), not lazy-loaded and not in `<head>`. It costs no request, never blocks the content
+  above the comments, styles the thread with or without JavaScript, and can't cause the unstyled
+  flash / layout shift a lazily fetched stylesheet would when a reader jumps to `#comments`.
+  `convocept_inline_css` can empty it for themes that style the thread themselves.
+- **JavaScript:** only the inline loader (~440 B gzipped) runs on page load. It injects
+  `convocept.js` (plus `convocept_front_modules`) when the thread is within 600px of the
+  viewport, on focus/tap/key inside it, or at once for `#comments` / `#respond` / `#comment-N`.
+  Configuration is an inert JSON block (`#convocept-config`), hex-escaped against `</script>`.
+- **Fragment cache:** rendered comment lists are cached (object cache, else transients, 1 day),
+  keyed by core's comment `last_changed` (bumped on any comment or comment-meta change), post
+  modified time, page, sort, expanded branch, open/closed, settings, rendering options, locale,
+  theme and the comment template file. Filter: `convocept_fragment_cache`.
+- **Live updates** (off by default; `live_updates`, `poll_interval` 15–600 s): polls
+  `/posts/{id}/updates?after=` only while the tab is visible, with a manual `If-None-Match` so an
+  unchanged thread costs one 304. New comments are inserted only where they belong in the
+  current view (under their parent; top of page 1 for newest; end of the last page for oldest).
+- **No emoji glyphs in our markup:** core's wp-emoji script swaps them for images from s.w.org
+  (an external request); icons are inline SVG.
+- **Lighthouse (M4 acceptance)**, mobile, Twenty Twenty-Five, 200-comment post vs identical post
+  with comments closed: performance 99–100 vs 100, CLS 0, TBT 0, 10 vs 10 requests,
+  +8 KB transferred (first 20 comments + inline CSS).
+
 ## 2026-09-26 — M3 replies, pagination and links
 - **Reply lists** show the first `replies_shown` replies (default 5, 0 = all) with a
   "Show N more replies" link. Without JavaScript the link reloads with `?convocept_expand={root}`,

@@ -18,11 +18,28 @@ export class ApiError extends Error {
 }
 
 /**
- * Send a request to a Convocept REST route.
+ * Build the URL of a Convocept REST route.
  *
  * The REST base may be pretty (/wp-json/convocept/v1/) or, on sites with
  * plain permalinks, a query string (?rest_route=/convocept/v1/), so query
  * arguments are added with URLSearchParams rather than by concatenation.
+ *
+ * @param {string}                 path    Route path relative to the namespace.
+ * @param {Object<string, string>} [query] Query arguments.
+ * @return {URL} Absolute URL.
+ */
+export function routeUrl( path, query = {} ) {
+	const url = new URL( config.rest + path, window.location.href );
+
+	Object.keys( query ).forEach( ( key ) =>
+		url.searchParams.set( key, query[ key ] )
+	);
+
+	return url;
+}
+
+/**
+ * Send a request to a Convocept REST route.
  *
  * @param {string}                 path             Route path relative to the namespace, e.g. "session".
  * @param {Object}                 [options]        Request options.
@@ -36,12 +53,7 @@ export async function request(
 	path,
 	{ method = 'GET', data, query = {}, nonce } = {}
 ) {
-	const url = new URL( config.rest + path, window.location.href );
-
-	Object.keys( query ).forEach( ( key ) =>
-		url.searchParams.set( key, query[ key ] )
-	);
-
+	const url = routeUrl( path, query );
 	const headers = { 'X-Convocept': '1' };
 
 	if ( data ) {

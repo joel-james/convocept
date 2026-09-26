@@ -7,6 +7,7 @@
 import { initComposer } from './composer';
 import { initDeepLink } from './deeplink';
 import { initEdit } from './edit';
+import { initLive } from './live';
 import { initMore } from './more';
 import { initReply } from './reply';
 
@@ -26,6 +27,7 @@ function init() {
 		initReply( root );
 		initMore( root );
 		initEdit( root );
+		initLive( root );
 	} );
 }
 

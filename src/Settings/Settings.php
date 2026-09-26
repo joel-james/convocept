@@ -90,6 +90,9 @@ class Settings {
 	 *                                  forwarding header may be trusted. Empty by default:
 	 *                                  only REMOTE_ADDR is used.
 	 *     @type string   $proxy_header Header a trusted proxy puts the client IP in.
+	 *     @type bool     $live_updates Whether open threads check for new comments while
+	 *                                  the tab is visible. Off by default.
+	 *     @type int      $poll_interval Seconds between checks (15–600).
 	 * }
 	 */
 	public function defaults(): array {
@@ -105,6 +108,8 @@ class Settings {
 			'edit_window'     => 5,
 			'trusted_proxies' => array(),
 			'proxy_header'    => 'X-Forwarded-For',
+			'live_updates'    => false,
+			'poll_interval'   => 60,
 		);
 
 		/**
@@ -215,6 +220,9 @@ class Settings {
 
 			case 'max_depth':
 				return $this->int_in_range( $value, 1, 10, $fallback );
+
+			case 'poll_interval':
+				return $this->int_in_range( $value, 15, 600, $fallback );
 
 			case 'replies_shown':
 				return $this->int_in_range( $value, 0, 50, $fallback );

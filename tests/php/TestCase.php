@@ -10,6 +10,7 @@ namespace Convocept\Tests;
 use Convocept\Comments\ThreadQuery;
 use Convocept\Markdown\Parser;
 use Convocept\Render\CommentPresenter;
+use Convocept\Render\FragmentCache;
 use Convocept\Render\TemplateLoader;
 use Convocept\Render\ThreadRenderer;
 use Convocept\Security\FormToken;
@@ -32,7 +33,7 @@ abstract class TestCase extends WP_UnitTestCase {
 			update_option( Settings::OPTION, $settings );
 		}
 
-		return new ThreadRenderer( new Settings(), new TemplateLoader(), new ThreadQuery(), new CommentPresenter( new Parser() ), new FormToken() );
+		return new ThreadRenderer( new Settings(), new TemplateLoader(), new ThreadQuery(), new CommentPresenter( new Parser() ), new FormToken(), new FragmentCache() );
 	}
 
 	/**

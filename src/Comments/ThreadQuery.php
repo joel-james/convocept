@@ -115,6 +115,80 @@ class ThreadQuery {
 	}
 
 	/**
+	 * Get visible comments newer than a given comment.
+	 *
+	 * WP_Comment_Query cannot filter "ID greater than", so the query is
+	 * narrowed to comments dated at or after the reference comment (an
+	 * indexed range) and the IDs are checked in PHP.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @param int $after   Newest comment ID the browser already has, or 0.
+	 * @param int $limit   Maximum number returned.
+	 * @return \WP_Comment[] Oldest first.
+	 */
+	public function newer_than( int $post_id, int $after, int $limit = 50 ): array {
+		$args = array_merge(
+			$this->base_args( $post_id ),
+			array(
+				'orderby'       => 'comment_ID',
+				'order'         => 'ASC',
+				'number'        => $limit + 1,
+				'no_found_rows' => true,
+			)
+		);
+
+		$reference = $after ? get_comment( $after ) : null;
+
+		if ( $reference instanceof \WP_Comment ) {
+			$args['date_query'] = array(
+				array(
+					'column'    => 'comment_date_gmt',
+					'after'     => $reference->comment_date_gmt,
+					'inclusive' => true,
+				),
+			);
+		}
+
+		$comments = ( new WP_Comment_Query() )->query( $args );
+
+		$newer = array_filter(
+			is_array( $comments ) ? $comments : array(),
+			static function ( $comment ) use ( $after ) {
+				return $comment instanceof \WP_Comment && (int) $comment->comment_ID > $after;
+			}
+		);
+
+		return array_slice( array_values( $newer ), 0, $limit );
+	}
+
+	/**
+	 * Get the ID of the newest visible comment on a post.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return int 0 when there are none.
+	 */
+	public function latest_id( int $post_id ): int {
+		$ids = ( new WP_Comment_Query() )->query(
+			array_merge(
+				$this->base_args( $post_id ),
+				array(
+					'orderby'       => 'comment_ID',
+					'order'         => 'DESC',
+					'number'        => 1,
+					'fields'        => 'ids',
+					'no_found_rows' => true,
+				)
+			)
+		);
+
+		return $ids ? (int) reset( $ids ) : 0;
+	}
+
+	/**
 	 * Get the zero-based position of a top-level comment in a sort order.
 	 *
 	 * Loads only the IDs of the post's top-level comments (one indexed

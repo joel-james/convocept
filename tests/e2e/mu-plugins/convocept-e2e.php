@@ -35,3 +35,16 @@ add_action(
 		remove_action( 'check_comment_flood', 'check_comment_flood_db' );
 	}
 );
+
+// ?convocept_e2e_poll=1 turns on live updates with a 1-second interval for one page view.
+add_filter(
+	'convocept_front_config',
+	static function ( $config ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test-only switch.
+		if ( isset( $_GET['convocept_e2e_poll'] ) ) {
+			$config['poll'] = 1;
+		}
+
+		return $config;
+	}
+);

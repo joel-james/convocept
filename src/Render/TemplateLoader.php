@@ -79,6 +79,22 @@ class TemplateLoader {
 	}
 
 	/**
+	 * Identify the file a template resolves to, for cache keys.
+	 *
+	 * Changes when a theme adds, removes or edits an override.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $name Template name without extension.
+	 * @return string
+	 */
+	public function fingerprint( string $name ): string {
+		$path = $this->locate( $name );
+
+		return '' === $path ? '' : $path . ':' . (string) filemtime( $path );
+	}
+
+	/**
 	 * Render a template and return its HTML.
 	 *
 	 * Templates receive their data as `$args` (the same convention as core's

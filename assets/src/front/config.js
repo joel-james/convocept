@@ -1,15 +1,33 @@
 /**
  * Access to the static configuration printed by PHP.
  *
- * The configuration is the same for every visitor (the page may be
- * cached); per-visitor state comes from the session endpoint.
+ * PHP prints it as a JSON data block (<script type="application/json"
+ * id="convocept-config">), which the inline loader also reads. It is the
+ * same for every visitor (the page may be cached); per-visitor state comes
+ * from the session endpoint.
  */
+
+/**
+ * Read the JSON configuration block.
+ *
+ * @return {Object} Configuration, or an empty object.
+ */
+function readConfig() {
+	const element = document.getElementById( 'convocept-config' );
+
+	try {
+		return element ? JSON.parse( element.textContent ) : {};
+	} catch {
+		return {};
+	}
+}
 
 /**
  * @typedef {Object} ConvoceptConfig
  * @property {string}                 rest       REST base URL ending in "/".
  * @property {number}                 editWindow Edit window in minutes.
  * @property {number}                 maxLength  Maximum comment length.
+ * @property {number}                 poll       Seconds between checks for new comments; 0 = off.
  * @property {Object<string, string>} i18n       Translated strings.
  */
 
@@ -19,9 +37,10 @@ export const config = Object.assign(
 		rest: '/wp-json/convocept/v1/',
 		editWindow: 0,
 		maxLength: 20000,
+		poll: 0,
 		i18n: {},
 	},
-	window.convoceptConfig || {}
+	readConfig()
 );
 
 /**

@@ -97,6 +97,17 @@ class Controller {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/posts/(?P<post_id>\d+)/updates',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $threads, 'updates' ),
+				'permission_callback' => array( $threads, 'can_read_post' ),
+				'args'                => $threads->updates_args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/comments/(?P<id>\d+)/replies',
 			array(
 				'methods'             => WP_REST_Server::READABLE,
