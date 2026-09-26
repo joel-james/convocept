@@ -3,7 +3,7 @@
  * Main plugin class.
  *
  * @package Convocept
- * @since   2.0.0
+ * @since   1.0.0
  */
 
 namespace Convocept;
@@ -19,14 +19,14 @@ defined( 'ABSPATH' ) || exit;
  * Services are created lazily so a request only pays for what it uses:
  * front-end requests never load admin, import or CLI code.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 final class Plugin {
 
 	/**
 	 * Singleton instance.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var Plugin|null
 	 */
 	private static $instance = null;
@@ -34,7 +34,7 @@ final class Plugin {
 	/**
 	 * Settings service, created on first use.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var Settings|null
 	 */
 	private $settings = null;
@@ -42,7 +42,7 @@ final class Plugin {
 	/**
 	 * Whether boot() already ran.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var bool
 	 */
 	private $booted = false;
@@ -50,7 +50,7 @@ final class Plugin {
 	/**
 	 * Get the shared instance.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return Plugin
 	 */
@@ -65,7 +65,7 @@ final class Plugin {
 	/**
 	 * Private so the plugin can only be obtained through instance().
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 */
 	private function __construct() {}
 
@@ -74,7 +74,7 @@ final class Plugin {
 	 *
 	 * Called once on `plugins_loaded`.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -99,7 +99,7 @@ final class Plugin {
 		 *
 		 * Add-ons should register their own hooks here.
 		 *
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 *
 		 * @param Plugin $plugin The plugin instance.
 		 */
@@ -109,7 +109,7 @@ final class Plugin {
 	/**
 	 * Get the settings service.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return Settings
 	 */

@@ -3,7 +3,7 @@
  * Plugin Name:       Convocept
  * Plugin URI:        https://convocept.com
  * Description:       The fastest comment system for WordPress. Server-rendered, zero JavaScript until readers reach the comments, and every comment stays in your own database.
- * Version:           2.0.0-dev
+ * Version:           1.0.0-dev
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Foxe Labs
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CONVOCEPT_VERSION', '2.0.0-dev' );
+define( 'CONVOCEPT_VERSION', '1.0.0-dev' );
 define( 'CONVOCEPT_FILE', __FILE__ );
 define( 'CONVOCEPT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONVOCEPT_URL', plugin_dir_url( __FILE__ ) );

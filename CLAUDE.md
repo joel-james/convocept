@@ -9,8 +9,8 @@ native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as sepa
 
 **Current state:** the code in this repo is the earlier React prototype, renamed to Convocept
 (WordPress.org rejected "Comments" and then "Native Comments" as too generic; "Foxe Comments" was dropped
-so the product stands alone from the company brand) and approved on WordPress.org as 1.0.0.
-The slug is approved and the rebuild (target release 2.0.0) is under way, milestone by milestone
+so the product stands alone from the company brand) and approved on WordPress.org to reserve the slug (never released).
+The slug is approved and the rebuild (target release 1.0.0) is under way, milestone by milestone
 from M0 (PLAN.md §2 and §8). Record decisions not covered by the plan in `docs/decisions.md`.
 
 ## Non-negotiables

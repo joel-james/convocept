@@ -3,7 +3,7 @@
 All notable changes to Convocept. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — 2.0.0
+## [Unreleased] — 1.0.0
 
 ### Added
 - M0 scaffolding: PSR-4 autoloading via Composer, `Plugin::boot()`, activation/deactivation
@@ -21,7 +21,5 @@ and versions follow [Semantic Versioning](https://semver.org/).
   drops prototype-only settings (`live_updates`, `poll_interval`, `load_styles`).
 
 ### Removed
-- The 1.0.0 React prototype front end. Until M1 lands, the theme's default comments render.
-
-## [1.0.0]
-- Prototype release approved on WordPress.org to reserve the `convocept` slug.
+- The React prototype used to reserve the slug (never released). Until M1 lands, the theme's
+  default comments render.

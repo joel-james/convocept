@@ -1,9 +1,9 @@
 <?php
 /**
- * Migration 1: prototype (1.0.0) data.
+ * Migration 1: unreleased prototype data.
  *
  * @package Convocept
- * @since   2.0.0
+ * @since   1.0.0
  */
 
 namespace Convocept\Database\Migrations;
@@ -14,19 +14,19 @@ use Convocept\Settings\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Moves data written by the 1.0.0 prototype to the 2.x keys.
+ * Moves data written by the unreleased prototype to the 1.x keys.
  *
  * - Comment meta `_convocept_edited` becomes `convocept_edited_at`.
  * - Prototype-only settings are dropped; `enabled` and `edit_window` stay.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 class PrototypeData implements Migration {
 
 	/**
 	 * Settings keys that only existed in the prototype.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var string[]
 	 */
 	const REMOVED_SETTINGS = array( 'live_updates', 'poll_interval', 'load_styles' );
@@ -34,7 +34,7 @@ class PrototypeData implements Migration {
 	/**
 	 * Apply the migration.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */

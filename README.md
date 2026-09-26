@@ -10,8 +10,8 @@ loads **zero JavaScript until readers reach the comments**. Every comment stays 
 - WordPress.org: [wordpress.org/plugins/convocept](https://wordpress.org/plugins/convocept/)
 - By [Foxe Labs](https://foxelabs.com)
 
-> **Status:** the 2.0 rebuild is in progress on the `dev` branch. The 1.0.0 release on
-> WordPress.org is an early prototype. See [PLAN.md](PLAN.md) for the roadmap.
+> **Status:** version 1.0.0 is in development on the `dev` branch. See [PLAN.md](PLAN.md) for
+> the roadmap.
 
 ## Why Convocept
 
@@ -23,7 +23,8 @@ loads **zero JavaScript until readers reach the comments**. Every comment stays 
 - **Works without JavaScript:** the composer is a real form that falls back to core posting.
 - **SEO friendly:** comments are in the page HTML, with structured data.
 - **Audience:** reply and post subscriptions with double opt-in and one-click unsubscribe.
-- **Easy migration:** import from Disqus (2.0), Subscribe to Comments Reloaded and wpDiscuz (2.1).
+- **Insights:** see how your discussions are doing, with no tracking (1.1).
+- **Easy migration:** import from Disqus (1.0), Subscribe to Comments Reloaded and wpDiscuz (1.1).
 
 ## Requirements
 

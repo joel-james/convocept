@@ -27,26 +27,27 @@ free core, but it must expose the hooks add-ons need (§6).
 
 ## 2. Scope (free core)
 
-The scope below is delivered in three releases so real users arrive early. The WordPress.org
-prototype shipped as 1.0.0, so the rebuild starts at **2.0.0** (see `docs/decisions.md`).
+The scope below is delivered in three releases so real users arrive early. The prototype was only
+used to reserve the slug and was never released, so the rebuild is **1.0.0** (see `docs/decisions.md`).
 
-**Release 2.0.0 — "Replace core comments" (ReplyBox parity, faster)**
+**Release 1.0.0 — "Replace core comments" (ReplyBox parity, faster)**
 M0–M4, M5 without emoji reactions (upvotes, pinning, moderator tools), M6 subscriptions,
 M7 structured data, M8 **Disqus importer only**, M9 lite settings (no live preview/onboarding),
 M11, M12.
 
-**Release 2.1.0 — "Migrate from anything"**
+**Release 1.1.0 — "Migrate from anything, see what works"**
 M8 remaining importers (Subscribe to Comments Reloaded, wpDiscuz votes/subscriptions), onboarding
-checklist with detected-import prompts.
+checklist with detected-import prompts, M13 Insights (free comment statistics dashboard).
 
-**Release 2.2.0 — "Delight"**
+**Release 1.2.0 — "Delight"**
 Emoji reactions, optional visible-tab polling, Abilities API (M10), settings live preview,
 basic AI spam/toxicity check through the core WordPress AI Client using the site owner's own
 provider (feature-detected, opt-in, disclosed in readme). Advanced AI stays in paid add-ons.
 
 **Free vs paid rule:** free core is complete for any single site; paid add-ons sell saving time at
-scale (AI moderation rules and dashboard, AI-drafted replies, summaries, digests, analytics,
-social login, webhooks).
+scale (AI moderation rules and dashboard, AI-drafted replies, summaries, digests, detailed
+analytics, social login, webhooks). Free Insights is complete on its own: no locked panels or
+"upgrade to see" teasers.
 
 **In scope (all releases above)**
 - Server-rendered comment thread replacing the theme's comment output (classic + block themes)
@@ -60,15 +61,17 @@ social login, webhooks).
 - Moderation integrated with core Comments screen + small front-end moderator tools
 - Spam protection: core checks + Akismet passthrough + honeypot + timing check + rate limits
 - Structured data for comments
-- Importers: Disqus XML (2.0), Subscribe to Comments Reloaded and wpDiscuz votes/subscriptions (2.1).
+- Importers: Disqus XML (1.0), Subscribe to Comments Reloaded and wpDiscuz votes/subscriptions (1.1).
   Importers live in core but load only in wp-admin and WP-CLI (never on front-end requests).
 - Abilities API registration (when available)
 - Settings screen (React in wp-admin)
+- Insights: comment statistics dashboard built only from data already stored (1.1)
 - i18n, accessibility (WCAG 2.2 AA), privacy exporters/erasers, clean uninstall
 
 **Out of scope for the free core (future paid add-ons — only leave hooks)**
 AI moderation, AI-drafted replies, thread summaries, digests and newsletter sync, social/passkey
-login, verified-human badges, media uploads, analytics dashboard, WooCommerce Q&A, ActivityPub
+login, verified-human badges, media uploads, detailed analytics (view-based engagement, funnels,
+comparisons, exports, email reports), WooCommerce Q&A, ActivityPub
 display polish, live updates via push.
 
 ---
@@ -206,6 +209,10 @@ Use core tables wherever possible.
   (email_hash), (token_hash).
 - `{prefix}convocept_reactions`: id, comment_id, reaction, voter_hash (user ID or salted IP+UA hash),
   created_at. Unique (comment_id, voter_hash, reaction).
+- `{prefix}convocept_stats_daily` (M13): day (DATE), post_id (0 = site total), metric (varchar 64),
+  value (bigint). Primary key (day, post_id, metric); index (metric, day). Filled by a nightly
+  rollup; the Insights screen reads only this table, never scans `wp_comments`. Add-ons may write
+  their own metric names.
 
 ### 5.5 Markdown decision
 Store the raw Markdown in `comment_content` (keeps core compatibility: admin screens, exports,
@@ -237,6 +244,9 @@ checks or locked features. Provide:
   `convocept_moderation_log` comment meta and show it in the admin comment row.
 - **Render slots:** `convocept_render_comment_actions`, `convocept_render_comment_footer`,
   `convocept_render_composer_after`, `convocept_render_thread_header` (for summaries), `convocept_render_badges`.
+- **Insights:** `convocept_stats_metrics` filter (metrics the nightly rollup computes) and
+  `convocept_insights_panels` + `window.convoceptAdmin.registerInsightsPanel()` so the analytics
+  add-on adds charts to the same screen.
 - **Settings registry:** add-ons register tabs/fields in the React settings app via
   `convocept_settings_schema` filter + a JS registry (`window.convoceptAdmin.registerPanel()`).
 - **REST:** add-ons register routes under `convocept/v1/{addon}`.
@@ -275,12 +285,11 @@ Each milestone ends in a working, tested, committed state. Do not start the next
 current definition of done (CLAUDE.md) is met.
 
 ### Pre-M0 — Slug reservation ✅ done (slug `convocept` approved, September 2026)
-- The approved prototype (React front end, `includes/` + JS `src/`) is the first git commit.
-  M0 retires it in favour of the §4 structure. Keep `convocept_settings`; migrate
-  `_convocept_edited` to `convocept_edited_at`.
-- Commit the approved 1.0.0 code to WordPress.org SVN (owner task) so the slug stays active.
+- The approved prototype (React front end, `includes/` + JS `src/`) is the first git commit. It was
+  never released. M0 retires it in favour of the §4 structure. Keep `convocept_settings`; migrate
+  `_convocept_edited` to `convocept_edited_at` (covers dev/test installs only).
 
-Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 2.0.0 (§2).
+Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 1.0.0 (§2).
 
 ### M0 — Scaffolding & tooling
 - Plugin bootstrap, autoloading, `Plugin::boot()`, activation/deactivation, DB migrations runner.
@@ -329,7 +338,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** size-limit budgets pass; Lighthouse performance on a test post with 200 comments is
   equal to the same post with comments disabled (±2 points); zero requests before scroll.
 
-### M5 — Reactions, votes, pinning, moderation tools (emoji reactions move to 2.2.0)
+### M5 — Reactions, votes, pinning, moderation tools (emoji reactions move to 1.2.0)
 - Fixed reaction set (e.g. 👍 ❤️ 😂 🤔), configurable on/off; optional upvote mode instead.
 - `convocept_reactions` table, counts cached in meta, `convocept_score` recalculated.
 - Pin/unpin (moderators), front-end moderator menu (approve, spam, trash, pin) after session shows
@@ -359,7 +368,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
   active instead of duplicating).
 - **Accept:** Rich Results Test / Schema validator show no errors on a fixture post.
 
-### M8 — Importers (Disqus in 2.0.0; StCR and wpDiscuz in 2.1.0)
+### M8 — Importers (Disqus in 1.0.0; StCR and wpDiscuz in 1.1.0)
 Importer code lives in `src/Import/` and is wired only for wp-admin and WP-CLI; a test asserts no
 `Convocept\Import\*` class loads on a front-end request. Common `Importer` interface: detect → dry run (counts + sample) → batched import with resume →
 report. Idempotent (store source IDs in meta to avoid duplicates). Run from admin with progress UI
@@ -376,7 +385,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - **Accept:** each importer tested against fixture exports; re-running produces no duplicates;
   large Disqus fixture imports without timeouts.
 
-### M9 — Admin settings app (2.0.0 ships tabs + persistence; live preview and onboarding in 2.1/2.2)
+### M9 — Admin settings app (1.0.0 ships tabs + persistence; live preview and onboarding in 1.1/1.2)
 - React app under **Settings → Convocept** (or top-level "Comments → Convocept"):
   tabs General, Appearance, Composer, Moderation & Spam, Subscriptions, Import, Advanced.
 - Live preview of the thread with current appearance settings.
@@ -385,7 +394,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - **Accept:** all settings persist and apply without page cache issues; admin bundle only loads on
   its own screen.
 
-### M10 — Abilities API & agent readiness (2.2.0)
+### M10 — Abilities API & agent readiness (1.2.0)
 - Feature-detect `wp_register_ability` (WP 6.9+). Register abilities: `convocept/list-pending`,
   `convocept/moderate`, `convocept/reply`, `convocept/summarize-thread-data`
   (returns structured thread data; summarizing itself is for AI add-ons/clients).
@@ -410,6 +419,29 @@ and via WP-CLI (`wp convocept import <source>`).
 - Docs pages for convocept.com: install, migrate from Disqus / wpDiscuz / StCR, theming,
   hooks reference, performance benchmarks (publish the size budget and methodology).
 - Final Plugin Check, PHP compatibility check, security review pass.
+
+### M13 — Insights dashboard (1.1.0, free)
+Admin screen **Comments → Insights** (React, own bundle, loads only on that screen). Built only from
+data already stored: no front-end tracking, no extra requests, no page-view counts.
+- Comments over time (7 / 30 / 90 days): approved vs pending vs spam.
+- Top posts by comments, top commenters, new vs returning commenters.
+- Average time to first reply (author/moderator), unanswered comments count.
+- Subscriptions: new, unsubscribed, confirmation rate.
+- Most-upvoted comments.
+- `convocept_stats_daily` rollup: nightly WP-Cron job aggregates the previous day (batched,
+  resumable); first run backfills history in batches. Live "today" numbers from cheap indexed
+  queries, cached 10 minutes.
+- REST: `GET /convocept/v1/insights?range=` (`moderate_comments`), JSON.
+- Hooks in §6 so the paid analytics add-on extends the same screen.
+- **Accept:** dashboard loads < 300 ms server time on a 100k-comment fixture; rollup is idempotent
+  (re-running a day gives the same numbers); zero front-end bytes or requests added; numbers match
+  direct SQL counts in tests.
+
+Paid analytics add-on (later, separate plugin): view-based engagement (comments per 1,000 views,
+scroll-to-thread rate, composer abandonment) through an opt-in, cookieless `sendBeacon` sent only
+after the thread has loaded (never on page load), or by reading views from an existing analytics
+plugin; commenter to subscriber funnel and retention; moderation stats; per author/category/period
+comparisons; CSV export; weekly email reports.
 
 ---
 

@@ -3,7 +3,7 @@
  * Migration runner.
  *
  * @package Convocept
- * @since   2.0.0
+ * @since   1.0.0
  */
 
 namespace Convocept\Database;
@@ -18,14 +18,14 @@ defined( 'ABSPATH' ) || exit;
  * The version is stored per site, so on multisite each site migrates on
  * its own first request after an update.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 class Migrator {
 
 	/**
 	 * Option storing the last applied migration version.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	const VERSION_OPTION = 'convocept_db_version';
@@ -33,7 +33,7 @@ class Migrator {
 	/**
 	 * Option used as a lock so concurrent requests don't migrate twice.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	const LOCK_OPTION = 'convocept_migration_lock';
@@ -41,7 +41,7 @@ class Migrator {
 	/**
 	 * Seconds after which a lock is considered stale (crashed run).
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var int
 	 */
 	const LOCK_TIMEOUT = 600;
@@ -52,7 +52,7 @@ class Migrator {
 	 * Versions are integers that only ever grow. Never renumber or remove
 	 * a shipped migration.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return array<int, class-string<Migration>>
 	 */
@@ -65,7 +65,7 @@ class Migrator {
 	/**
 	 * Get the latest known migration version.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return int
 	 */
@@ -78,7 +78,7 @@ class Migrator {
 	/**
 	 * Get the version applied on this site.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return int
 	 */
@@ -91,7 +91,7 @@ class Migrator {
 	 *
 	 * Cheap when nothing is pending: one autoloaded option read.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return bool True when the schema is up to date afterwards.
 	 */
@@ -116,7 +116,7 @@ class Migrator {
 	/**
 	 * Apply every migration newer than the current version.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ class Migrator {
 			/**
 			 * Fires after a migration is applied.
 			 *
-			 * @since 2.0.0
+			 * @since 1.0.0
 			 *
 			 * @param int    $version Migration version.
 			 * @param string $class   Migration class name.
@@ -149,7 +149,7 @@ class Migrator {
 	 * The add_option() call is atomic at the database level (unique option_name),
 	 * so only one request can create the lock row.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return bool True when this request holds the lock.
 	 */

@@ -3,7 +3,7 @@
  * Settings service.
  *
  * @package Convocept
- * @since   2.0.0
+ * @since   1.0.0
  */
 
 namespace Convocept\Settings;
@@ -16,14 +16,14 @@ defined( 'ABSPATH' ) || exit;
  * The full schema, REST route and admin UI arrive in M9; this class is the
  * one place every other service reads settings from.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 class Settings {
 
 	/**
 	 * Option name holding every plugin setting.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	const OPTION = 'convocept_settings';
@@ -31,7 +31,7 @@ class Settings {
 	/**
 	 * Settings cached for the current request.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 * @var array<string, mixed>|null
 	 */
 	private $cache = null;
@@ -41,7 +41,7 @@ class Settings {
 	 *
 	 * Also the canonical list of valid keys.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed> {
 	 *     Default settings.
@@ -61,7 +61,7 @@ class Settings {
 		 *
 		 * Add-ons register their own keys here.
 		 *
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array<string, mixed> $defaults Default settings.
 		 */
@@ -71,7 +71,7 @@ class Settings {
 	/**
 	 * Get all settings, with defaults for missing keys.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -92,7 +92,7 @@ class Settings {
 	/**
 	 * Get a single setting.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $key Setting key, as listed in defaults().
 	 * @return mixed Setting value, or null for an unknown key.
@@ -106,7 +106,7 @@ class Settings {
 	/**
 	 * Forget the per-request cache, e.g. after the option changes.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */

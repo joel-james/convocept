@@ -3,7 +3,7 @@
  * Activation and deactivation handlers.
  *
  * @package Convocept
- * @since   2.0.0
+ * @since   1.0.0
  */
 
 namespace Convocept;
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * Deactivation never removes data; that only happens on uninstall.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 final class Lifecycle {
 
@@ -27,7 +27,7 @@ final class Lifecycle {
 	 * On multisite network activation only the current site migrates here;
 	 * every other site migrates lazily on its next request (Plugin::boot()).
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -37,7 +37,7 @@ final class Lifecycle {
 		/**
 		 * Fires after Convocept is activated.
 		 *
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 */
 		do_action( 'convocept_activated' );
 	}
@@ -45,7 +45,7 @@ final class Lifecycle {
 	/**
 	 * Handle plugin deactivation.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -55,7 +55,7 @@ final class Lifecycle {
 		 *
 		 * Add-ons that schedule events append their hook names.
 		 *
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string[] $hooks Cron hook names.
 		 */
@@ -68,7 +68,7 @@ final class Lifecycle {
 		/**
 		 * Fires after Convocept is deactivated.
 		 *
-		 * @since 2.0.0
+		 * @since 1.0.0
 		 */
 		do_action( 'convocept_deactivated' );
 	}
