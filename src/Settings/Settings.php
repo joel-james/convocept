@@ -13,8 +13,11 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Reads plugin settings from a single option.
  *
- * The full schema, REST route and admin UI arrive in M9; this class is the
- * one place every other service reads settings from.
+ * Every setting lives in one autoloaded array option (`convocept_settings`),
+ * so a page view costs no extra database query. Values are sanitized on
+ * read, which means a corrupted or hand-edited option can never feed an
+ * unexpected type into the renderer. The admin UI and REST route that write
+ * this option arrive in M9 and will reuse sanitize().
  *
  * @since 1.0.0
  */
@@ -29,7 +32,23 @@ class Settings {
 	const OPTION = 'convocept_settings';
 
 	/**
-	 * Settings cached for the current request.
+	 * Allowed values for the `default_sort` setting.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const SORTS = array( 'oldest', 'newest', 'top' );
+
+	/**
+	 * Allowed values for the `color_scheme` setting.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const COLOR_SCHEMES = array( 'auto', 'system', 'light', 'dark' );
+
+	/**
+	 * Sanitized settings cached for the current request.
 	 *
 	 * @since 1.0.0
 	 * @var array<string, mixed>|null
@@ -39,27 +58,44 @@ class Settings {
 	/**
 	 * Get the default value for every setting.
 	 *
-	 * Also the canonical list of valid keys.
+	 * Also the canonical list of valid keys: sanitize() drops anything not
+	 * listed here, and uses each default's type to coerce saved values.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return array<string, mixed> {
 	 *     Default settings.
 	 *
-	 *     @type bool $enabled     Whether Convocept replaces the theme's comments.
-	 *     @type int  $edit_window Minutes an author may edit a comment; 0 disables.
+	 *     @type bool     $enabled      Whether Convocept replaces the theme's comments.
+	 *     @type string[] $post_types   Post types Convocept renders comments for.
+	 *     @type int      $per_page     Top-level comments per page (1–100).
+	 *     @type int      $max_depth    Maximum reply nesting depth shown (1–10).
+	 *     @type string   $default_sort Initial sort order: 'oldest', 'newest' or 'top'.
+	 *     @type string   $color_scheme 'auto' inherits the theme's colors, 'system' follows the
+	 *                                  visitor's OS light/dark preference, 'light' and
+	 *                                  'dark' force a palette.
+	 *     @type string   $accent_color Hex color used for links, buttons and focus rings.
+	 *     @type int      $edit_window  Minutes an author may edit a comment; 0 disables.
 	 * }
 	 */
 	public function defaults(): array {
 		$defaults = array(
-			'enabled'     => true,
-			'edit_window' => 5,
+			'enabled'      => true,
+			'post_types'   => array( 'post', 'page' ),
+			'per_page'     => 20,
+			'max_depth'    => 3,
+			'default_sort' => 'oldest',
+			'color_scheme' => 'auto',
+			'accent_color' => '#2563eb',
+			'edit_window'  => 5,
 		);
 
 		/**
 		 * Filters the default settings.
 		 *
-		 * Add-ons register their own keys here.
+		 * Add-ons register their own keys here. A key must have a default
+		 * to survive sanitize(), and its default's type decides how saved
+		 * values are coerced.
 		 *
 		 * @since 1.0.0
 		 *
@@ -69,21 +105,20 @@ class Settings {
 	}
 
 	/**
-	 * Get all settings, with defaults for missing keys.
+	 * Get all settings, sanitized, with defaults for missing keys.
+	 *
+	 * The result is cached for the rest of the request; call flush() after
+	 * changing the option.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string, mixed> Complete, sanitized settings.
 	 */
 	public function all(): array {
 		if ( null === $this->cache ) {
 			$saved = get_option( self::OPTION, array() );
 
-			// Guard against a corrupted or hand-edited option value.
-			$this->cache = wp_parse_args(
-				is_array( $saved ) ? $saved : array(),
-				$this->defaults()
-			);
+			$this->cache = $this->sanitize( is_array( $saved ) ? $saved : array() );
 		}
 
 		return $this->cache;
@@ -95,12 +130,39 @@ class Settings {
 	 * @since 1.0.0
 	 *
 	 * @param string $key Setting key, as listed in defaults().
-	 * @return mixed Setting value, or null for an unknown key.
+	 * @return mixed Sanitized value, or null for an unknown key.
 	 */
 	public function get( string $key ) {
 		$all = $this->all();
 
 		return $all[ $key ] ?? null;
+	}
+
+	/**
+	 * Sanitize a settings array.
+	 *
+	 * Unknown keys are dropped, missing keys get their default, and every
+	 * value is coerced to its default's type. Known keys additionally get
+	 * range or allow-list checks; an invalid value falls back to the default
+	 * rather than being "fixed", so bad input never produces a surprising
+	 * setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, mixed> $input Raw settings, e.g. from the database or a REST request.
+	 * @return array<string, mixed> Sanitized settings containing every known key.
+	 */
+	public function sanitize( array $input ): array {
+		$defaults = $this->defaults();
+		$clean    = array();
+
+		foreach ( $defaults as $key => $fallback ) {
+			$value = array_key_exists( $key, $input ) ? $input[ $key ] : $fallback;
+
+			$clean[ $key ] = $this->sanitize_value( $key, $value, $fallback );
+		}
+
+		return $clean;
 	}
 
 	/**
@@ -112,5 +174,84 @@ class Settings {
 	 */
 	public function flush(): void {
 		$this->cache = null;
+	}
+
+	/**
+	 * Sanitize one setting value.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key     Setting key.
+	 * @param mixed  $value   Raw value.
+	 * @param mixed  $fallback Default value; its type drives coercion for unknown keys.
+	 * @return mixed Sanitized value.
+	 */
+	private function sanitize_value( string $key, $value, $fallback ) {
+		switch ( $key ) {
+			case 'post_types':
+				$types = is_array( $value ) ? array_map( 'sanitize_key', $value ) : $fallback;
+
+				return array_values( array_unique( array_filter( $types ) ) );
+
+			case 'per_page':
+				return $this->int_in_range( $value, 1, 100, $fallback );
+
+			case 'max_depth':
+				return $this->int_in_range( $value, 1, 10, $fallback );
+
+			case 'edit_window':
+				return $this->int_in_range( $value, 0, 1440, $fallback );
+
+			case 'default_sort':
+				return in_array( $value, self::SORTS, true ) ? $value : $fallback;
+
+			case 'color_scheme':
+				return in_array( $value, self::COLOR_SCHEMES, true ) ? $value : $fallback;
+
+			case 'accent_color':
+				$color = is_string( $value ) ? sanitize_hex_color( $value ) : null;
+
+				return $color ? $color : $fallback;
+		}//end switch
+
+		// Add-on keys: coerce to the default's type.
+		if ( is_bool( $fallback ) ) {
+			return (bool) $value;
+		}
+
+		if ( is_int( $fallback ) ) {
+			return is_numeric( $value ) ? (int) $value : $fallback;
+		}
+
+		if ( is_string( $fallback ) ) {
+			return is_scalar( $value ) ? sanitize_text_field( (string) $value ) : $fallback;
+		}
+
+		if ( is_array( $fallback ) ) {
+			return is_array( $value ) ? $value : $fallback;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Return an integer within a range, or the default when out of range.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $value   Raw value.
+	 * @param int   $min     Smallest allowed value.
+	 * @param int   $max     Largest allowed value.
+	 * @param mixed $fallback Fallback when the value is not numeric or out of range.
+	 * @return int
+	 */
+	private function int_in_range( $value, int $min, int $max, $fallback ): int {
+		if ( ! is_numeric( $value ) ) {
+			return (int) $fallback;
+		}
+
+		$value = (int) $value;
+
+		return ( $value >= $min && $value <= $max ) ? $value : (int) $fallback;
 	}
 }

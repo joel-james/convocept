@@ -302,14 +302,14 @@ current definition of done (CLAUDE.md) is met.
 
 Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 1.0.0 (§2).
 
-### M0 — Scaffolding & tooling
+### M0 — Scaffolding & tooling ✅ done
 - Plugin bootstrap, autoloading, `Plugin::boot()`, activation/deactivation, DB migrations runner.
 - wp-env, PHPUnit, Playwright, phpcs, PHPStan, ESLint, Prettier, stylelint, size-limit, esbuild,
   `@wordpress/scripts` for admin, GitHub Actions workflow, release script.
 - **Accept:** plugin activates cleanly on WP 6.5 / PHP 7.4 and latest WP / PHP 8.4; CI green;
   `npm run release` produces a zip that passes the Plugin Check plugin.
 
-### M1 — Server-rendered thread
+### M1 — Server-rendered thread ✅ done
 - `ThreadRenderer`, `TemplateLoader`, templates, classic + block theme integration.
 - Threading (depth setting, default 3 on mobile-friendly indent), author badge, relative dates with
   `<time datetime>`, avatars (`loading="lazy"`, fixed dimensions, initials fallback).

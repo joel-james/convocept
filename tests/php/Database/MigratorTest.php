@@ -5,7 +5,7 @@
  * @package Convocept
  */
 
-namespace Convocept\Tests;
+namespace Convocept\Tests\Database;
 
 use Convocept\Database\Migrator;
 use Convocept\Settings\Settings;

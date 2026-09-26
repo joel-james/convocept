@@ -8,7 +8,15 @@
 
 namespace Convocept;
 
+use Convocept\Assets\FrontAssets;
+use Convocept\Comments\Sort;
+use Convocept\Comments\ThreadQuery;
 use Convocept\Database\Migrator;
+use Convocept\Integration\BlockTheme;
+use Convocept\Integration\ClassicTheme;
+use Convocept\Render\CommentPresenter;
+use Convocept\Render\TemplateLoader;
+use Convocept\Render\ThreadRenderer;
 use Convocept\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -38,6 +46,14 @@ final class Plugin {
 	 * @var Settings|null
 	 */
 	private $settings = null;
+
+	/**
+	 * Thread renderer, created on first use.
+	 *
+	 * @since 1.0.0
+	 * @var ThreadRenderer|null
+	 */
+	private $renderer = null;
 
 	/**
 	 * Whether boot() already ran.
@@ -94,6 +110,15 @@ final class Plugin {
 			1
 		);
 
+		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+
+		// Theme output only exists outside wp-admin; admin requests skip it entirely.
+		if ( ! is_admin() ) {
+			( new ClassicTheme( $this->renderer() ) )->register();
+			( new BlockTheme( $this->renderer() ) )->register();
+			( new FrontAssets( $this->renderer() ) )->register();
+		}
+
 		/**
 		 * Fires after Convocept has registered its hooks.
 		 *
@@ -119,5 +144,39 @@ final class Plugin {
 		}
 
 		return $this->settings;
+	}
+
+	/**
+	 * Get the thread renderer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return ThreadRenderer
+	 */
+	public function renderer(): ThreadRenderer {
+		if ( null === $this->renderer ) {
+			$this->renderer = new ThreadRenderer(
+				$this->settings(),
+				new TemplateLoader(),
+				new ThreadQuery(),
+				new CommentPresenter()
+			);
+		}
+
+		return $this->renderer;
+	}
+
+	/**
+	 * Register Convocept's public query variables.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string[] $vars Public query variables.
+	 * @return string[]
+	 */
+	public function register_query_vars( $vars ) {
+		$vars[] = Sort::QUERY_VAR;
+
+		return $vars;
 	}
 }

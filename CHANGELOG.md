@@ -6,6 +6,20 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M1 server-rendered thread: replaces comments in classic themes (`comments_template`) and block
+  themes (`core/comments`, `core/post-comments`, `core/post-comments-form`), without running
+  core's comment query. Threaded replies to a configurable depth (deeper replies flattened with a
+  "Replying to" label), oldest / newest / top sort, crawlable pagination of top-level comments,
+  author badge, lazy avatars with an initials fallback, closed and password-protected states.
+- No-JavaScript comment form posting to `wp-comments-post.php`, compatible with Akismet and
+  Antispam Bee through core's comment form hooks; `replytocom` reply links.
+- Theme-overridable templates (`{theme}/convocept/*.php`) and base CSS with design tokens and
+  `auto` / `system` / `light` / `dark` color schemes.
+- Page-cache safety: no nonces, identity, commenter cookie values or pending comments in the
+  HTML; core's unfiltered-HTML nonce is detached from our form.
+- `comment-reply.js` is no longer loaded on posts that use Convocept.
+- Settings: `post_types`, `per_page`, `max_depth`, `default_sort`, `color_scheme`,
+  `accent_color`, with sanitizing on read.
 - M0 scaffolding: PSR-4 autoloading via Composer, `Plugin::boot()`, activation/deactivation
   handlers, versioned database migration runner with a concurrency lock.
 - Settings service reading the single `convocept_settings` option, with a

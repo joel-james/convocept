@@ -1,7 +1,485 @@
-/*
- * Convocept front-end styles, scoped under .convocept.
- * Design tokens and thread layout arrive in M1.
+/**
+ * Convocept front-end styles.
+ *
+ * Everything is scoped under .convocept and driven by custom properties, so
+ * themes restyle the thread by overriding tokens, not selectors:
+ *
+ *     .convocept { --convocept-accent: #e11d48; --convocept-radius: 4px; }
+ *
+ * Color schemes (data-convocept-theme on the wrapper):
+ * - auto:   inherit the theme's text and background; tints are mixed from
+ *           currentColor, so the thread matches light and dark themes alike.
+ * - system: follow the visitor's OS light/dark preference.
+ * - light / dark: force a palette.
  */
+
+/* Tokens and base
+   ------------------------------------------------------------------ */
+
 .convocept {
 	--convocept-accent: #2563eb;
+	--convocept-on-accent: #fff;
+	--convocept-text: currentcolor;
+	--convocept-bg: transparent;
+	--convocept-muted: color-mix(in srgb, currentcolor 62%, transparent);
+	--convocept-border: color-mix(in srgb, currentcolor 16%, transparent);
+	--convocept-surface: color-mix(in srgb, currentcolor 4%, transparent);
+	--convocept-field-bg: color-mix(in srgb, currentcolor 2%, transparent);
+	--convocept-radius: 10px;
+	--convocept-gap: 1.5rem;
+	--convocept-avatar: 40px;
+	--convocept-font: inherit;
+	--convocept-font-size: 1rem;
+
+	box-sizing: border-box;
+	margin-block: 2.5rem;
+	color: var(--convocept-text);
+	background: var(--convocept-bg);
+	font-family: var(--convocept-font);
+	font-size: var(--convocept-font-size);
+	line-height: 1.6;
+}
+
+.convocept[data-convocept-theme="light"] {
+	--convocept-text: #1f2937;
+	--convocept-bg: #fff;
+	--convocept-muted: #6b7280;
+	--convocept-border: #e5e7eb;
+	--convocept-surface: #f9fafb;
+	--convocept-field-bg: #fff;
+}
+
+.convocept[data-convocept-theme="dark"] {
+	--convocept-text: #e5e7eb;
+	--convocept-bg: #111827;
+	--convocept-muted: #9ca3af;
+	--convocept-border: #374151;
+	--convocept-surface: #1f2937;
+	--convocept-field-bg: #0b1220;
+}
+
+.convocept[data-convocept-theme="system"] {
+	--convocept-text: #1f2937;
+	--convocept-bg: #fff;
+	--convocept-muted: #6b7280;
+	--convocept-border: #e5e7eb;
+	--convocept-surface: #f9fafb;
+	--convocept-field-bg: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+
+	.convocept[data-convocept-theme="system"] {
+		--convocept-text: #e5e7eb;
+		--convocept-bg: #111827;
+		--convocept-muted: #9ca3af;
+		--convocept-border: #374151;
+		--convocept-surface: #1f2937;
+		--convocept-field-bg: #0b1220;
+	}
+}
+
+/* Browsers without color-mix() (before 2023) get plain fallbacks. */
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+
+	.convocept[data-convocept-theme="auto"] {
+		--convocept-muted: currentcolor;
+		--convocept-border: rgba(127, 127, 127, 0.3);
+		--convocept-surface: rgba(127, 127, 127, 0.06);
+		--convocept-field-bg: transparent;
+	}
+}
+
+/* Layout
+   ------------------------------------------------------------------ */
+
+.convocept[data-convocept-theme="light"],
+.convocept[data-convocept-theme="dark"],
+.convocept[data-convocept-theme="system"] {
+	padding: var(--convocept-gap);
+	border-radius: var(--convocept-radius);
+}
+
+.convocept *,
+.convocept *::before,
+.convocept *::after {
+	box-sizing: inherit;
+}
+
+.convocept a {
+	color: var(--convocept-accent);
+}
+
+.convocept :focus-visible {
+	outline: 2px solid var(--convocept-accent);
+	outline-offset: 2px;
+}
+
+.convocept .screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.convocept-header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem 1rem;
+	align-items: center;
+	justify-content: space-between;
+	margin-block-end: 1.25rem;
+}
+
+.convocept-title {
+	margin: 0;
+	font-size: 1.25em;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+/* Sort tabs */
+
+.convocept-sort {
+	display: inline-flex;
+	gap: 2px;
+	padding: 3px;
+	border: 1px solid var(--convocept-border);
+	border-radius: 999px;
+	font-size: 0.875em;
+}
+
+.convocept .convocept-sort__link {
+	padding: 0.25em 0.85em;
+	border-radius: 999px;
+	color: var(--convocept-muted);
+	text-decoration: none;
+}
+
+.convocept .convocept-sort__link:hover {
+	color: var(--convocept-text);
+}
+
+.convocept .convocept-sort__link[aria-current] {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+	font-weight: 600;
+}
+
+/* Composer */
+
+.convocept-composer {
+	margin-block-end: 2rem;
+}
+
+.convocept-form {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.convocept-form p {
+	margin: 0;
+}
+
+.convocept .convocept-form__textarea,
+.convocept .convocept-form input[type="text"],
+.convocept .convocept-form input[type="email"],
+.convocept .convocept-form input[type="url"] {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	padding: 0.65em 0.8em;
+	border: 1px solid var(--convocept-border);
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-field-bg);
+	color: inherit;
+	font: inherit;
+	line-height: 1.5;
+}
+
+.convocept .convocept-form__textarea {
+	min-height: 6.5em;
+	resize: vertical;
+}
+
+.convocept .convocept-form__textarea:focus,
+.convocept .convocept-form input:focus {
+	border-color: var(--convocept-accent);
+	outline: none;
+	box-shadow: 0 0 0 3px
+		color-mix(in srgb, var(--convocept-accent) 20%, transparent);
+}
+
+.convocept-form__identity {
+	display: grid;
+	gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+
+	.convocept-form__identity {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.convocept-form__note,
+	.convocept-form__field--checkbox {
+		grid-column: 1 / -1;
+	}
+}
+
+.convocept-form label {
+	display: block;
+	margin-block-end: 0.25em;
+	font-size: 0.875em;
+	font-weight: 500;
+}
+
+.convocept-form__field--checkbox {
+	display: flex;
+	gap: 0.5em;
+	align-items: flex-start;
+}
+
+.convocept-form__field--checkbox label {
+	margin: 0;
+	font-weight: 400;
+}
+
+.convocept-form__note,
+.convocept-form__replying {
+	color: var(--convocept-muted);
+	font-size: 0.875em;
+}
+
+.convocept-form__required {
+	color: var(--convocept-accent);
+}
+
+.convocept-form__cancel {
+	margin-inline-start: 0.5em;
+}
+
+.convocept-form__submit {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.convocept .convocept-button {
+	padding: 0.6em 1.25em;
+	border: 0;
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-accent);
+	color: var(--convocept-on-accent);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.convocept .convocept-button:hover {
+	filter: brightness(1.08);
+}
+
+/* Comments */
+
+.convocept-list,
+.convocept-replies,
+.convocept-pagination__pages {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.convocept-comment {
+	margin: 0;
+	padding: 0;
+}
+
+.convocept-list > .convocept-comment + .convocept-comment {
+	margin-block-start: var(--convocept-gap);
+	padding-block-start: var(--convocept-gap);
+	border-block-start: 1px solid var(--convocept-border);
+}
+
+.convocept-comment__body {
+	display: grid;
+	grid-template-columns: var(--convocept-avatar) minmax(0, 1fr);
+	gap: 0.85rem;
+}
+
+.convocept-avatar {
+	display: block;
+	width: var(--convocept-avatar);
+	height: var(--convocept-avatar);
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.convocept-avatar--initials {
+	display: grid;
+	place-items: center;
+	background: hsl(var(--convocept-avatar-hue, 220) 55% 88%);
+	color: hsl(var(--convocept-avatar-hue, 220) 45% 28%);
+	font-size: 0.9em;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.convocept-comment__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 0.5rem;
+	align-items: center;
+	line-height: 1.4;
+}
+
+.convocept-comment__author {
+	font-weight: 600;
+}
+
+.convocept .convocept-comment__author {
+	color: inherit;
+	text-decoration: none;
+}
+
+.convocept a.convocept-comment__author:hover {
+	text-decoration: underline;
+}
+
+.convocept-badge {
+	padding: 0.1em 0.55em;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--convocept-accent) 14%, transparent);
+	color: var(--convocept-accent);
+	font-size: 0.75em;
+	font-weight: 600;
+}
+
+.convocept .convocept-comment__date {
+	color: var(--convocept-muted);
+	font-size: 0.875em;
+	text-decoration: none;
+}
+
+.convocept .convocept-comment__date:hover {
+	text-decoration: underline;
+}
+
+.convocept-comment__reply-to {
+	margin: 0.15rem 0 0;
+	color: var(--convocept-muted);
+	font-size: 0.8125em;
+}
+
+.convocept-comment__content {
+	margin-block-start: 0.35rem;
+	overflow-wrap: anywhere;
+}
+
+.convocept-comment__content > :first-child {
+	margin-block-start: 0;
+}
+
+.convocept-comment__content > :last-child {
+	margin-block-end: 0;
+}
+
+.convocept-comment__content p {
+	margin-block: 0 0.75em;
+}
+
+.convocept-comment__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin-block-start: 0.5rem;
+	font-size: 0.875em;
+}
+
+.convocept .convocept-action {
+	color: var(--convocept-muted);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.convocept .convocept-action:hover {
+	color: var(--convocept-accent);
+}
+
+/* Replies: indented under the parent's text, with a thread line. */
+
+.convocept-replies {
+	margin-block-start: 1.25rem;
+	margin-inline-start: calc(var(--convocept-avatar) / 2);
+	padding-inline-start: calc(var(--convocept-avatar) / 2 + 0.85rem - 2px);
+	border-inline-start: 2px solid var(--convocept-border);
+}
+
+.convocept-replies > .convocept-comment + .convocept-comment {
+	margin-block-start: 1.25rem;
+}
+
+@media (max-width: 480px) {
+
+	.convocept {
+		--convocept-avatar: 32px;
+	}
+
+	.convocept-replies {
+		margin-inline-start: 0;
+		padding-inline-start: 0.75rem;
+	}
+}
+
+/* States and pagination */
+
+.convocept-notice,
+.convocept-empty {
+	margin: 0 0 1.5rem;
+	padding: 0.85rem 1rem;
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-surface);
+	color: var(--convocept-muted);
+}
+
+.convocept-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+	margin-block-start: 2rem;
+	font-size: 0.875em;
+}
+
+.convocept-pagination__pages {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.convocept-pagination__page,
+.convocept-pagination__gap,
+.convocept .convocept-pagination__prev,
+.convocept .convocept-pagination__next {
+	display: inline-block;
+	min-width: 2.25em;
+	padding: 0.35em 0.7em;
+	border-radius: var(--convocept-radius);
+	text-align: center;
+	text-decoration: none;
+}
+
+.convocept .convocept-pagination__prev,
+.convocept .convocept-pagination__next,
+.convocept a.convocept-pagination__page {
+	border: 1px solid var(--convocept-border);
+	color: inherit;
+}
+
+.convocept-pagination__page[aria-current] {
+	background: var(--convocept-accent);
+	color: var(--convocept-on-accent);
+	font-weight: 600;
 }

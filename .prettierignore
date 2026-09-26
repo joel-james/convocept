@@ -1,3 +1,6 @@
 assets/dist
 vendor
 node_modules
+
+# CSS is formatted by stylelint (WordPress config); Prettier disagrees on blank lines.
+*.css

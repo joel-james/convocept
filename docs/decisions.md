@@ -2,6 +2,26 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M1 rendering decisions
+- **Color schemes:** `auto` (default) inherits the theme's text and background and mixes tints
+  from `currentColor`, so the thread matches light and dark themes without a jarring box.
+  `system` follows the visitor's OS (`prefers-color-scheme`); `light` / `dark` force a palette.
+- **Stylesheet:** enqueued with a `path`, so core inlines it (it is under core's 20 KB inline
+  limit) and the page makes no extra request. M4 revisits this with the lazy loader.
+- **Pingbacks/trackbacks** are excluded from the thread (`convocept_excluded_comment_types`).
+- **Replies** are always chronological, whatever the top-level sort. Beyond `max_depth` they
+  are flattened at the last level with a "Replying to {name}" label.
+- **Pagination** counts top-level comments only and uses core's `comment-page-N` / `cpage` URLs;
+  the sort lives in `?convocept_sort=` and is omitted for the default sort (one canonical URL).
+- **Per-user output:** core's `wp_comment_form_unfiltered_html_nonce` is detached while our form
+  renders, because it prints a nonce for admins. Only approved comments are ever rendered.
+- **Anti-spam compatibility:** the form fires core's `comment_form_*` hooks and the
+  `comment_form_field_comment` filter so Akismet and Antispam Bee work unchanged.
+- **Classic themes:** the wrapper gets `comments-area` plus known per-theme width classes
+  (`Integration\ClassicTheme::THEME_CLASSES`), filterable via `convocept_thread_classes`.
+- **Guest fields** are not `required` in HTML: a logged-in reader without JavaScript still sees
+  them, and core validates server-side. The M2 script hides them for logged-in readers.
+
 ## 2026-09-26 — Insights free, detailed analytics paid
 Free core gets an Insights dashboard (1.1.0) built only from data already stored: comment counts,
 top posts and commenters, time to first reply, subscription and vote stats. It adds no front-end
