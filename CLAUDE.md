@@ -7,11 +7,31 @@ Convocept is a free WordPress.org plugin (slug `convocept`, by Foxe Labs, websit
 a very fast, self-hosted replacement for the default WordPress comment UI. Comments stay in the
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
-**Current state:** the code in this repo is the earlier React prototype, renamed to Convocept
-(WordPress.org rejected "Comments" and then "Native Comments" as too generic; "Foxe Comments" was dropped
-so the product stands alone from the company brand) and approved on WordPress.org to reserve the slug (never released).
-The slug is approved and the rebuild (target release 1.0.0) is under way, milestone by milestone
-from M0 (PLAN.md §2 and §8). Record decisions not covered by the plan in `docs/decisions.md`.
+**Current state (2026-09-26):** rebuild toward release 1.0.0. The slug was reserved with an
+unreleased React prototype (first git commit); the prototype's leftover files (`includes/`,
+`build/`, React files in `src/`) are unused and excluded from release zips, pending deletion.
+
+- **Done:** M0–M6 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
+  lazy loading + cache + live updates, votes/pins/moderation, subscriptions). Milestones are
+  marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
+- **Next:** M7 structured data, then M8 (Disqus importer only for 1.0), M9 lite settings UI,
+  M11, M12. There is **no admin settings screen yet** (M9); settings live in the
+  `convocept_settings` option.
+- **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
+  1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
+- **Open items to raise with the owner:** merge M1–M6 to `main`; delete the prototype files;
+  Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
+  investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md).
+
+**Working environment notes**
+- Docker Desktop must be running for `npm run env:start` (wp-env: dev :8888, tests :8889).
+- `npm run test:php` reinstalls the tests site, so e2e specs set up their own state.
+- The e2e helper mu-plugin (`tests/e2e/mu-plugins/`) is mapped as a **directory** into the tests
+  site only; single-file mounts go stale. It disables flood/rate/timing checks, catches mail and
+  exposes `/convocept-e2e/v1/{mails,run-queue}`. It returns early under PHPUnit.
+- The tests site uses plain permalinks (`?p=123`): build URLs with `URL`/`URLSearchParams`.
+- The in-app browser pane reports `visibilityState: hidden`, so IntersectionObserver never fires
+  there and the lazy script doesn't load; verify front-end behaviour in Playwright.
 
 ## Non-negotiables
 - **Front end: vanilla JS only.** No React, Preact, jQuery, or frameworks on public pages.
