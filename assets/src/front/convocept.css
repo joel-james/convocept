@@ -483,3 +483,193 @@
 	color: var(--convocept-on-accent);
 	font-weight: 600;
 }
+
+/* Composer enhancements (revealed by the script)
+   ------------------------------------------------------------------ */
+
+/* Our display rules must never override the hidden attribute. */
+.convocept [hidden] {
+	display: none !important;
+}
+
+.convocept-hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.convocept-editor {
+	border: 1px solid var(--convocept-border);
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-field-bg);
+}
+
+.convocept-editor:focus-within {
+	border-color: var(--convocept-accent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--convocept-accent) 20%, transparent);
+}
+
+.convocept .convocept-editor .convocept-form__textarea {
+	border: 0;
+	border-radius: 0 0 var(--convocept-radius) var(--convocept-radius);
+	background: transparent;
+	box-shadow: none;
+}
+
+.convocept-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.25rem 0.5rem;
+	border-block-end: 1px solid var(--convocept-border);
+}
+
+.convocept-tabs,
+.convocept-format {
+	display: flex;
+	gap: 0.125rem;
+}
+
+.convocept .convocept-tab,
+.convocept .convocept-format__button {
+	min-width: 2rem;
+	margin: 0;
+	padding: 0.3em 0.6em;
+	border: 0;
+	border-radius: calc(var(--convocept-radius) - 4px);
+	background: transparent;
+	color: var(--convocept-muted);
+	font: inherit;
+	font-size: 0.875em;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.convocept .convocept-tab:hover,
+.convocept .convocept-format__button:hover {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+}
+
+.convocept .convocept-tab[aria-selected="true"] {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+	font-weight: 600;
+}
+
+.convocept-preview {
+	min-height: 6.5em;
+	padding: 0.65em 0.8em;
+}
+
+.convocept-form__counter {
+	margin: 0;
+	padding: 0 0.8em 0.5em;
+	color: var(--convocept-muted);
+	font-size: 0.8125em;
+	text-align: end;
+}
+
+.convocept-form__user {
+	color: var(--convocept-muted);
+	font-size: 0.875em;
+}
+
+.convocept-form__footer {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.convocept-form__status {
+	flex: 1;
+	margin: 0;
+	color: var(--convocept-muted);
+	font-size: 0.875em;
+}
+
+.convocept-form__status.is-error {
+	color: #dc2626;
+}
+
+.convocept .convocept-button:disabled {
+	opacity: 0.6;
+	cursor: progress;
+}
+
+/* Comment states */
+
+.convocept-comment--sending {
+	opacity: 0.6;
+}
+
+.convocept-comment__pending {
+	margin: 0.35rem 0 0;
+	padding: 0.35em 0.65em;
+	border-radius: calc(var(--convocept-radius) - 4px);
+	background: var(--convocept-surface);
+	color: var(--convocept-muted);
+	font-size: 0.8125em;
+}
+
+.convocept-comment__edited {
+	color: var(--convocept-muted);
+	font-size: 0.8125em;
+}
+
+.convocept .convocept-action--edit,
+.convocept .convocept-edit .convocept-action {
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	cursor: pointer;
+}
+
+.convocept-edit {
+	display: grid;
+	gap: 0.5rem;
+	margin-block-start: 0.5rem;
+}
+
+.convocept-edit p {
+	margin: 0;
+}
+
+.convocept-edit__buttons {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.convocept-preview pre,
+.convocept-comment__content pre {
+	overflow-x: auto;
+	padding: 0.75em 1em;
+	border-radius: calc(var(--convocept-radius) - 2px);
+	background: var(--convocept-surface);
+	font-size: 0.875em;
+}
+
+.convocept-preview :not(pre) > code,
+.convocept-comment__content :not(pre) > code {
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+	background: var(--convocept-surface);
+	font-size: 0.875em;
+}
+
+.convocept-preview blockquote,
+.convocept-comment__content blockquote {
+	margin: 0 0 0.75em;
+	padding-inline-start: 0.9em;
+	border-inline-start: 3px solid var(--convocept-border);
+	color: var(--convocept-muted);
+}

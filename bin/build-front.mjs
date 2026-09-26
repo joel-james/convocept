@@ -24,7 +24,8 @@ const options = {
 	bundle: true,
 	minify: true,
 	format: 'iife',
-	target: [ 'es2019', 'chrome80', 'firefox78', 'safari13' ],
+	// Browsers from 2021 on (Safari 14.1): every browser with IntersectionObserver, fetch and template.
+	target: [ 'es2020', 'chrome91', 'firefox90', 'safari14.1' ],
 	legalComments: 'none',
 	logLevel: 'info',
 };

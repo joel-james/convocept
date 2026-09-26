@@ -16,4 +16,6 @@ delete_option( 'convocept_db_version' );
 delete_option( 'convocept_migration_lock' );
 
 delete_metadata( 'comment', 0, 'convocept_edited_at', '', true );
+delete_metadata( 'comment', 0, '_convocept_edit_token', '', true );
+delete_metadata( 'comment', 0, 'convocept_moderation_log', '', true );
 delete_metadata( 'comment', 0, '_convocept_edited', '', true );

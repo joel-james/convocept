@@ -25,6 +25,12 @@
  *     @type string      $permalink    Link to this comment.
  *     @type string      $reply_url    No-JS reply link, or empty.
  *     @type string      $reply_to     Parent author for flattened replies, or empty.
+ *     @type string      $content_html Comment content as safe HTML.
+ *     @type bool        $is_pending   Whether the comment awaits moderation (only in
+ *                                     responses to its own author, never on the page).
+ *     @type bool        $is_edited    Whether the comment was edited.
+ *     @type int         $author_id    Author's user ID, 0 for guests.
+ *     @type int         $timestamp    Unix time the comment was posted.
  *     @type string[]    $classes      CSS classes.
  *     @type string      $replies_html Rendered replies (already escaped), or empty.
  * }
@@ -38,6 +44,8 @@ $convocept_comment = $args['comment'];
 	id="comment-<?php echo esc_attr( (string) $args['id'] ); ?>"
 	class="<?php echo esc_attr( implode( ' ', $args['classes'] ) ); ?>"
 	data-convocept-comment="<?php echo esc_attr( (string) $args['id'] ); ?>"
+	data-convocept-author="<?php echo esc_attr( (string) $args['author_id'] ); ?>"
+	data-convocept-time="<?php echo esc_attr( (string) $args['timestamp'] ); ?>"
 >
 	<article class="convocept-comment__body">
 		<div class="convocept-comment__avatar">
@@ -70,7 +78,15 @@ $convocept_comment = $args['comment'];
 				<a class="convocept-comment__date" href="<?php echo esc_url( $args['permalink'] ); ?>">
 					<time datetime="<?php echo esc_attr( $args['date_iso'] ); ?>" title="<?php echo esc_attr( $args['date_title'] ); ?>"><?php echo esc_html( $args['date_text'] ); ?></time>
 				</a>
+
+				<?php if ( $args['is_edited'] ) : ?>
+					<span class="convocept-comment__edited"><?php esc_html_e( '(edited)', 'convocept' ); ?></span>
+				<?php endif; ?>
 			</header>
+
+			<?php if ( $args['is_pending'] ) : ?>
+				<p class="convocept-comment__pending"><?php esc_html_e( 'Your comment is awaiting moderation.', 'convocept' ); ?></p>
+			<?php endif; ?>
 
 			<?php if ( $args['reply_to'] ) : ?>
 				<p class="convocept-comment__reply-to">
@@ -81,11 +97,11 @@ $convocept_comment = $args['comment'];
 				</p>
 			<?php endif; ?>
 
-			<div class="convocept-comment__content">
-				<?php comment_text( $convocept_comment ); ?>
+			<div class="convocept-comment__content" data-convocept-content>
+				<?php echo $args['content_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe HTML from the Markdown parser (kses-filtered) or core's comment_text filters. ?>
 			</div>
 
-			<footer class="convocept-comment__actions">
+			<footer class="convocept-comment__actions" data-convocept-actions>
 				<?php if ( $args['reply_url'] ) : ?>
 					<a
 						class="convocept-action convocept-action--reply"

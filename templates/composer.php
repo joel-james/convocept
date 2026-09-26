@@ -14,8 +14,10 @@
  * `comment_form_field_comment`, `comment_form`, `comment_form_after`) are
  * fired so anti-spam plugins such as Akismet and Antispam Bee keep working.
  *
- * Keep the field names and the `commentform` / `respond` IDs: core, anti-spam
- * plugins and the front-end script depend on them.
+ * Keep the field names, the `commentform` / `respond` IDs and the
+ * `data-convocept-*` attributes: core, anti-spam plugins and the front-end
+ * script depend on them. Elements marked `hidden` (toolbar, preview, status,
+ * identity) are revealed by the script; the form works without them.
  *
  * @package Convocept
  * @since   1.0.0
@@ -31,6 +33,10 @@
  *     @type bool               $require_name_email    Whether guests must give a name and email.
  *     @type bool               $cookies_opt_in        Whether to show the "remember me" checkbox.
  *     @type array<string, int> $max_lengths           Maximum field lengths from core.
+ *     @type string             $marker_field          Name of the hidden field marking this form.
+ *     @type string             $token_field           Name of the hidden signed-timestamp field.
+ *     @type string             $form_token            Signed "form rendered at" token.
+ *     @type string             $honeypot_field        Name of the honeypot field.
  * }
  */
 
@@ -46,16 +52,24 @@ do_action( 'comment_form_before' );
 ?>
 <div id="respond" class="convocept-composer">
 	<?php if ( $args['registration_required'] ) : ?>
-		<p class="convocept-notice convocept-notice--login">
+		<?php
+		/*
+		 * The form is still rendered but hidden: the page is the same for
+		 * everyone, and the script reveals it for logged-in readers.
+		 */
+		?>
+		<p class="convocept-notice convocept-notice--login" data-convocept-login>
 			<a href="<?php echo esc_url( $args['login_url'] ); ?>"><?php esc_html_e( 'Log in to join the conversation.', 'convocept' ); ?></a>
 		</p>
-	<?php else : ?>
+	<?php endif; ?>
+
 		<form
 			id="commentform"
 			class="convocept-form"
 			action="<?php echo esc_url( $args['action_url'] ); ?>"
 			method="post"
 			data-convocept-composer
+			<?php echo $args['registration_required'] ? 'hidden' : ''; ?>
 		>
 			<?php
 			/** This action is documented in wp-includes/comment-template.php */
@@ -72,17 +86,38 @@ do_action( 'comment_form_before' );
 				</p>
 			<?php endif; ?>
 
-			<?php
-			$convocept_textarea = sprintf(
-				'<p class="convocept-form__field convocept-form__field--comment"><label class="screen-reader-text" for="comment">%1$s</label><textarea id="comment" name="comment" class="convocept-form__textarea" rows="4" maxlength="%2$d" placeholder="%3$s" required></textarea></p>',
-				esc_html__( 'Comment', 'convocept' ),
-				absint( $args['max_lengths']['comment_content'] ?? 65525 ),
-				esc_attr__( 'Join the discussion…', 'convocept' )
-			);
+			<p class="convocept-form__user" data-convocept-user hidden></p>
 
-			/** This filter is documented in wp-includes/comment-template.php */
-			echo apply_filters( 'comment_form_field_comment', $convocept_textarea ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above; filtered by anti-spam plugins as in core.
-			?>
+			<div class="convocept-editor" data-convocept-editor>
+				<div class="convocept-toolbar" data-convocept-toolbar hidden>
+					<div class="convocept-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Comment editor', 'convocept' ); ?>">
+						<button type="button" class="convocept-tab" role="tab" aria-selected="true" data-convocept-tab="write"><?php esc_html_e( 'Write', 'convocept' ); ?></button>
+						<button type="button" class="convocept-tab" role="tab" aria-selected="false" data-convocept-tab="preview"><?php esc_html_e( 'Preview', 'convocept' ); ?></button>
+					</div>
+					<div class="convocept-format" role="toolbar" aria-label="<?php esc_attr_e( 'Formatting', 'convocept' ); ?>">
+						<button type="button" class="convocept-format__button" data-convocept-format="bold" title="<?php esc_attr_e( 'Bold', 'convocept' ); ?>" aria-label="<?php esc_attr_e( 'Bold', 'convocept' ); ?>"><strong aria-hidden="true">B</strong></button>
+						<button type="button" class="convocept-format__button" data-convocept-format="italic" title="<?php esc_attr_e( 'Italic', 'convocept' ); ?>" aria-label="<?php esc_attr_e( 'Italic', 'convocept' ); ?>"><em aria-hidden="true">I</em></button>
+						<button type="button" class="convocept-format__button" data-convocept-format="link" title="<?php esc_attr_e( 'Link', 'convocept' ); ?>" aria-label="<?php esc_attr_e( 'Link', 'convocept' ); ?>"><span aria-hidden="true">&#128279;</span></button>
+						<button type="button" class="convocept-format__button" data-convocept-format="code" title="<?php esc_attr_e( 'Code', 'convocept' ); ?>" aria-label="<?php esc_attr_e( 'Code', 'convocept' ); ?>"><span aria-hidden="true">&lt;/&gt;</span></button>
+						<button type="button" class="convocept-format__button" data-convocept-format="quote" title="<?php esc_attr_e( 'Quote', 'convocept' ); ?>" aria-label="<?php esc_attr_e( 'Quote', 'convocept' ); ?>"><span aria-hidden="true">&ldquo;</span></button>
+					</div>
+				</div>
+
+				<?php
+				$convocept_textarea = sprintf(
+					'<p class="convocept-form__field convocept-form__field--comment"><label class="screen-reader-text" for="comment">%1$s</label><textarea id="comment" name="comment" class="convocept-form__textarea" rows="4" maxlength="%2$d" placeholder="%3$s" required data-convocept-input></textarea></p>',
+					esc_html__( 'Comment', 'convocept' ),
+					absint( $args['max_lengths']['comment_content'] ?? 65525 ),
+					esc_attr__( 'Join the discussion…', 'convocept' )
+				);
+
+				/** This filter is documented in wp-includes/comment-template.php */
+				echo apply_filters( 'comment_form_field_comment', $convocept_textarea ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above; filtered by anti-spam plugins as in core.
+				?>
+
+				<div class="convocept-preview convocept-comment__content" data-convocept-preview hidden aria-live="polite"></div>
+				<p class="convocept-form__counter" data-convocept-counter hidden></p>
+			</div>
 
 			<div class="convocept-form__identity" data-convocept-guest-fields>
 				<p class="convocept-form__field">
@@ -124,19 +159,28 @@ do_action( 'comment_form_before' );
 				<?php endif; ?>
 			</div>
 
-			<p class="convocept-form__submit">
-				<button type="submit" class="convocept-button"><?php esc_html_e( 'Post comment', 'convocept' ); ?></button>
+			<p class="convocept-hp" aria-hidden="true">
+				<label for="convocept-hp"><?php esc_html_e( 'Leave this field empty', 'convocept' ); ?></label>
+				<input id="convocept-hp" name="<?php echo esc_attr( $args['honeypot_field'] ); ?>" type="text" value="" tabindex="-1" autocomplete="off">
 			</p>
+
+			<div class="convocept-form__footer">
+				<p class="convocept-form__status" data-convocept-status role="status" aria-live="polite"></p>
+				<p class="convocept-form__submit">
+					<button type="submit" class="convocept-button" data-convocept-submit><?php esc_html_e( 'Post comment', 'convocept' ); ?></button>
+				</p>
+			</div>
 
 			<input type="hidden" name="comment_post_ID" value="<?php echo esc_attr( (string) $convocept_post_id ); ?>">
 			<input type="hidden" name="comment_parent" value="<?php echo esc_attr( (string) absint( $args['parent_id'] ) ); ?>">
+			<input type="hidden" name="<?php echo esc_attr( $args['marker_field'] ); ?>" value="1">
+			<input type="hidden" name="<?php echo esc_attr( $args['token_field'] ); ?>" value="<?php echo esc_attr( $args['form_token'] ); ?>">
 
 			<?php
 			/** This action is documented in wp-includes/comment-template.php */
 			do_action( 'comment_form', $convocept_post_id );
 			?>
 		</form>
-	<?php endif; ?>
 
 	<?php
 	/**

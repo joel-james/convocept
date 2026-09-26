@@ -2,6 +2,38 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M2 composer and submission decisions
+- **Markdown storage:** the raw Markdown is stored in `comment_content` with `&`, `<`, `>`
+  entity-encoded, plus `convocept_format = markdown` meta. wp-admin, feeds and other plugins show
+  the text exactly as typed, core's kses never strips code samples, and the parser decodes it.
+  Only comments from the JS composer are Markdown; no-JS and older comments render through core's
+  `comment_text` as before.
+- **Parser:** our own (`Markdown\Parser`), no dependency: escape everything, then add only the
+  markup we generate; http/https/mailto links only; final `wp_kses` pass with an exact allow-list;
+  regex failures fall back to plain text. Markdown links count toward core's `comment_max_links`.
+- **REST responses** are JSON with an `html` field rendered by the same PHP templates, so status,
+  edit token and count travel with the fragment. Every response is `Cache-Control: no-store`.
+- **Session endpoint and nonces:** core REST ignores login cookies without a nonce, so
+  `/session` validates the logged-in cookie itself, but only for same-origin requests: our
+  `X-Convocept: 1` header (cross-origin pages can't send it: core's CORS preflight doesn't allow
+  it), no `Sec-Fetch-Site: cross-site`, matching `Origin` when present, and no `_jsonp`.
+- **Rate limits** reject with 429 (5/min and 30/hour per hashed IP for comments; previews 30/min;
+  edits 10/min) instead of being a moderation verdict: a real person gets a clear message.
+  Fixed windows in the object cache or transients.
+- **Moderation pipeline** (`convocept_moderation_checks`): honeypot → spam, timing (< 3 s) → hold,
+  Markdown links → hold. It can only tighten core's/Akismet's verdict. It runs for the REST
+  composer and for our no-JS form (recognised by its `convocept_form` field); other comment
+  sources are untouched. Spam and trash are reported to the browser as "pending".
+- **Guest edit tokens:** 32 random characters, HMAC-hashed in `_convocept_edit_token`, kept in
+  `localStorage`. Editing is limited to Markdown comments; an author's edit that breaks the
+  site's moderation rules sends the comment back to moderation.
+- **Registration-required sites:** the form is rendered but `hidden`; the script reveals it for
+  logged-in readers, so the cached HTML stays the same for everyone.
+- **JS build target** raised to ES2020 (Chrome 91, Firefox 90, Safari 14.1): esbuild can't lower
+  destructuring for Safari 13, and those browsers are 2021 vintage.
+- **Temporary until M4:** `convocept.js` (3.3 KB gzipped) is enqueued with `defer` on thread
+  pages. M4 replaces this with the lazy loader to meet the 0 KB-on-load budget.
+
 ## 2026-09-26 — M1 rendering decisions
 - **Color schemes:** `auto` (default) inherits the theme's text and background and mixes tints
   from `currentColor`, so the thread matches light and dark themes without a jarring box.

@@ -8,6 +8,9 @@
 
 namespace Convocept\Render;
 
+use Convocept\Comments\EditWindow;
+use Convocept\Comments\Submission;
+use Convocept\Markdown\Parser;
 use WP_Comment;
 
 defined( 'ABSPATH' ) || exit;
@@ -31,6 +34,25 @@ class CommentPresenter {
 	 * @var int
 	 */
 	const AVATAR_SIZE = 40;
+
+	/**
+	 * Markdown parser.
+	 *
+	 * @since 1.0.0
+	 * @var Parser
+	 */
+	private $markdown;
+
+	/**
+	 * Create the presenter.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Parser $markdown Markdown parser.
+	 */
+	public function __construct( Parser $markdown ) {
+		$this->markdown = $markdown;
+	}
 
 	/**
 	 * Build the view data for one comment.
@@ -59,6 +81,12 @@ class CommentPresenter {
 	 *     @type string     $permalink   Link to the comment on this page.
 	 *     @type string     $reply_url   No-JS reply link, or empty when replies are not allowed.
 	 *     @type string     $reply_to    Name of the parent comment's author for flattened replies.
+	 *     @type string     $content_html Comment content as safe HTML.
+	 *     @type bool       $is_pending  Whether the comment is not yet approved. Only ever
+	 *                                   true in responses to the comment's own author.
+	 *     @type bool       $is_edited   Whether the comment was edited after posting.
+	 *     @type int        $author_id   Author's user ID, 0 for guests.
+	 *     @type int        $timestamp   Unix time the comment was posted (GMT).
 	 *     @type string[]   $classes     CSS classes for the comment element (unescaped).
 	 * }
 	 */
@@ -68,32 +96,42 @@ class CommentPresenter {
 		$author  = get_comment_author( $comment );
 		$badges  = $this->badges( $comment );
 
-		$classes = array( 'convocept-comment', 'convocept-comment--depth-' . $depth );
+		$classes    = array( 'convocept-comment', 'convocept-comment--depth-' . $depth );
+		$is_pending = '1' !== (string) $comment->comment_approved;
 
 		if ( $badges ) {
 			$classes[] = 'convocept-comment--has-badge';
 		}
 
+		if ( $is_pending ) {
+			$classes[] = 'convocept-comment--pending';
+		}
+
 		$view = array(
-			'comment'     => $comment,
-			'id'          => $id,
-			'depth'       => $depth,
-			'author'      => $author,
-			'author_url'  => $this->author_url( $comment ),
-			'avatar_html' => $this->avatar( $comment, $author ),
-			'badges'      => $badges,
-			'date_iso'    => (string) get_comment_date( 'c', $comment ),
-			'date_text'   => (string) get_comment_date( '', $comment ),
-			'date_title'  => sprintf(
+			'comment'      => $comment,
+			'id'           => $id,
+			'depth'        => $depth,
+			'author'       => $author,
+			'author_url'   => $this->author_url( $comment ),
+			'avatar_html'  => $this->avatar( $comment, $author ),
+			'badges'       => $badges,
+			'date_iso'     => (string) get_comment_date( 'c', $comment ),
+			'date_text'    => (string) get_comment_date( '', $comment ),
+			'date_title'   => sprintf(
 				/* translators: 1: Comment date, 2: Comment time. */
 				__( '%1$s at %2$s', 'convocept' ),
 				get_comment_date( '', $comment ),
 				get_comment_time( '', false, true, $comment )
 			),
-			'permalink'   => $page_url . '#comment-' . $id,
-			'reply_url'   => $can_reply ? $this->reply_url( $post_id, $id ) : '',
-			'reply_to'    => $reply_to,
-			'classes'     => $classes,
+			'permalink'    => $page_url . '#comment-' . $id,
+			'reply_url'    => $can_reply && ! $is_pending ? $this->reply_url( $post_id, $id ) : '',
+			'reply_to'     => $reply_to,
+			'content_html' => $this->content( $comment ),
+			'is_pending'   => $is_pending,
+			'is_edited'    => '' !== (string) get_comment_meta( $id, EditWindow::EDITED_META_KEY, true ),
+			'author_id'    => (int) $comment->user_id,
+			'timestamp'    => (int) strtotime( $comment->comment_date_gmt . ' UTC' ),
+			'classes'      => $classes,
 		);
 
 		/**
@@ -105,6 +143,39 @@ class CommentPresenter {
 		 * @param WP_Comment           $comment The comment.
 		 */
 		return (array) apply_filters( 'convocept_comment_view', $view, $comment );
+	}
+
+	/**
+	 * Render a comment's content as safe HTML.
+	 *
+	 * Comments written in Convocept's composer are Markdown and go through
+	 * the safe parser. Everything else (older comments, imports, comments
+	 * posted without JavaScript) goes through core's `comment_text` filters,
+	 * exactly as the theme would have shown it.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Comment.
+	 * @return string
+	 */
+	public function content( WP_Comment $comment ): string {
+		if ( 'markdown' === get_comment_meta( (int) $comment->comment_ID, Submission::FORMAT_META_KEY, true ) ) {
+			$html = $this->markdown->parse( (string) $comment->comment_content );
+		} else {
+			ob_start();
+			comment_text( $comment );
+			$html = (string) ob_get_clean();
+		}
+
+		/**
+		 * Filters a comment's rendered content.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string     $html    Content HTML.
+		 * @param WP_Comment $comment The comment.
+		 */
+		return (string) apply_filters( 'convocept_comment_content', $html, $comment );
 	}
 
 	/**

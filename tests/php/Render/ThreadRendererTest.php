@@ -89,7 +89,7 @@ class ThreadRendererTest extends TestCase {
 		$this->assertStringContainsString( 'Comments are closed.', $html );
 	}
 
-	public function test_registration_required_shows_login_link_instead_of_form(): void {
+	public function test_registration_required_hides_form_and_shows_login_link(): void {
 		update_option( 'comment_registration', 1 );
 		$post_id = self::factory()->post->create();
 		$this->view_post( $post_id );
@@ -98,7 +98,7 @@ class ThreadRendererTest extends TestCase {
 
 		update_option( 'comment_registration', 0 );
 
-		$this->assertStringNotContainsString( 'commentform', $html );
+		$this->assertMatchesRegularExpression( '/<form[^>]+id="commentform"[^>]*\shidden/s', $html, 'Form is hidden until the script confirms a login.' );
 		$this->assertStringContainsString( 'wp-login.php', $html );
 	}
 

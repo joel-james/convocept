@@ -103,6 +103,36 @@ class ThreadQuery {
 	}
 
 	/**
+	 * Count the visible comments on a post, replies included.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return int
+	 */
+	public function total( int $post_id ): int {
+		return $this->count( $this->base_args( $post_id ) );
+	}
+
+	/**
+	 * Get the query arguments every thread query shares.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array<string, mixed>
+	 */
+	private function base_args( int $post_id ): array {
+		return array(
+			'post_id'            => $post_id,
+			'status'             => 'approve',
+			'type__not_in'       => $this->excluded_types(),
+			// Explicitly empty: never include a visitor's own pending comments.
+			'include_unapproved' => array(),
+		);
+	}
+
+	/**
 	 * Get comment types that are never shown in the thread.
 	 *
 	 * Pingbacks and trackbacks are excluded by default: they are not part of

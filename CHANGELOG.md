@@ -6,6 +6,17 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M2 composer: Markdown (safe subset, own parser) with toolbar and server-rendered preview,
+  auto-growing textarea, character counter, REST submission with an instant placeholder,
+  inline errors (duplicate, flood, required fields), "awaiting moderation" state, live-region
+  announcements, and a count that updates.
+- Session endpoint: logged-in readers see "Commenting as …" and skip the guest fields; returning
+  guests get their saved name and email filled in, all without per-user data in the page HTML.
+- Edit window (default 5 minutes) with a countdown: guests via a hashed token, logged-in authors
+  by user ID; edits are re-checked against moderation rules.
+- Spam protection: honeypot, timing check, Markdown link limit, per-IP rate limits, trusted-proxy
+  aware IP detection, and the `convocept_moderation_checks` pipeline (only ever stricter than
+  core/Akismet). Also applied to the no-JavaScript form.
 - M1 server-rendered thread: replaces comments in classic themes (`comments_template`) and block
   themes (`core/comments`, `core/post-comments`, `core/post-comments-form`), without running
   core's comment query. Threaded replies to a configurable depth (deeper replies flattened with a

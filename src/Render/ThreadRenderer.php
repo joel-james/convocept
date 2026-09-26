@@ -9,8 +9,11 @@
 namespace Convocept\Render;
 
 use Convocept\Comments\Sort;
+use Convocept\Comments\Submission;
 use Convocept\Comments\Thread;
 use Convocept\Comments\ThreadQuery;
+use Convocept\Moderation\Checks\HoneypotCheck;
+use Convocept\Security\FormToken;
 use Convocept\Settings\Settings;
 use WP_Comment;
 use WP_Post;
@@ -65,6 +68,14 @@ class ThreadRenderer {
 	private $presenter;
 
 	/**
+	 * Form token service.
+	 *
+	 * @since 1.0.0
+	 * @var FormToken
+	 */
+	private $tokens;
+
+	/**
 	 * Post IDs whose thread was already rendered in this request.
 	 *
 	 * Themes and blocks can ask for comments more than once on a page; the
@@ -84,12 +95,14 @@ class ThreadRenderer {
 	 * @param TemplateLoader   $templates Template loader.
 	 * @param ThreadQuery      $query     Thread query.
 	 * @param CommentPresenter $presenter Comment presenter.
+	 * @param FormToken        $tokens    Form token service.
 	 */
-	public function __construct( Settings $settings, TemplateLoader $templates, ThreadQuery $query, CommentPresenter $presenter ) {
+	public function __construct( Settings $settings, TemplateLoader $templates, ThreadQuery $query, CommentPresenter $presenter, FormToken $tokens ) {
 		$this->settings  = $settings;
 		$this->templates = $templates;
 		$this->query     = $query;
 		$this->presenter = $presenter;
+		$this->tokens    = $tokens;
 	}
 
 	/**
@@ -216,6 +229,55 @@ class ThreadRenderer {
 		$classes = (array) apply_filters( 'convocept_thread_classes', array( 'convocept' ), $post_id );
 
 		return array_values( array_unique( array_filter( array_map( 'sanitize_html_class', $classes ) ) ) );
+	}
+
+	/**
+	 * Render one comment on its own, for REST responses.
+	 *
+	 * Used after posting or editing, when the browser inserts or replaces a
+	 * single comment. The depth is worked out from the comment's ancestors,
+	 * capped at the maximum depth like the full thread.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Comment.
+	 * @return string Comment HTML (an <li> element).
+	 */
+	public function render_single( WP_Comment $comment ): string {
+		$post_id   = (int) $comment->comment_post_ID;
+		$max_depth = (int) $this->settings->get( 'max_depth' );
+		$depth     = $this->depth_of( $comment, $max_depth + 1 );
+		$reply_to  = '';
+
+		if ( $depth > $max_depth ) {
+			$parent   = get_comment( (int) $comment->comment_parent );
+			$reply_to = $parent instanceof WP_Comment ? get_comment_author( $parent ) : '';
+			$depth    = $max_depth;
+		}
+
+		return $this->render_comment( $comment, $depth, (string) get_permalink( $post_id ), comments_open( $post_id ), $reply_to, '' );
+	}
+
+	/**
+	 * Count a comment's nesting depth by walking up its parents.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Comment $comment Comment.
+	 * @param int        $limit   Stop counting at this depth.
+	 * @return int Depth, starting at 1 for a top-level comment.
+	 */
+	private function depth_of( WP_Comment $comment, int $limit ): int {
+		$depth     = 1;
+		$parent_id = (int) $comment->comment_parent;
+
+		while ( $parent_id && $depth < $limit ) {
+			$parent    = get_comment( $parent_id );
+			$parent_id = $parent instanceof WP_Comment ? (int) $parent->comment_parent : 0;
+			++$depth;
+		}
+
+		return $depth;
 	}
 
 	/**
@@ -445,6 +507,10 @@ class ThreadRenderer {
 				'require_name_email'    => (bool) get_option( 'require_name_email' ),
 				'cookies_opt_in'        => has_action( 'set_comment_cookies', 'wp_set_comment_cookies' ) && get_option( 'show_comments_cookies_opt_in' ),
 				'max_lengths'           => wp_get_comment_fields_max_lengths(),
+				'marker_field'          => Submission::FORM_MARKER,
+				'token_field'           => Submission::TOKEN_FIELD,
+				'form_token'            => $this->tokens->create(),
+				'honeypot_field'        => HoneypotCheck::FIELD,
 			)
 		);
 

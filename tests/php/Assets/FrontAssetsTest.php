@@ -20,7 +20,7 @@ class FrontAssetsTest extends TestCase {
 		$this->go_to( get_permalink( $post_id ) );
 		wp_enqueue_script( 'comment-reply' );
 
-		( new FrontAssets( $this->renderer() ) )->dequeue_comment_reply();
+		( new FrontAssets( $this->renderer(), new \Convocept\Comments\EditWindow( new \Convocept\Settings\Settings() ) ) )->dequeue_comment_reply();
 
 		$this->assertFalse( wp_script_is( 'comment-reply', 'enqueued' ) );
 	}
@@ -30,7 +30,7 @@ class FrontAssetsTest extends TestCase {
 		$this->go_to( get_permalink( $page_id ) );
 		wp_enqueue_script( 'comment-reply' );
 
-		( new FrontAssets( $this->renderer( array( 'post_types' => array( 'post' ) ) ) ) )->dequeue_comment_reply();
+		( new FrontAssets( $this->renderer( array( 'post_types' => array( 'post' ) ) ), new \Convocept\Comments\EditWindow( new \Convocept\Settings\Settings() ) ) )->dequeue_comment_reply();
 
 		$this->assertTrue( wp_script_is( 'comment-reply', 'enqueued' ) );
 		wp_dequeue_script( 'comment-reply' );
@@ -40,7 +40,7 @@ class FrontAssetsTest extends TestCase {
 		self::factory()->post->create();
 		$this->go_to( home_url( '/' ) );
 
-		( new FrontAssets( $this->renderer() ) )->enqueue();
+		( new FrontAssets( $this->renderer(), new \Convocept\Comments\EditWindow( new \Convocept\Settings\Settings() ) ) )->enqueue();
 
 		$this->assertFalse( wp_style_is( FrontAssets::HANDLE, 'enqueued' ) );
 	}

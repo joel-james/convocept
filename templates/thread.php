@@ -65,4 +65,42 @@ $convocept_thread = $args['thread'];
 	<?php endif; ?>
 
 	<?php echo $args['pagination']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in pagination.php. ?>
+
+	<?php
+	/*
+	 * Markup the front-end script clones, so it never builds HTML itself.
+	 * <template> content is inert: not rendered, not indexed, no requests.
+	 */
+	?>
+	<template data-convocept-template="pending">
+		<li class="convocept-comment convocept-comment--sending" aria-busy="true">
+			<article class="convocept-comment__body">
+				<div class="convocept-comment__avatar"><span class="convocept-avatar convocept-avatar--initials" aria-hidden="true"></span></div>
+				<div class="convocept-comment__main">
+					<p class="convocept-comment__meta"><span class="convocept-comment__author" data-convocept-slot="author"></span> <span class="convocept-comment__date"><?php esc_html_e( 'Posting…', 'convocept' ); ?></span></p>
+					<div class="convocept-comment__content"><p data-convocept-slot="content"></p></div>
+				</div>
+			</article>
+		</li>
+	</template>
+	<template data-convocept-template="list">
+		<ol class="convocept-list"></ol>
+	</template>
+	<template data-convocept-template="replies">
+		<ol class="convocept-replies"></ol>
+	</template>
+	<template data-convocept-template="edit-button">
+		<button type="button" class="convocept-action convocept-action--edit" data-convocept-edit><?php esc_html_e( 'Edit', 'convocept' ); ?></button>
+	</template>
+	<template data-convocept-template="editor">
+		<form class="convocept-edit" data-convocept-edit-form>
+			<label class="screen-reader-text" for="convocept-edit-input"><?php esc_html_e( 'Edit your comment', 'convocept' ); ?></label>
+			<textarea id="convocept-edit-input" class="convocept-form__textarea" rows="4" required data-convocept-edit-input></textarea>
+			<p class="convocept-form__status" data-convocept-edit-status role="status" aria-live="polite"></p>
+			<p class="convocept-edit__buttons">
+				<button type="button" class="convocept-action" data-convocept-edit-cancel><?php esc_html_e( 'Cancel', 'convocept' ); ?></button>
+				<button type="submit" class="convocept-button"><?php esc_html_e( 'Save', 'convocept' ); ?></button>
+			</p>
+		</form>
+	</template>
 </section>

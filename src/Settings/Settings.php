@@ -48,6 +48,14 @@ class Settings {
 	const COLOR_SCHEMES = array( 'auto', 'system', 'light', 'dark' );
 
 	/**
+	 * Allowed values for the `proxy_header` setting.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const PROXY_HEADERS = array( 'X-Forwarded-For', 'CF-Connecting-IP', 'X-Real-IP', 'True-Client-IP' );
+
+	/**
 	 * Sanitized settings cached for the current request.
 	 *
 	 * @since 1.0.0
@@ -76,18 +84,24 @@ class Settings {
 	 *                                  'dark' force a palette.
 	 *     @type string   $accent_color Hex color used for links, buttons and focus rings.
 	 *     @type int      $edit_window  Minutes an author may edit a comment; 0 disables.
+	 *     @type string[] $trusted_proxies IPs or CIDR ranges of reverse proxies whose
+	 *                                  forwarding header may be trusted. Empty by default:
+	 *                                  only REMOTE_ADDR is used.
+	 *     @type string   $proxy_header Header a trusted proxy puts the client IP in.
 	 * }
 	 */
 	public function defaults(): array {
 		$defaults = array(
-			'enabled'      => true,
-			'post_types'   => array( 'post', 'page' ),
-			'per_page'     => 20,
-			'max_depth'    => 3,
-			'default_sort' => 'oldest',
-			'color_scheme' => 'auto',
-			'accent_color' => '#2563eb',
-			'edit_window'  => 5,
+			'enabled'         => true,
+			'post_types'      => array( 'post', 'page' ),
+			'per_page'        => 20,
+			'max_depth'       => 3,
+			'default_sort'    => 'oldest',
+			'color_scheme'    => 'auto',
+			'accent_color'    => '#2563eb',
+			'edit_window'     => 5,
+			'trusted_proxies' => array(),
+			'proxy_header'    => 'X-Forwarded-For',
 		);
 
 		/**
@@ -208,6 +222,12 @@ class Settings {
 			case 'color_scheme':
 				return in_array( $value, self::COLOR_SCHEMES, true ) ? $value : $fallback;
 
+			case 'trusted_proxies':
+				return $this->ip_ranges( $value );
+
+			case 'proxy_header':
+				return in_array( $value, self::PROXY_HEADERS, true ) ? $value : $fallback;
+
 			case 'accent_color':
 				$color = is_string( $value ) ? sanitize_hex_color( $value ) : null;
 
@@ -232,6 +252,36 @@ class Settings {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Keep only valid IP addresses and CIDR ranges.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $value Raw list.
+	 * @return string[]
+	 */
+	private function ip_ranges( $value ): array {
+		$ranges = array();
+
+		foreach ( is_array( $value ) ? $value : array() as $range ) {
+			$parts = explode( '/', trim( (string) $range ), 2 );
+			$ip    = filter_var( $parts[0], FILTER_VALIDATE_IP );
+			$max   = false !== $ip && false !== strpos( (string) $ip, ':' ) ? 128 : 32;
+
+			if ( false === $ip ) {
+				continue;
+			}
+
+			if ( isset( $parts[1] ) && ( ! ctype_digit( $parts[1] ) || (int) $parts[1] > $max ) ) {
+				continue;
+			}
+
+			$ranges[] = isset( $parts[1] ) ? $ip . '/' . (int) $parts[1] : $ip;
+		}
+
+		return array_values( array_unique( $ranges ) );
 	}
 
 	/**

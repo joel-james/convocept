@@ -120,7 +120,8 @@ convocept/
 │   ├── Markdown/                 # safe Markdown → HTML (server side only)
 │   ├── Votes/                    # upvotes (1.0), reactions (1.2)
 │   ├── Subscriptions/            # model, mailer, queue, manage page, tokens
-│   ├── Security/                 # RateLimiter, Honeypot, IpResolver, Sanitizer
+│   ├── Security/                 # IpResolver, RateLimiter, FormToken
+│   ├── Moderation/               # Pipeline, Decision, Context, Checks/ (honeypot, timing, links)
 │   ├── Schema/                   # structured data output
 │   ├── Import/                   # Importer interface + Disqus, StCR, wpDiscuz (admin/CLI only)
 │   ├── Insights/                 # stats rollup + Insights REST data (1.1)
@@ -194,12 +195,16 @@ convocept/
 | `/posts/{id}/comments?page=&sort=&parent=` | GET | public | HTML fragment of comments + pagination meta headers |
 | `/posts/{id}/comments` | POST | public + nonce for logged-in | HTML fragment of new comment (or error JSON) |
 | `/comments/{id}` | PATCH | author within edit window, or moderator | HTML fragment |
+| `/comments/{id}` | GET | author within edit window, or moderator | JSON: Markdown source for editing |
+| `/preview` | POST | public, rate-limited | JSON: rendered Markdown HTML |
 | `/comments/{id}/reactions` | POST | public, rate-limited | JSON counts |
 | `/comments/{id}/moderate` | POST | `moderate_comments` | HTML fragment / status |
 | `/comments/{id}/pin` | POST | `moderate_comments` | status |
 | `/subscriptions` | POST | public, rate-limited | JSON (always generic "check your email") |
 | `/subscriptions/confirm` & `/unsubscribe` | GET (tokenized links) | token | redirect to manage page |
 
+- Fragments are returned inside JSON (`{ html, status, … }`) so metadata travels with them
+  (see `docs/decisions.md`); the HTML always comes from the PHP templates.
 - Comment creation must go through **`wp_handle_comment_submission()`** so core flood checks,
   disallowed keys, `pre_comment_approved`, Akismet and other anti-spam plugins all still apply.
 - Every route: `permission_callback`, strict `args` schemas, sanitization, consistent error shape.
@@ -320,7 +325,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** renders identically with JS disabled; no per-user data in HTML (unit test asserts
   no nonce/cookie values in output); CLS = 0 in Lighthouse; theme override works.
 
-### M2 — Composer & submission
+### M2 — Composer & submission ✅ done
 - Composer template (textarea with auto-grow, name/email/url for guests, consent checkbox if
   enabled, subscribe checkbox), Markdown toolbar (minimal), preview tab (server-rendered via
   REST), character counter.

@@ -11,6 +11,7 @@
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/tests/phpstan/*</exclude-pattern>
+	<exclude-pattern>/tests/e2e/*</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>
@@ -51,6 +52,9 @@
 		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.Commenting">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
 		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 	<rule ref="Generic.Commenting.DocComment.MissingShort">
