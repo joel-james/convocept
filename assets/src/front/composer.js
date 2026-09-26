@@ -112,10 +112,17 @@ export function initComposer( root ) {
 						elapsed: startedAt
 							? ( Date.now() - startedAt ) / 1000
 							: 0,
-						cookies_consent: !! (
-							form.elements[ 'wp-comment-cookies-consent' ] &&
-							form.elements[ 'wp-comment-cookies-consent' ]
-								.checked
+						cookies_consent: checked(
+							form,
+							'wp-comment-cookies-consent'
+						),
+						subscribe_replies: checked(
+							form,
+							'convocept_subscribe_replies'
+						),
+						subscribe_post: checked(
+							form,
+							'convocept_subscribe_post'
 						),
 					},
 				}
@@ -144,7 +151,10 @@ export function initComposer( root ) {
 			startedAt = 0;
 			announce(
 				status,
-				t( result.status === 'approved' ? 'posted' : 'pending' )
+				t( result.status === 'approved' ? 'posted' : 'pending' ) +
+					( result.subscription === 'pending'
+						? ' ' + t( 'confirmEmail' )
+						: '' )
 			);
 		} catch ( error ) {
 			placeholder.remove();
@@ -340,6 +350,17 @@ async function switchTab( form, input, preview, tab ) {
 	} catch ( error ) {
 		preview.textContent = error.message;
 	}
+}
+
+/**
+ * Whether a checkbox in the form is ticked.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @param {string}          name Field name.
+ * @return {boolean} Whether it exists and is checked.
+ */
+function checked( form, name ) {
+	return !! ( form.elements[ name ] && form.elements[ name ].checked );
 }
 
 /**

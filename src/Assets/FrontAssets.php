@@ -160,6 +160,7 @@ class FrontAssets {
 				'moreReplies'    => __( 'Show %s more replies', 'convocept' ),
 				/* translators: %s: Number of new comments. */
 				'newComments'    => __( 'New comments: %s', 'convocept' ),
+				'confirmEmail'   => __( 'Check your email to confirm your subscription.', 'convocept' ),
 			),
 		);
 

@@ -819,3 +819,56 @@
 .convocept .convocept-mod [data-convocept-mod="trash"] {
 	color: #b91c1c;
 }
+
+/* Subscriptions
+   ------------------------------------------------------------------ */
+
+.convocept-form__subscribe {
+	display: grid;
+	gap: 0.35rem;
+	font-size: 0.875em;
+}
+
+.convocept-subscribe {
+	margin-block-end: 2rem;
+	font-size: 0.9375em;
+}
+
+.convocept-subscribe summary {
+	color: var(--convocept-accent);
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.convocept-subscribe__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-block-start: 0.75rem;
+}
+
+.convocept .convocept-subscribe__form input[type="email"] {
+	flex: 1 1 14rem;
+	margin: 0;
+	padding: 0.55em 0.8em;
+	border: 1px solid var(--convocept-border);
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-field-bg);
+	color: inherit;
+	font: inherit;
+}
+
+.convocept-subscribe__message,
+.convocept-subscribe__note {
+	margin: 0.5rem 0 0;
+	color: var(--convocept-muted);
+	font-size: 0.875em;
+}
+
+.convocept-subscribe__message:empty {
+	display: none;
+}
+
+.convocept-subscribe__message.is-error {
+	color: #dc2626;
+}

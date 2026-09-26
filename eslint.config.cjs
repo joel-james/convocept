@@ -19,6 +19,15 @@ module.exports = [
 		files: [ 'bin/**/*.mjs' ],
 		languageOptions: { globals: globals.node, sourceType: 'module' },
 	},
+	{
+		// WordPress provides @wordpress/* packages at runtime (the build
+		// externalises them), so they are not installed as dependencies.
+		files: [ 'assets/src/blocks/**/*.js', 'assets/src/admin/**/*.js' ],
+		rules: {
+			'import/no-unresolved': [ 'error', { ignore: [ '^@wordpress/' ] } ],
+			'import/no-extraneous-dependencies': 'off',
+		},
+	},
 	...wpPlugin.configs[ 'test-playwright' ].map( ( config ) => ( {
 		...config,
 		files: [ 'tests/e2e/**/*.js' ],

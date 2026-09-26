@@ -20,6 +20,8 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_reaction_added` | 1.0.0 | `int $comment_id, string $reaction, int $count` | After a visitor upvotes (reaction `up`). |
 | `convocept_comment_status_changed` | 1.0.0 | `int $comment_id, string $action` | After front-end moderation (`approve`, `hold`, `spam`, `trash`). |
 | `convocept_comment_pinned` | 1.0.0 | `int $comment_id, bool $pinned` | After a comment is pinned or unpinned. |
+| `convocept_subscription_confirmed` | 1.0.0 | `int $subscription_id` | After a reader confirms a subscription. |
+| `convocept_unsubscribed` | 1.0.0 | `int $subscription_id, bool $all` | After a reader unsubscribes (one or all). |
 
 ## Filters
 
@@ -46,6 +48,8 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_inline_css` | 1.0.0 | `string $css` | Inline stylesheet; return `''` to style the thread yourself. |
 | `convocept_thread_html` | 1.0.0 | `string $html, int $post_id` | Complete thread HTML (assets are added here). |
 | `convocept_fragment_cache` | 1.0.0 | `bool $enabled` | Whether rendered comment lists are cached. |
+| `convocept_mailer` | 1.0.0 | `bool\|null $sent, array $message` | Send an email yourself (return true/false) instead of `wp_mail()`. |
+| `convocept_should_notify` | 1.0.0 | `bool $notify, WP_Comment $comment` | Whether subscribers hear about a comment (importers return false). |
 
 ## REST routes (`/wp-json/convocept/v1`)
 
@@ -57,6 +61,7 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. |
 | `/comments/{id}` | PATCH | author in window / moderator | Edit; returns `id`, `status`, `html`. |
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
+| `/subscriptions` | POST | public, rate-limited | Subscribe without commenting (`email`, `post_id` 0 = site); same answer for every address. |
 | `/posts/{id}/updates` | GET | public | Comments newer than `after`; ETag + 304 when unchanged. Returns `items`, `total`. |
 | `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`. |
 | `/comments/{id}/reactions` | POST | public, rate-limited | `active` true/false toggles the visitor's upvote; returns `count`, `active`. |
@@ -70,8 +75,16 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 - `convocept_sort` — `oldest`, `newest` or `top`.
 - `convocept_expand` — top-level comment ID whose whole reply branch is shown.
 
+## Shortcode and block
+
+- `[convocept_subscribe]` — "subscribe without commenting" for the current post;
+  `[convocept_subscribe scope="site"]` for every post; `post_id="123"` for a specific post.
+- Block **Comment Subscription** (`convocept/subscribe`) with the same post/site setting.
+
 ## Templates
 
 Copy any file from `templates/` to `{theme}/convocept/` to override it: `thread.php`,
-`thread-header.php`, `comment.php`, `composer.php`, `pagination.php`. Each template's docblock
+`thread-header.php`, `comment.php`, `composer.php`, `pagination.php`, `subscribe-form.php`,
+`subscription-manage.php`, `emails/confirm.php`, `emails/confirm-text.php`,
+`emails/notification.php`, `emails/notification-text.php`. Each template's docblock
 lists the `$args` it receives.

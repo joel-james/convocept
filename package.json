@@ -5,7 +5,7 @@
 	"license": "GPL-2.0-or-later",
 	"private": true,
 	"scripts": {
-		"build": "npm run build:front && npm run build:admin",
+		"build": "npm run build:front && npm run build:admin && npm run build:blocks",
 		"build:front": "node bin/build-front.mjs",
 		"build:admin": "wp-scripts build assets/src/admin/index.js --output-path=assets/dist/admin",
 		"start": "node bin/build-front.mjs --watch",
@@ -19,7 +19,8 @@
 		"env:stop": "wp-env stop",
 		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/convocept composer test",
 		"test:e2e": "wp-scripts test-playwright",
-		"release": "bash bin/build-zip.sh"
+		"release": "bash bin/build-zip.sh",
+		"build:blocks": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/dist/blocks"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",

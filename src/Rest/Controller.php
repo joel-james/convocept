@@ -66,6 +66,7 @@ class Controller {
 		$threads    = new ThreadEndpoint( $this->plugin->renderer() );
 		$reactions  = new ReactionsEndpoint( $this->plugin );
 		$moderation = new ModerationEndpoint( $this->plugin );
+		$subscribe  = new SubscriptionsEndpoint( $this->plugin );
 
 		register_rest_route(
 			self::NAMESPACE,
@@ -196,6 +197,17 @@ class Controller {
 				'callback'            => array( $moderation, 'pending' ),
 				'permission_callback' => array( $moderation, 'can_moderate_post' ),
 				'args'                => $moderation->pending_args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/subscriptions',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $subscribe, 'create' ),
+				'permission_callback' => '__return_true',
+				'args'                => $subscribe->args(),
 			)
 		);
 

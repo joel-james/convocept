@@ -21,6 +21,7 @@
  *     @type string                     $composer_html Comment form, empty when closed.
  *     @type string                     $list_html     Comment list items.
  *     @type string                     $pagination    Pagination, empty for a single page.
+ *     @type string                     $subscribe_html "Subscribe without commenting" form, or empty.
  * }
  */
 
@@ -53,6 +54,7 @@ $convocept_thread = $args['thread'];
 
 	echo $args['header_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in thread-header.php.
 	echo $args['composer_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in composer.php.
+	echo $args['subscribe_html'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in subscribe-form.php.
 	?>
 
 	<?php if ( ! $args['is_open'] ) : ?>

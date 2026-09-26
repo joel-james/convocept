@@ -10,6 +10,7 @@ namespace Convocept\Database;
 
 use Convocept\Database\Migrations\PrototypeData;
 use Convocept\Database\Migrations\ReactionsTable;
+use Convocept\Database\Migrations\SubscriptionsTable;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -61,6 +62,7 @@ class Migrator {
 		return array(
 			1 => PrototypeData::class,
 			2 => ReactionsTable::class,
+			3 => SubscriptionsTable::class,
 		);
 	}
 

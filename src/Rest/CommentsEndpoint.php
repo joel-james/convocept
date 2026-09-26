@@ -60,41 +60,49 @@ class CommentsEndpoint {
 		$lengths = wp_get_comment_fields_max_lengths();
 
 		return array(
-			'post_id'         => array(
+			'post_id'           => array(
 				'type'     => 'integer',
 				'required' => true,
 				'minimum'  => 1,
 			),
-			'content'         => Controller::content_arg( true ),
-			'parent'          => array(
+			'content'           => Controller::content_arg( true ),
+			'parent'            => array(
 				'type'    => 'integer',
 				'default' => 0,
 				'minimum' => 0,
 			),
-			'author'          => array(
+			'author'            => array(
 				'type'      => 'string',
 				'default'   => '',
 				'maxLength' => (int) $lengths['comment_author'],
 			),
-			'email'           => array(
+			'email'             => array(
 				'type'      => 'string',
 				'default'   => '',
 				'maxLength' => (int) $lengths['comment_author_email'],
 			),
-			'url'             => array(
+			'url'               => array(
 				'type'      => 'string',
 				'default'   => '',
 				'maxLength' => (int) $lengths['comment_author_url'],
 			),
-			'honeypot'        => array(
+			'honeypot'          => array(
 				'type'    => 'string',
 				'default' => '',
 			),
-			'elapsed'         => array(
+			'elapsed'           => array(
 				'type'    => 'number',
 				'minimum' => 0,
 			),
-			'cookies_consent' => array(
+			'cookies_consent'   => array(
+				'type'    => 'boolean',
+				'default' => false,
+			),
+			'subscribe_replies' => array(
+				'type'    => 'boolean',
+				'default' => false,
+			),
+			'subscribe_post'    => array(
 				'type'    => 'boolean',
 				'default' => false,
 			),
@@ -169,20 +177,23 @@ class CommentsEndpoint {
 	 * @param WP_REST_Request $request Request.
 	 * @return WP_REST_Response|WP_Error Response data: 'id', 'status' ('approved' or
 	 *                                   'pending'), 'parent', 'html', 'edit_token',
-	 *                                   'edit_until' and 'total'.
+	 *                                   'edit_until', 'total' and 'subscription'
+	 *                                   ('active', 'pending' or '').
 	 */
 	public function create( WP_REST_Request $request ) {
 		$submission = $this->plugin->submission();
 		$comment    = $submission->submit(
 			array(
-				'post_id'  => (int) $request->get_param( 'post_id' ),
-				'parent'   => (int) $request->get_param( 'parent' ),
-				'content'  => (string) $request->get_param( 'content' ),
-				'author'   => (string) $request->get_param( 'author' ),
-				'email'    => (string) $request->get_param( 'email' ),
-				'url'      => (string) $request->get_param( 'url' ),
-				'honeypot' => (string) $request->get_param( 'honeypot' ),
-				'elapsed'  => $request->get_param( 'elapsed' ),
+				'post_id'           => (int) $request->get_param( 'post_id' ),
+				'parent'            => (int) $request->get_param( 'parent' ),
+				'content'           => (string) $request->get_param( 'content' ),
+				'author'            => (string) $request->get_param( 'author' ),
+				'email'             => (string) $request->get_param( 'email' ),
+				'url'               => (string) $request->get_param( 'url' ),
+				'honeypot'          => (string) $request->get_param( 'honeypot' ),
+				'elapsed'           => $request->get_param( 'elapsed' ),
+				'subscribe_replies' => (bool) $request->get_param( 'subscribe_replies' ),
+				'subscribe_post'    => (bool) $request->get_param( 'subscribe_post' ),
 			)
 		);
 
@@ -198,14 +209,15 @@ class CommentsEndpoint {
 
 		return Controller::response(
 			array(
-				'id'         => (int) $comment->comment_ID,
+				'id'           => (int) $comment->comment_ID,
 				// Spam and trash look "pending" too, so bots learn nothing.
-				'status'     => '1' === (string) $comment->comment_approved ? 'approved' : 'pending',
-				'parent'     => (int) $comment->comment_parent,
-				'html'       => $this->plugin->renderer()->render_single( $comment ),
-				'edit_token' => $submission->edit_token(),
-				'edit_until' => $edit_window->minutes() > 0 ? $edit_window->closes_at( $comment ) : 0,
-				'total'      => ( new ThreadQuery() )->total( (int) $comment->comment_post_ID ),
+				'status'       => '1' === (string) $comment->comment_approved ? 'approved' : 'pending',
+				'parent'       => (int) $comment->comment_parent,
+				'html'         => $this->plugin->renderer()->render_single( $comment ),
+				'edit_token'   => $submission->edit_token(),
+				'edit_until'   => $edit_window->minutes() > 0 ? $edit_window->closes_at( $comment ) : 0,
+				'total'        => ( new ThreadQuery() )->total( (int) $comment->comment_post_ID ),
+				'subscription' => $this->plugin->subscribe_form()->last_status(),
 			),
 			201
 		);

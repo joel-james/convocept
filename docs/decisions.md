@@ -2,6 +2,34 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M6 subscriptions
+- **Signed link tokens instead of stored token hashes.** PLAN §7 asked for random tokens stored only
+  as hashes, but notification emails must carry a working unsubscribe link long after the
+  subscription was created, and a hash can't be turned back into a link. Tokens are
+  `{id}.{HMAC(salt, purpose|id|token_key)}`: unguessable, purpose-bound (confirm vs manage),
+  revocable per row by rotating `token_key`, never containing the email address, and useless
+  with only a leaked database (the salt lives in wp-config.php). Confirm links expire after 48 h.
+- **No state change on GET.** Mail scanners open links, so confirming and unsubscribing are
+  buttons (POST). The exception is RFC 8058 one-click (`List-Unsubscribe=One-Click` POST).
+- **Double opt-in** (default on) is skipped for a logged-in reader's own account email and for
+  addresses that already have an active subscription. Confirmation emails: at most one per
+  address per 10 minutes. Subscribe responses are identical whether or not an address exists.
+- **Queue:** approving a comment records a job (comment ID + cursor) in an option; WP-Cron (or
+  Action Scheduler when installed) sends `batch_size` (default 50) per run and reschedules. One
+  email per address per comment (GROUP BY email hash), never to the comment's own author.
+  Queued from `wp_insert_comment` / `transition_comment_status`, so every source is covered;
+  importers skip with `convocept_should_notify`.
+- **Subscription page** is a query-var URL (`/?convocept=manage&convocept_token=…`) rendered in
+  the theme's own header and footer (classic `get_header()`, block `block_template_part()`), with
+  `noindex, noarchive`, a strict referrer policy, `nocache_headers()` and `DONOTCACHEPAGE`.
+- **Known limitation:** with PHP's `mail()` transport, PHPMailer RFC 2047-encodes headers longer
+  than ~60 characters, which mangles `List-Unsubscribe`. SMTP / API senders (what high-volume
+  sites use, and what Gmail/Yahoo bulk rules expect) send it raw; the link in the email body always
+  works.
+- **Two bugs fixed on the way:** "Top" sort now joins the score meta with the key in the `ON`
+  clause (other comment meta broke the order), and uses its own `cache_domain` (core's query
+  cache keys ignore custom query vars, so it reused "oldest" results).
+
 ## 2026-09-26 — M5 votes, pins and moderation
 - **Upvotes** use the `{prefix}convocept_reactions` table (migration 2, planned in §5.4) as the
   reaction `up`; `INSERT IGNORE` + a unique key make one vote per voter a database guarantee.

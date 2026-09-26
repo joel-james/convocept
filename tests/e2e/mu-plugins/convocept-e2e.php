@@ -48,3 +48,70 @@ add_filter(
 		return $config;
 	}
 );
+
+/*
+ * Mail catcher: emails are stored instead of sent, and exposed to the
+ * tests through an admin-only REST route, which can also run the
+ * notification queue (WP-Cron can't loop back inside the container).
+ */
+add_filter(
+	'pre_wp_mail',
+	static function ( $short_circuit, $atts ) {
+		$mails   = (array) get_option( 'convocept_e2e_mails', array() );
+		$mails[] = array(
+			'to'      => (array) $atts['to'],
+			'subject' => $atts['subject'],
+			'message' => $atts['message'],
+			'headers' => (array) $atts['headers'],
+		);
+		update_option( 'convocept_e2e_mails', $mails, false );
+
+		return true;
+	},
+	10,
+	2
+);
+
+add_action(
+	'rest_api_init',
+	static function () {
+		$admin = static function () {
+			return current_user_can( 'manage_options' );
+		};
+
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/mails',
+			array(
+				array(
+					'methods'             => 'GET',
+					'permission_callback' => $admin,
+					'callback'            => static function () {
+						return (array) get_option( 'convocept_e2e_mails', array() );
+					},
+				),
+				array(
+					'methods'             => 'DELETE',
+					'permission_callback' => $admin,
+					'callback'            => static function () {
+						delete_option( 'convocept_e2e_mails' );
+						return true;
+					},
+				),
+			)
+		);
+
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/run-queue',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $admin,
+				'callback'            => static function () {
+					do_action( 'convocept_send_notifications' );
+					return true;
+				},
+			)
+		);
+	}
+);

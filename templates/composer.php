@@ -37,6 +37,7 @@
  *     @type string             $token_field           Name of the hidden signed-timestamp field.
  *     @type string             $form_token            Signed "form rendered at" token.
  *     @type string             $honeypot_field        Name of the honeypot field.
+ *     @type bool               $subscriptions         Whether to offer email subscriptions.
  * }
  */
 
@@ -158,6 +159,19 @@ do_action( 'comment_form_before' );
 					</p>
 				<?php endif; ?>
 			</div>
+
+			<?php if ( $args['subscriptions'] ) : ?>
+				<div class="convocept-form__subscribe">
+					<p class="convocept-form__field convocept-form__field--checkbox">
+						<input id="convocept-subscribe-replies" name="convocept_subscribe_replies" type="checkbox" value="1">
+						<label for="convocept-subscribe-replies"><?php esc_html_e( 'Email me replies to my comment', 'convocept' ); ?></label>
+					</p>
+					<p class="convocept-form__field convocept-form__field--checkbox">
+						<input id="convocept-subscribe-post" name="convocept_subscribe_post" type="checkbox" value="1">
+						<label for="convocept-subscribe-post"><?php esc_html_e( 'Email me all new comments on this post', 'convocept' ); ?></label>
+					</p>
+				</div>
+			<?php endif; ?>
 
 			<p class="convocept-hp" aria-hidden="true">
 				<label for="convocept-hp"><?php esc_html_e( 'Leave this field empty', 'convocept' ); ?></label>

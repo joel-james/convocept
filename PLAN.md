@@ -220,9 +220,9 @@ Use core tables wherever possible.
 
 **Custom tables** (created with `dbDelta`, versioned migrations)
 - `{prefix}convocept_subscriptions`: id, email_hash, email, post_id (0 = all-site), comment_id (reply
-  subscription), status (pending|active|suspended|unsubscribed), token_hash, created_at,
-  confirmed_at, source (native|import_stcr|import_wpdiscuz), locale. Indexes on (post_id,status),
-  (email_hash), (token_hash).
+  subscription), status (pending|active|unsubscribed), token_key (random secret for signed links;
+  see docs/decisions.md), created_at, confirmed_at, source (native|import_stcr|import_wpdiscuz),
+  locale. Unique (email_hash, post_id, comment_id); indexes (post_id,status), (comment_id,status).
 - `{prefix}convocept_reactions`: id, comment_id, reaction, voter_hash (user ID or salted IP+UA hash),
   created_at. Unique (comment_id, voter_hash, reaction).
 - `{prefix}convocept_stats_daily` (M13): day (DATE), post_id (0 = site total), metric (varchar 64),
@@ -363,7 +363,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** one reaction per voter per type; rate limits enforced; moderator actions update the
   fragment in place.
 
-### M6 — Subscriptions (StCR replacement)
+### M6 — Subscriptions (StCR replacement) ✅ done (5,000-subscriber batch test; e2e subscribe → confirm → notify → unsubscribe)
 - Options on composer: "notify me of replies to my comment" / "notify me of all new comments".
   Standalone "subscribe without commenting" form (block + shortcode).
 - Double opt-in (configurable), one-click unsubscribe (RFC 8058 `List-Unsubscribe` +

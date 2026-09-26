@@ -61,6 +61,54 @@ final class Sort {
 	const SCORE_META_KEY = 'convocept_score';
 
 	/**
+	 * WP_Comment_Query variable marking a query sorted by score.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	const TOP_QUERY_VAR = 'convocept_top';
+
+	/**
+	 * Register the query clause filter for the "top" sort.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public static function register(): void {
+		add_filter( 'comments_clauses', array( self::class, 'top_clauses' ), 10, 2 );
+	}
+
+	/**
+	 * Order a "top" query by score, highest first; unscored comments last.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, string> $clauses SQL clauses.
+	 * @param \WP_Comment_Query     $query   The query.
+	 * @return array<string, string>
+	 */
+	public static function top_clauses( $clauses, $query ) {
+		global $wpdb;
+
+		if ( ! $query instanceof \WP_Comment_Query || empty( $query->query_vars[ self::TOP_QUERY_VAR ] ) || ! empty( $query->query_vars['count'] ) ) {
+			return $clauses;
+		}
+
+		$clauses['join'] .= $wpdb->prepare(
+			" LEFT JOIN {$wpdb->commentmeta} AS convocept_score ON ( convocept_score.comment_id = {$wpdb->comments}.comment_ID AND convocept_score.meta_key = %s )",
+			self::SCORE_META_KEY
+		);
+
+		// COALESCE puts comments without a score at 0, below every upvoted comment.
+		$score = 'COALESCE( CAST( convocept_score.meta_value AS SIGNED ), 0 ) DESC';
+
+		$clauses['orderby'] = '' === trim( (string) $clauses['orderby'] ) ? $score : $score . ', ' . $clauses['orderby'];
+
+		return $clauses;
+	}
+
+	/**
 	 * Get every valid sort order.
 	 *
 	 * @since 1.0.0
@@ -110,22 +158,15 @@ final class Sort {
 				);
 
 			case self::TOP:
-				// The OR clause keeps comments that have no score yet; they
-				// sort as NULL, which MySQL places last in descending order.
+				// Ordering by score is added in top_clauses(): a key-restricted
+				// LEFT JOIN, so comments without a score (and comments with any
+				// other meta) sort correctly.
 				return array(
-					'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Top sort needs the score; indexed by comment_id.
-						'relation' => 'OR',
-						'score'    => array(
-							'key'  => self::SCORE_META_KEY,
-							'type' => 'NUMERIC',
-						),
-						'no_score' => array(
-							'key'     => self::SCORE_META_KEY,
-							'compare' => 'NOT EXISTS',
-						),
-					),
-					'orderby'    => array(
-						'score'            => 'DESC',
+					self::TOP_QUERY_VAR => true,
+					// Core's query cache keys only include core query vars; a
+					// distinct cache_domain keeps this from reusing "oldest" results.
+					'cache_domain'      => 'convocept_top',
+					'orderby'           => array(
 						'comment_date_gmt' => 'ASC',
 						'comment_ID'       => 'ASC',
 					),

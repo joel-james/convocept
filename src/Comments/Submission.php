@@ -189,6 +189,8 @@ class Submission {
 	 *     @type string $url      Guest website.
 	 *     @type string $honeypot Honeypot value.
 	 *     @type float  $elapsed  Seconds between the composer appearing and submitting.
+	 *     @type bool   $subscribe_replies Email the commenter replies to this comment.
+	 *     @type bool   $subscribe_post    Email the commenter every new comment on the post.
 	 * }
 	 * @return WP_Comment|WP_Error The new comment, or why it was rejected.
 	 */
@@ -205,6 +207,11 @@ class Submission {
 				$this->ips->hash(),
 				'markdown'
 			)
+		);
+
+		$this->context->subscribe = array(
+			'replies' => ! empty( $data['subscribe_replies'] ),
+			'post'    => ! empty( $data['subscribe_post'] ),
 		);
 
 		$error = $this->guard( $data );
@@ -257,6 +264,11 @@ class Submission {
 			isset( $_POST['convocept_hp'] ) ? sanitize_text_field( wp_unslash( $_POST['convocept_hp'] ) ) : '',
 			null === $issued ? null : (float) ( time() - $issued ),
 			$this->ips->hash()
+		);
+
+		$context->subscribe = array(
+			'replies' => ! empty( $_POST['convocept_subscribe_replies'] ),
+			'post'    => ! empty( $_POST['convocept_subscribe_post'] ),
 		);
 
 		$data = array(

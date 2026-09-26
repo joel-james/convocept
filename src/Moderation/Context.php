@@ -85,6 +85,14 @@ final class Context {
 	public $format;
 
 	/**
+	 * Subscriptions the commenter asked for: 'replies' and/or 'post' => true.
+	 *
+	 * @since 1.0.0
+	 * @var array<string, bool>
+	 */
+	public $subscribe = array();
+
+	/**
 	 * Create a context.
 	 *
 	 * @since 1.0.0

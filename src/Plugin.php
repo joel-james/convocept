@@ -29,6 +29,14 @@ use Convocept\Security\FormToken;
 use Convocept\Security\IpResolver;
 use Convocept\Security\RateLimiter;
 use Convocept\Settings\Settings;
+use Convocept\Subscriptions\ManagePage;
+use Convocept\Subscriptions\Mailer;
+use Convocept\Subscriptions\Notifier;
+use Convocept\Subscriptions\Queue;
+use Convocept\Subscriptions\Repository;
+use Convocept\Subscriptions\SubscribeForm;
+use Convocept\Subscriptions\Subscriptions;
+use Convocept\Subscriptions\Tokens;
 use Convocept\Votes\Votes;
 
 defined( 'ABSPATH' ) || exit;
@@ -117,6 +125,7 @@ final class Plugin {
 		);
 
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+		Sort::register();
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
 		// Submissions can arrive on any request type (wp-comments-post.php, REST).
@@ -124,6 +133,10 @@ final class Plugin {
 
 		// Votes belong to comments; drop them when a comment is deleted for good.
 		add_action( 'deleted_comment', array( $this->votes(), 'delete_for_comment' ) );
+
+		// Subscriptions: forms and notifications on every request type, the page on the front end.
+		$this->subscribe_form()->register();
+		$this->notifier()->register();
 
 		// Comment links appear everywhere: redirects, wp-admin, emails, feeds.
 		( new CommentLinks( $this->renderer() ) )->register();
@@ -137,6 +150,7 @@ final class Plugin {
 			( new ClassicTheme( $this->renderer() ) )->register();
 			( new BlockTheme( $this->renderer() ) )->register();
 			( new FrontAssets( $this->renderer(), $this->edit_window(), $this->settings() ) )->register();
+			$this->manage_page()->register();
 		}
 
 		/**
@@ -308,6 +322,77 @@ final class Plugin {
 			Submission::class,
 			function () {
 				return new Submission( $this->ips(), $this->limiter(), new FormToken(), new Pipeline(), $this->edit_window() );
+			}
+		);
+	}
+
+	/**
+	 * Get the subscription service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Subscriptions
+	 */
+	public function subscriptions(): Subscriptions {
+		return $this->service(
+			Subscriptions::class,
+			function () {
+				return new Subscriptions( new Repository(), new Tokens(), new Mailer(), new TemplateLoader(), $this->settings(), $this->limiter() );
+			}
+		);
+	}
+
+	/**
+	 * Get the subscribe forms.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return SubscribeForm
+	 */
+	public function subscribe_form(): SubscribeForm {
+		return $this->service(
+			SubscribeForm::class,
+			function () {
+				return new SubscribeForm( $this->subscriptions(), new TemplateLoader(), $this->renderer(), $this->limiter(), $this->ips() );
+			}
+		);
+	}
+
+	/**
+	 * Get the notifier.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Notifier
+	 */
+	public function notifier(): Notifier {
+		return $this->service(
+			Notifier::class,
+			function () {
+				return new Notifier(
+					$this->subscriptions(),
+					new Queue( $this->settings() ),
+					new Mailer(),
+					new TemplateLoader(),
+					$this->renderer(),
+					new CommentPresenter( $this->markdown(), $this->votes(), $this->settings() )
+				);
+			}
+		);
+	}
+
+	/**
+	 * Get the subscription page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return ManagePage
+	 */
+	public function manage_page(): ManagePage {
+		return $this->service(
+			ManagePage::class,
+			function () {
+				return new ManagePage( $this->subscriptions(), new TemplateLoader() );
 			}
 		);
 	}

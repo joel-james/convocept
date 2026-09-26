@@ -22,5 +22,11 @@ delete_metadata( 'comment', 0, 'convocept_reactions', '', true );
 delete_metadata( 'comment', 0, 'convocept_score', '', true );
 delete_metadata( 'comment', 0, 'convocept_pinned', '', true );
 
-// The {prefix}convocept_reactions table is kept until M11 adds the "delete all data" option.
+delete_metadata( 'comment', 0, '_convocept_notified', '', true );
+delete_option( 'convocept_notification_jobs' );
+delete_option( 'convocept_notification_lock' );
+wp_clear_scheduled_hook( 'convocept_send_notifications' );
+
+// The {prefix}convocept_reactions and {prefix}convocept_subscriptions tables
+// are kept until M11 adds the "delete all Convocept data" option.
 delete_metadata( 'comment', 0, '_convocept_edited', '', true );

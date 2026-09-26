@@ -11,6 +11,7 @@ import { initLive } from './live';
 import { initModerate } from './moderate';
 import { initMore } from './more';
 import { initReply } from './reply';
+import { initSubscribe } from './subscribe';
 import { initVotes } from './votes';
 
 /**
@@ -32,6 +33,7 @@ function init() {
 		initLive( root );
 		initVotes( root );
 		initModerate( root );
+		initSubscribe( root );
 	} );
 
 	// Replay a click the inline loader caught before this script was ready.

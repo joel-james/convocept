@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "convocept/subscribe",
+	"title": "Comment Subscription",
+	"category": "widgets",
+	"icon": "email",
+	"description": "Let readers get new comments by email without commenting.",
+	"keywords": [ "subscribe", "comments", "email", "notify" ],
+	"textdomain": "convocept",
+	"attributes": {
+		"scope": {
+			"type": "string",
+			"enum": [ "post", "site" ],
+			"default": "post"
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "file:./index.js"
+}

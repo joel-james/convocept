@@ -91,6 +91,9 @@ class Settings {
 	 *                                  only REMOTE_ADDR is used.
 	 *     @type string   $proxy_header Header a trusted proxy puts the client IP in.
 	 *     @type bool     $votes        Whether readers can upvote comments.
+	 *     @type bool     $subscriptions Whether readers can subscribe to comments by email.
+	 *     @type bool     $double_opt_in Whether new addresses must confirm by email first.
+	 *     @type int      $batch_size   Notification emails sent per background run (10–500).
 	 *     @type bool     $live_updates Whether open threads check for new comments while
 	 *                                  the tab is visible. Off by default.
 	 *     @type int      $poll_interval Seconds between checks (15–600).
@@ -110,6 +113,9 @@ class Settings {
 			'trusted_proxies' => array(),
 			'proxy_header'    => 'X-Forwarded-For',
 			'votes'           => true,
+			'subscriptions'   => true,
+			'double_opt_in'   => true,
+			'batch_size'      => 50,
 			'live_updates'    => false,
 			'poll_interval'   => 60,
 		);
@@ -222,6 +228,9 @@ class Settings {
 
 			case 'max_depth':
 				return $this->int_in_range( $value, 1, 10, $fallback );
+
+			case 'batch_size':
+				return $this->int_in_range( $value, 10, 500, $fallback );
 
 			case 'poll_interval':
 				return $this->int_in_range( $value, 15, 600, $fallback );

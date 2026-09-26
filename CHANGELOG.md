@@ -6,6 +6,12 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M6 subscriptions: "email me replies" / "email me all new comments" in the composer,
+  "subscribe without commenting" (in the thread, `[convocept_subscribe]` shortcode and a block),
+  double opt-in, one-click unsubscribe (RFC 8058 headers), a subscription page shown in the
+  theme, and a background queue that sends notifications in batches (5,000 subscribers never
+  slow down posting). HTML + plain-text emails, overridable templates, sent in the reader's
+  language.
 - M5 votes and moderation: upvotes (one per reader, remembered across visits, `votes` setting),
   pinned comments that lead page 1, front-end moderator tools (approve, spam, trash, pin, edit
   link) with pending comments shown in place for moderators, and a "Convocept" column on the
@@ -56,6 +62,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Tooling: esbuild front-end build, `@wordpress/scripts` admin build, size-limit budgets
   (loader 1 KB, JS 8 KB, CSS 5 KB gzipped), phpcs (WPCS + PHPCompatibility), PHPStan level 6,
   ESLint, Prettier, stylelint, wp-env, PHPUnit, Playwright, GitHub Actions CI, release zip script.
+
+### Fixed
+- "Top" sort ordered wrongly when comments had other metadata, or reused cached "oldest" results.
 
 ### Changed
 - Migration 1 renames the prototype's `_convocept_edited` comment meta to `convocept_edited_at` and

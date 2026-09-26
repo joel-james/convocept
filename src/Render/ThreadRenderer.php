@@ -762,6 +762,7 @@ class ThreadRenderer {
 				'token_field'           => Submission::TOKEN_FIELD,
 				'form_token'            => $this->tokens->create(),
 				'honeypot_field'        => HoneypotCheck::FIELD,
+				'subscriptions'         => (bool) $this->settings->get( 'subscriptions' ),
 			)
 		);
 
