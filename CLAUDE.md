@@ -12,13 +12,14 @@ unreleased React prototype (first git commit); the prototype's leftover files (`
 `build/`, React files in `src/`) are unused and excluded from release zips, pending deletion.
 
 - **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
-  lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data). Milestones are
+  lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
+  and the Disqus part of M8 (Tools → Import + `wp convocept import`; StCR/wpDiscuz are 1.1). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M8 (Disqus importer only for 1.0), then M9 lite settings UI, M11, M12. There is **no admin settings screen yet** (M9); settings live in the
+- **Next:** M9 lite settings UI, then M11, M12. There is **no admin settings screen yet** (M9); settings live in the
   `convocept_settings` option.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M7 to `main`; delete the prototype files;
+- **Open items to raise with the owner:** merge M1–M8 to `main`; delete the prototype files;
   Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
   investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md).
 
@@ -29,6 +30,8 @@ unreleased React prototype (first git commit); the prototype's leftover files (`
   site only; single-file mounts go stale. It disables flood/rate/timing checks, catches mail and
   exposes `/convocept-e2e/v1/{mails,run-queue}`. It returns early under PHPUnit.
 - The tests site uses plain permalinks (`?p=123`): build URLs with `URL`/`URLSearchParams`.
+- `npm run test:php` reinstalls the tests site, which also deactivates Convocept there; run
+  `npx wp-env run tests-cli wp plugin activate convocept` before WP-CLI checks on it.
 - The in-app browser pane reports `visibilityState: hidden`, so IntersectionObserver never fires
   there and the lazy script doesn't load; verify front-end behaviour in Playwright.
 

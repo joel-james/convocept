@@ -2,6 +2,50 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M8 Disqus importer
+- **Format checked against real sources**, not guessed: Disqus's own WordPress plugin (thread
+  identifier `"{post ID} {guid}"`, synced comments keep `dsq_post_id` meta) and the isso
+  importer (`<thread dsq:id>`, `<post>` with `<message>` HTML, `<createdAt>` UTC, `<isDeleted>`,
+  `<isSpam>`, `<author>` name/email/username, `<ipAddress>`, `<thread dsq:id>`, `<parent dsq:id>`).
+- **Two phases.** The dry run streams the XML once with XMLReader (one element in memory at a
+  time; `.gz` read directly) and writes an NDJSON work file plus thread and skipped-parent maps.
+  Batches read the work file from a byte offset, so resuming never re-parses the export and
+  each batch starts instantly. The dry run buffers its writes (~1 MB): one write per comment took
+  118 s instead of 4.7 s for 100k comments on Docker's file sharing.
+- **Threads → posts:** identifier (post ID, accepted only when the guid matches), then the thread
+  URL, then the same path on this site's domain (moved domain / HTTPS). Unmatched threads are
+  reported and skipped; `convocept_disqus_thread_post_id` maps the rest.
+- **Idempotent:** `_convocept_disqus_id` on every imported comment; comments with the Disqus
+  plugin's `dsq_post_id` meta or Disqus `<id>wp_id=N</id>` (originally from this site) count as
+  "already on this site". Lookups are one query per batch.
+- **Parents:** spam/deleted comments are skipped and their replies move to the nearest kept
+  ancestor. A parent that appears later in the file is attached when the import finishes. A
+  parent on a different post makes the reply top-level (found in the 100k benchmark: treating it
+  as "comes later" plus per-row unindexed meta queries stalled the finishing step).
+- **Content:** Disqus HTML → paragraphs/line breaks become newlines and only core's comment
+  tags are kept (`wp_kses` `data` context). `comment_agent` = `Disqus import`. Imported
+  comments are guests (`user_id` 0) even when the email matches a user: Disqus emails aren't
+  verified for guests, so linking would let anyone claim a site account's badge.
+  `convocept_disqus_comment_data` can link them.
+- **No side effects:** imports never notify subscribers (`convocept_should_notify` is false
+  during batches) and comment counts are updated once per post per batch (deferred counting).
+- **Privacy:** the upload and work files (emails, IPs) live in
+  `uploads/convocept-import/{32 random chars}/` with `index.php` and a deny-all `.htaccess`, and are
+  deleted when the import finishes, is cancelled or the plugin is uninstalled.
+- **Admin UI** is the core Tools → Import screen (no settings screen needed): upload → dry-run
+  report with a sample → Start → progress → report. Plain forms (one batch per click) work
+  without JavaScript; a script under 1 KB runs the batches through admin-ajax. Needs `import` and
+  `moderate_comments`. Batches stop after 500 items or 15 s. WP-CLI: `wp convocept import`.
+- **Only one import at a time** (one job option; an `add_option` lock stops parallel batches).
+- **Front end never loads importer code:** wired only under `is_admin()` and WP-CLI; an e2e test
+  lists the classes loaded while rendering a post.
+- `_convocept_disqus_id` survives uninstall so a later re-import can't duplicate comments.
+- **Benchmark** (wp-env on macOS Docker, WP-CLI, 100k-post export as .xml.gz, 100 threads, 2% spam,
+  40% replies): dry run 4.7 s; import of 98,000 comments 126 s (~780/s, 1,000 per batch); re-running
+  the same export 11 s with all 98,000 recognised and no new rows. In wp-admin a batch is 500
+  comments or 15 s, so no request comes near a 30 s limit; the dry run is the only single pass
+  (seconds even for 100k), and larger exports are pointed to WP-CLI.
+
 ## 2026-09-26 — M7 structured data
 - **`Comment` under the article, not `DiscussionForumPosting`.** Google's discussion forum docs say
   not to use that markup for "an article or blog written directly by an agent for the website

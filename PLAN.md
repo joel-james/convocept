@@ -384,7 +384,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
   active instead of duplicating).
 - **Accept:** Rich Results Test / Schema validator show no errors on a fixture post.
 
-### M8 — Importers (Disqus in 1.0.0; StCR and wpDiscuz in 1.1.0)
+### M8 — Importers (Disqus in 1.0.0; StCR and wpDiscuz in 1.1.0) — Disqus ✅ done (100k comments via WP-CLI; StCR and wpDiscuz pending for 1.1)
 Importer code lives in `src/Import/` and is wired only for wp-admin and WP-CLI; a test asserts no
 `Convocept\Import\*` class loads on a front-end request. Common `Importer` interface: detect → dry run (counts + sample) → batched import with resume →
 report. Idempotent (store source IDs in meta to avoid duplicates). Run from admin with progress UI

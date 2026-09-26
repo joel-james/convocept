@@ -6,6 +6,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M8 Disqus importer (Tools → Import → "Disqus (Convocept)" and `wp convocept import disqus`):
+  dry run with counts and a sample, batched import that resumes after interruptions, threads
+  matched by identifier or URL (including moved domains), replies kept in place, spam and deleted
+  comments skipped, no duplicates on re-runs (also with comments the Disqus plugin already
+  synced), no subscriber emails. Handles 100k+ comment exports and `.xml.gz` files.
 - M7 structured data: comments are described as schema.org `Comment` items nested under the
   post's article (replies under their parent), only for the comments the page shows. With Yoast
   SEO or Rank Math the comments join their schema graph instead of adding a second article.

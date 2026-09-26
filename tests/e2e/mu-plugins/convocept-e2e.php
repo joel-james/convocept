@@ -113,5 +113,46 @@ add_action(
 				},
 			)
 		);
+
+		// Cancels any import left over from an earlier (failed) test run.
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/reset-import',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $admin,
+				'callback'            => static function () {
+					\Convocept\Plugin::instance()->import_runner()->cancel();
+					return true;
+				},
+			)
+		);
 	}
+);
+
+/*
+ * ?convocept_e2e_classes=1 prints the Convocept classes loaded while
+ * rendering a front-end page, so tests can prove admin/CLI-only code (the
+ * importers) never loads there.
+ */
+add_action(
+	'wp_footer',
+	static function () {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test-only switch.
+		if ( ! isset( $_GET['convocept_e2e_classes'] ) ) {
+			return;
+		}
+
+		$classes = array_values(
+			array_filter(
+				array_merge( get_declared_classes(), get_declared_interfaces() ),
+				static function ( $name ) {
+					return 0 === strpos( $name, 'Convocept\\' );
+				}
+			)
+		);
+
+		echo '<script type="application/json" id="convocept-e2e-classes">' . wp_json_encode( $classes ) . '</script>';
+	},
+	PHP_INT_MAX
 );

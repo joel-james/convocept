@@ -9,12 +9,16 @@
 namespace Convocept;
 
 use Convocept\Admin\CommentsColumn;
+use Convocept\Admin\ImportScreen;
+use Convocept\Cli\ImportCommand;
 use Convocept\Assets\FrontAssets;
 use Convocept\Comments\EditWindow;
 use Convocept\Comments\Sort;
 use Convocept\Comments\Submission;
 use Convocept\Comments\ThreadQuery;
 use Convocept\Database\Migrator;
+use Convocept\Import\Runner;
+use Convocept\Import\Workspace;
 use Convocept\Integration\BlockTheme;
 use Convocept\Integration\ClassicTheme;
 use Convocept\Integration\CommentLinks;
@@ -145,6 +149,12 @@ final class Plugin {
 
 		if ( is_admin() ) {
 			( new CommentsColumn( $this->votes() ) )->register();
+			// Importers exist only in wp-admin and WP-CLI; front-end requests never load them.
+			( new ImportScreen( $this->import_runner(), new Workspace() ) )->register();
+		}
+
+		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( 'WP_CLI' ) ) {
+			\WP_CLI::add_command( 'convocept import', new ImportCommand( $this->import_runner() ) );
 		}
 
 		// Theme output only exists outside wp-admin; admin requests skip it entirely.
@@ -419,6 +429,22 @@ final class Plugin {
 					$this->votes(),
 					new FragmentCache()
 				);
+			}
+		);
+	}
+
+	/**
+	 * Get the import runner (wp-admin and WP-CLI only).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Runner
+	 */
+	public function import_runner(): Runner {
+		return $this->service(
+			Runner::class,
+			static function () {
+				return new Runner( new Workspace() );
 			}
 		);
 	}

@@ -22,6 +22,8 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_comment_pinned` | 1.0.0 | `int $comment_id, bool $pinned` | After a comment is pinned or unpinned. |
 | `convocept_subscription_confirmed` | 1.0.0 | `int $subscription_id` | After a reader confirms a subscription. |
 | `convocept_unsubscribed` | 1.0.0 | `int $subscription_id, bool $all` | After a reader unsubscribes (one or all). |
+| `convocept_comment_imported` | 1.0.0 | `int $comment_id, string $source, array $item` | After an importer creates a comment (`$source` e.g. `disqus`). |
+| `convocept_import_completed` | 1.0.0 | `Job $job` | When an import finishes (counters in `$job->counts`). |
 
 ## Filters
 
@@ -53,6 +55,10 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_structured_data_enabled` | 1.0.0 | `bool $enabled, int $post_id` | Whether a post's comments are described in JSON-LD (setting `structured_data`). |
 | `convocept_structured_data_comments` | 1.0.0 | `array $items, int $post_id, Thread $thread` | The `Comment` items (replies nested under `comment`); runs after the cache. |
 | `convocept_structured_data_node` | 1.0.0 | `array $node, int $post_id` | Standalone article node printed in the footer when no SEO plugin graph carries the comments; `[]` prints nothing. |
+| `convocept_importers` | 1.0.0 | `array<string, Importer> $importers` | Add import sources (Tools → Import and `wp convocept import`). |
+| `convocept_import_batch_size` | 1.0.0 | `int $limit, string $importer` | Items per import batch (default 500 in wp-admin, `--batch-size` in WP-CLI). |
+| `convocept_disqus_thread_post_id` | 1.0.0 | `int $post_id, array $thread` | Post a Disqus thread's comments go into; 0 skips the thread. |
+| `convocept_disqus_comment_data` | 1.0.0 | `array $commentdata, array $post` | Comment data before a Disqus comment is inserted; `[]` skips it (e.g. set `user_id`). |
 
 ## REST routes (`/wp-json/convocept/v1`)
 
@@ -72,6 +78,12 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `/comments/{id}/pin` | POST | `moderate_comments` + `edit_comment` | `pinned` true/false; top-level approved comments only. |
 | `/posts/{id}/pending` | GET | `moderate_comments` + `edit_post` | Comments awaiting moderation, rendered. |
 | `/comments/{id}/context` | GET | public (approved) | URL of the page showing the comment; returns `url`. |
+
+## WP-CLI
+
+- `wp convocept import disqus <file> [--dry-run] [--batch-size=<n>] [--yes]` — import a Disqus
+  export (.xml or .xml.gz); shows the dry run first.
+- `wp convocept import resume|status|cancel` — continue, show or forget the current import.
 
 ## Query variables
 

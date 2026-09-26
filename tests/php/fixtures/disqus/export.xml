@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<disqus xmlns="http://disqus.com" xmlns:dsq="http://disqus.com/disqus-internals" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://disqus.com/api/schemas/1.0/disqus.xsd http://disqus.com/api/schemas/1.0/disqus-internals.xsd">
+	<category dsq:id="1001">
+		<forum>example</forum>
+		<title>General</title>
+		<isDefault>true</isDefault>
+	</category>
+	<!-- Placeholders replaced by the test: {POST_A_ID}, {POST_A_GUID}, {POST_B_LINK}. -->
+	<thread dsq:id="2001">
+		<id>{POST_A_ID} {POST_A_GUID}</id>
+		<forum>example</forum>
+		<category dsq:id="1001" />
+		<link>https://old-domain.example/post-a/</link>
+		<title>Post A</title>
+		<message />
+		<createdAt>2015-03-01T10:00:00Z</createdAt>
+		<author>
+			<name>Site Owner</name>
+			<isAnonymous>false</isAnonymous>
+			<username>owner</username>
+		</author>
+		<isClosed>false</isClosed>
+		<isDeleted>false</isDeleted>
+	</thread>
+	<thread dsq:id="2002">
+		<id />
+		<forum>example</forum>
+		<category dsq:id="1001" />
+		<link>{POST_B_LINK}</link>
+		<title>Post B</title>
+		<message />
+		<createdAt>2015-03-02T10:00:00Z</createdAt>
+		<isClosed>false</isClosed>
+		<isDeleted>false</isDeleted>
+	</thread>
+	<thread dsq:id="2003">
+		<id>https://gone.example/removed-page</id>
+		<forum>example</forum>
+		<category dsq:id="1001" />
+		<link>https://gone.example/removed-page/</link>
+		<title>Removed page</title>
+		<isClosed>false</isClosed>
+		<isDeleted>false</isDeleted>
+	</thread>
+	<post dsq:id="3001">
+		<id />
+		<message><![CDATA[<p>First comment on A with <b>bold</b> and <a href="https://example.org" rel="nofollow noopener" target="_blank">a link</a>.</p><p>Second paragraph<br>new line.</p><script>alert(1)</script>]]></message>
+		<createdAt>2015-03-01T12:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<email>ada@example.com</email>
+			<name>Ada Lovelace</name>
+			<isAnonymous>false</isAnonymous>
+			<username>ada</username>
+		</author>
+		<ipAddress>203.0.113.5</ipAddress>
+		<thread dsq:id="2001" />
+	</post>
+	<post dsq:id="3002">
+		<id />
+		<message><![CDATA[<p>Reply to Ada</p>]]></message>
+		<createdAt>2015-03-01T13:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Grace</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<ipAddress>not-an-ip</ipAddress>
+		<thread dsq:id="2001" />
+		<parent dsq:id="3001" />
+	</post>
+	<post dsq:id="3003">
+		<id />
+		<message><![CDATA[<p>Buy cheap pills</p>]]></message>
+		<createdAt>2015-03-01T14:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>true</isSpam>
+		<author>
+			<email>spam@example.com</email>
+			<name>Spammer</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2001" />
+	</post>
+	<post dsq:id="3004">
+		<id />
+		<message><![CDATA[<p>This was deleted</p>]]></message>
+		<createdAt>2015-03-01T15:00:00Z</createdAt>
+		<isDeleted>true</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Deleter</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2001" />
+		<parent dsq:id="3001" />
+	</post>
+	<post dsq:id="3005">
+		<id />
+		<message><![CDATA[<p>Reply to a deleted comment</p>]]></message>
+		<createdAt>2015-03-01T16:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Linus</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2001" />
+		<parent dsq:id="3004" />
+	</post>
+	<post dsq:id="3006">
+		<id />
+		<message><![CDATA[<p>Reply that appears before its parent</p>]]></message>
+		<createdAt>2015-03-02T13:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Early</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2002" />
+		<parent dsq:id="3007" />
+	</post>
+	<post dsq:id="3007">
+		<id />
+		<message><![CDATA[<p>Parent on B</p>]]></message>
+		<createdAt>2015-03-02T12:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Parent</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2002" />
+	</post>
+	<post dsq:id="3008">
+		<id />
+		<message><![CDATA[<p>On a page that no longer exists</p>]]></message>
+		<createdAt>2015-03-03T12:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Lost</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2003" />
+	</post>
+	<post dsq:id="3009">
+		<id>wp_id={NATIVE_COMMENT_ID}</id>
+		<message><![CDATA[<p>Originally a WordPress comment</p>]]></message>
+		<createdAt>2014-01-01T12:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Native</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2001" />
+	</post>
+	<post dsq:id="3010">
+		<id />
+		<message><![CDATA[<p>Already synced by the Disqus plugin</p>]]></message>
+		<createdAt>2016-01-01T12:00:00Z</createdAt>
+		<isDeleted>false</isDeleted>
+		<isSpam>false</isSpam>
+		<author>
+			<name>Synced</name>
+			<isAnonymous>true</isAnonymous>
+		</author>
+		<thread dsq:id="2002" />
+	</post>
+</disqus>

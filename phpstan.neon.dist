@@ -6,4 +6,6 @@ parameters:
         - src
     bootstrapFiles:
         - tests/phpstan/bootstrap.php
+    scanFiles:
+        - tests/phpstan/wp-cli-stubs.php
     treatPhpDocTypesAsCertain: false
