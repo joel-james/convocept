@@ -1,0 +1,18 @@
+{
+	"name": "convocept",
+	"version": "1.0.0",
+	"description": "Convocept: a fast, self-hosted comment system for WordPress.",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style",
+		"zip": "bash bin/build-zip.sh",
+		"zip:fast": "SKIP_BUILD=1 SKIP_POT=1 bash bin/build-zip.sh"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.0.0"
+	}
+}

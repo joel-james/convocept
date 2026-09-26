@@ -1,0 +1,395 @@
+/**
+ * Soft-card comment UI.
+ *
+ * Everything is scoped under .convocept-root and driven by design tokens, so no
+ * theme CSS can break the layout and the app looks the same on any theme.
+ *
+ * Light mode only in v1; dark mode is planned for a future release.
+ * Themes may override any --convocept-* token to restyle without touching rules.
+ */
+
+.convocept-root {
+	/*
+	 * Monochrome tokens. The app paints its own background so it stays
+	 * legible regardless of the theme's page color.
+	 */
+	--convocept-bg: #ffffff;
+	--convocept-tx: #111111;
+	--convocept-mut: rgba(17, 17, 17, 0.55);
+	--convocept-ln: rgba(17, 17, 17, 0.14);
+	--convocept-sf: rgba(17, 17, 17, 0.05);
+	--convocept-ac: #111111;
+	--convocept-ac-tx: #ffffff;
+	--convocept-err: #d63638;
+	--convocept-radius: 10px;
+
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 16px;
+	line-height: 1.55;
+	color: var(--convocept-tx);
+	background: var(--convocept-bg);
+	border: 1px solid var(--convocept-ln);
+	border-radius: 14px;
+	padding: 20px 20px 24px;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	/*
+	 * Defensive resets: themes style bare elements (a, button, input, img)
+	 * globally — underline box-shadows, uppercase buttons, image borders.
+	 * Neutralize the common leaks so the app renders identically everywhere.
+	 */
+	a {
+		box-shadow: none;
+		border-bottom: 0;
+	}
+
+	img {
+		border: 0;
+		box-shadow: none;
+		max-width: none;
+	}
+
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+/* ---------- Header ---------- */
+
+.convocept-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 17.5px;
+}
+
+.convocept-header__title {
+	font-family: inherit;
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: normal;
+	text-transform: none;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	color: inherit;
+}
+
+/* ---------- Thread ---------- */
+
+/*
+ * Spacing between comments comes from the list's gap rather than margins
+ * on the items: the defensive `li` reset above would out-specify a class
+ * on the item itself, and gap leaves no trailing space after the last
+ * comment for the composer to fight with.
+ */
+.convocept-thread,
+.convocept-comment__children {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.convocept-comment__children,
+.convocept-comment__reply-form {
+	margin-left: 46px;
+	margin-top: 14px;
+}
+
+.convocept-comment__row {
+	display: flex;
+	gap: 13px;
+	align-items: flex-start;
+}
+
+.convocept-avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	flex: 0 0 auto;
+}
+
+.convocept-avatar--initials {
+	display: grid;
+	place-items: center;
+	font-size: 12.5px;
+	font-weight: 700;
+	background: var(--convocept-ac);
+	color: var(--convocept-ac-tx);
+}
+
+.convocept-comment__bubble {
+	background: var(--convocept-sf);
+	border-radius: var(--convocept-radius);
+	padding: 13px 16px;
+	flex: 1;
+	min-width: 0;
+}
+
+.convocept-comment--pending .convocept-comment__bubble {
+	opacity: 0.6;
+}
+
+.convocept-comment--unapproved .convocept-comment__bubble {
+	outline: 1px dashed var(--convocept-ln);
+}
+
+.convocept-comment__header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 10px;
+}
+
+.convocept-comment__author {
+	font-weight: 600;
+	font-size: 14.5px;
+
+	a {
+		color: inherit;
+		text-decoration: none;
+
+		&:hover,
+		&:focus-visible {
+			text-decoration: underline;
+		}
+	}
+}
+
+.convocept-comment__date,
+.convocept-comment__edited {
+	font-size: 12.5px;
+	color: var(--convocept-mut);
+}
+
+.convocept-comment__content {
+	font-size: 15px;
+	margin-top: 6px;
+	overflow-wrap: break-word;
+
+	p {
+		margin: 0 0 0.5em;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+}
+
+.convocept-comment__status {
+	font-size: 12.5px;
+	font-style: italic;
+	color: var(--convocept-mut);
+	margin: 7px 0 0;
+}
+
+.convocept-comment__links {
+	display: flex;
+	gap: 16px;
+	margin-top: 7px;
+}
+
+/* ---------- Controls ---------- */
+
+.convocept-link {
+	font: inherit;
+	font-size: 13px;
+	background: none;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	color: var(--convocept-mut);
+	cursor: pointer;
+	text-transform: none;
+	letter-spacing: normal;
+	box-shadow: none;
+	text-shadow: none;
+
+	/* Doubled selectors beat theme element:pseudo rules (e.g. button:hover). */
+	&:hover,
+	&:focus-visible,
+	&:active {
+		background: none;
+		color: var(--convocept-ac);
+		outline: none;
+		box-shadow: none;
+	}
+}
+
+.convocept-button {
+	font: inherit;
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.4;
+	cursor: pointer;
+	border-radius: 8px;
+	margin: 0;
+	padding: 7px 17.5px;
+	border: 1px solid transparent;
+	text-transform: none;
+	letter-spacing: normal;
+	box-shadow: none;
+	text-shadow: none;
+
+	&:disabled {
+		opacity: 0.55;
+		cursor: default;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--convocept-ac);
+		outline-offset: 2px;
+	}
+}
+
+.convocept-button--primary,
+.convocept-button--primary:hover,
+.convocept-button--primary:focus,
+.convocept-button--primary:active {
+	background: var(--convocept-ac);
+	color: var(--convocept-ac-tx);
+	border-color: transparent;
+}
+
+.convocept-button--ghost,
+.convocept-button--ghost:hover,
+.convocept-button--ghost:focus,
+.convocept-button--ghost:active {
+	background: transparent;
+	border-color: var(--convocept-ln);
+	color: var(--convocept-tx);
+}
+
+.convocept-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.convocept-actions--end {
+	justify-content: flex-end;
+}
+
+/* ---------- Composer ---------- */
+
+.convocept-composer {
+	margin-top: 22px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.convocept-field {
+	font: inherit;
+	font-size: 15px;
+	line-height: 1.5;
+	width: 100%;
+	margin: 0;
+	color: var(--convocept-tx);
+	background: transparent;
+	border: 1px solid var(--convocept-ln);
+	border-radius: 8px;
+	padding: 10px 13.5px;
+	box-shadow: none;
+	text-transform: none;
+	letter-spacing: normal;
+
+	&::placeholder {
+		color: var(--convocept-mut);
+	}
+
+	/* :focus (not just :focus-visible) so theme input:focus rules lose. */
+	&:focus,
+	&:focus-visible {
+		color: var(--convocept-tx);
+		background: transparent;
+		outline: 2px solid var(--convocept-ac);
+		outline-offset: -1px;
+		border-color: transparent;
+		box-shadow: none;
+	}
+}
+
+.convocept-field--area {
+	resize: vertical;
+	min-height: 4.5em;
+}
+
+.convocept-field--soft {
+	background: var(--convocept-sf);
+	border-color: transparent;
+}
+
+.convocept-composer__identity {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.convocept-composer__consent {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	font-size: 13px;
+	color: var(--convocept-mut);
+
+	input {
+		margin-top: 0.2em;
+	}
+}
+
+/* ---------- Misc ---------- */
+
+.convocept-error {
+	color: var(--convocept-err);
+	font-size: 13.5px;
+	margin: 0;
+}
+
+.convocept-notice {
+	color: var(--convocept-mut);
+	font-size: 14.5px;
+
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
+}
+
+.convocept-notice--error {
+	color: var(--convocept-err);
+}
+
+.convocept-thread__empty {
+	color: var(--convocept-mut);
+	font-size: 14.5px;
+}
+
+.convocept-pagination {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 16px 0;
+}
+
+.convocept-pagination__status {
+	color: var(--convocept-mut);
+	font-size: 13.5px;
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Convocept">
+	<description>WordPress Coding Standards for the Convocept plugin.</description>
+
+	<file>.</file>
+
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="ps"/>
+
+	<rule ref="WordPress"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="convocept"/>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="convocept"/>
+				<element value="Convocept"/>
+			</property>
+		</properties>
+	</rule>
+
+	<config name="minimum_wp_version" value="6.5"/>
+	<config name="testVersion" value="7.4-"/>
+</ruleset>
