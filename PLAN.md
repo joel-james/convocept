@@ -25,9 +25,30 @@ free core, but it must expose the hooks add-ons need (§6).
 
 ---
 
-## 2. Scope of v1.0 (free core)
+## 2. Scope (free core)
 
-**In scope**
+The scope below is delivered in three releases so real users arrive early. The WordPress.org
+prototype shipped as 1.0.0, so the rebuild starts at **2.0.0** (see `docs/decisions.md`).
+
+**Release 2.0.0 — "Replace core comments" (ReplyBox parity, faster)**
+M0–M4, M5 without emoji reactions (upvotes, pinning, moderator tools), M6 subscriptions,
+M7 structured data, M8 **Disqus importer only**, M9 lite settings (no live preview/onboarding),
+M11, M12.
+
+**Release 2.1.0 — "Migrate from anything"**
+M8 remaining importers (Subscribe to Comments Reloaded, wpDiscuz votes/subscriptions), onboarding
+checklist with detected-import prompts.
+
+**Release 2.2.0 — "Delight"**
+Emoji reactions, optional visible-tab polling, Abilities API (M10), settings live preview,
+basic AI spam/toxicity check through the core WordPress AI Client using the site owner's own
+provider (feature-detected, opt-in, disclosed in readme). Advanced AI stays in paid add-ons.
+
+**Free vs paid rule:** free core is complete for any single site; paid add-ons sell saving time at
+scale (AI moderation rules and dashboard, AI-drafted replies, summaries, digests, analytics,
+social login, webhooks).
+
+**In scope (all releases above)**
 - Server-rendered comment thread replacing the theme's comment output (classic + block themes)
 - Modern composer: guest and logged-in commenting, Markdown (safe subset), preview, edit window
 - Threaded replies, sort (oldest / newest / top), "load more" pagination
@@ -39,12 +60,13 @@ free core, but it must expose the hooks add-ons need (§6).
 - Moderation integrated with core Comments screen + small front-end moderator tools
 - Spam protection: core checks + Akismet passthrough + honeypot + timing check + rate limits
 - Structured data for comments
-- Importers: Subscribe to Comments Reloaded, Disqus XML, wpDiscuz (votes/subscriptions)
+- Importers: Disqus XML (2.0), Subscribe to Comments Reloaded and wpDiscuz votes/subscriptions (2.1).
+  Importers live in core but load only in wp-admin and WP-CLI (never on front-end requests).
 - Abilities API registration (when available)
 - Settings screen (React in wp-admin)
 - i18n, accessibility (WCAG 2.2 AA), privacy exporters/erasers, clean uninstall
 
-**Out of scope for v1 (future paid add-ons — only leave hooks)**
+**Out of scope for the free core (future paid add-ons — only leave hooks)**
 AI moderation, AI-drafted replies, thread summaries, digests and newsletter sync, social/passkey
 login, verified-human badges, media uploads, analytics dashboard, WooCommerce Q&A, ActivityPub
 display polish, live updates via push.
@@ -252,15 +274,13 @@ checks or locked features. Provide:
 Each milestone ends in a working, tested, committed state. Do not start the next one until the
 current definition of done (CLAUDE.md) is met.
 
-### Pre-M0 — Slug reservation (current state of this repo)
-- The code in this repo today is the earlier prototype (React front end, `includes/` + JS `src/`),
-  renamed to Convocept and resubmitted to WordPress.org to secure the `convocept` slug.
-  It is not the v1.0 architecture described in this plan.
-- While the submission is in review, only fix issues raised by the review team. Do not start M0.
-- Once approved: commit the approved code to SVN promptly (unused approved slugs can be closed),
-  then begin M0. M0 replaces the prototype; its `includes/` layout and JS `src/` are retired in
-  favour of the §4 structure. Keep the prototype's data keys (`convocept_settings`,
-  `_convocept_edited`) or migrate them in M0 if anyone installed the prototype.
+### Pre-M0 — Slug reservation ✅ done (slug `convocept` approved, September 2026)
+- The approved prototype (React front end, `includes/` + JS `src/`) is the first git commit.
+  M0 retires it in favour of the §4 structure. Keep `convocept_settings`; migrate
+  `_convocept_edited` to `convocept_edited_at`.
+- Commit the approved 1.0.0 code to WordPress.org SVN (owner task) so the slug stays active.
+
+Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 2.0.0 (§2).
 
 ### M0 — Scaffolding & tooling
 - Plugin bootstrap, autoloading, `Plugin::boot()`, activation/deactivation, DB migrations runner.
@@ -309,7 +329,7 @@ current definition of done (CLAUDE.md) is met.
 - **Accept:** size-limit budgets pass; Lighthouse performance on a test post with 200 comments is
   equal to the same post with comments disabled (±2 points); zero requests before scroll.
 
-### M5 — Reactions, votes, pinning, moderation tools
+### M5 — Reactions, votes, pinning, moderation tools (emoji reactions move to 2.2.0)
 - Fixed reaction set (e.g. 👍 ❤️ 😂 🤔), configurable on/off; optional upvote mode instead.
 - `convocept_reactions` table, counts cached in meta, `convocept_score` recalculated.
 - Pin/unpin (moderators), front-end moderator menu (approve, spam, trash, pin) after session shows
@@ -339,8 +359,9 @@ current definition of done (CLAUDE.md) is met.
   active instead of duplicating).
 - **Accept:** Rich Results Test / Schema validator show no errors on a fixture post.
 
-### M8 — Importers
-Common `Importer` interface: detect → dry run (counts + sample) → batched import with resume →
+### M8 — Importers (Disqus in 2.0.0; StCR and wpDiscuz in 2.1.0)
+Importer code lives in `src/Import/` and is wired only for wp-admin and WP-CLI; a test asserts no
+`Convocept\Import\*` class loads on a front-end request. Common `Importer` interface: detect → dry run (counts + sample) → batched import with resume →
 report. Idempotent (store source IDs in meta to avoid duplicates). Run from admin with progress UI
 and via WP-CLI (`wp convocept import <source>`).
 - **Subscribe to Comments Reloaded:** read its stored subscriptions (inspect the plugin's source
@@ -355,7 +376,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - **Accept:** each importer tested against fixture exports; re-running produces no duplicates;
   large Disqus fixture imports without timeouts.
 
-### M9 — Admin settings app
+### M9 — Admin settings app (2.0.0 ships tabs + persistence; live preview and onboarding in 2.1/2.2)
 - React app under **Settings → Convocept** (or top-level "Comments → Convocept"):
   tabs General, Appearance, Composer, Moderation & Spam, Subscriptions, Import, Advanced.
 - Live preview of the thread with current appearance settings.
@@ -364,7 +385,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - **Accept:** all settings persist and apply without page cache issues; admin bundle only loads on
   its own screen.
 
-### M10 — Abilities API & agent readiness
+### M10 — Abilities API & agent readiness (2.2.0)
 - Feature-detect `wp_register_ability` (WP 6.9+). Register abilities: `convocept/list-pending`,
   `convocept/moderate`, `convocept/reply`, `convocept/summarize-thread-data`
   (returns structured thread data; summarizing itself is for AI add-ons/clients).
