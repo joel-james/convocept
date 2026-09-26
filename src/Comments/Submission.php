@@ -301,6 +301,11 @@ class Submission {
 			return $approved;
 		}
 
+		// Like core, never hold a moderator's own comment.
+		if ( ! empty( $commentdata['user_id'] ) && user_can( (int) $commentdata['user_id'], 'moderate_comments' ) ) {
+			return $approved;
+		}
+
 		$this->decisions = $this->pipeline->run( (array) $commentdata, $this->context );
 
 		return $this->pipeline->apply( $approved, $this->pipeline->strictest( $this->decisions ) );

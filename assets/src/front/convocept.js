@@ -8,8 +8,10 @@ import { initComposer } from './composer';
 import { initDeepLink } from './deeplink';
 import { initEdit } from './edit';
 import { initLive } from './live';
+import { initModerate } from './moderate';
 import { initMore } from './more';
 import { initReply } from './reply';
+import { initVotes } from './votes';
 
 /**
  * Initialise every thread on the page.
@@ -28,7 +30,17 @@ function init() {
 		initMore( root );
 		initEdit( root );
 		initLive( root );
+		initVotes( root );
+		initModerate( root );
 	} );
+
+	// Replay a click the inline loader caught before this script was ready.
+	const queued = window.convoceptQueued;
+
+	if ( queued ) {
+		window.convoceptQueued = null;
+		queued.click();
+	}
 }
 
 if ( document.readyState === 'loading' ) {

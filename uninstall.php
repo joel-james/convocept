@@ -18,4 +18,9 @@ delete_option( 'convocept_migration_lock' );
 delete_metadata( 'comment', 0, 'convocept_edited_at', '', true );
 delete_metadata( 'comment', 0, '_convocept_edit_token', '', true );
 delete_metadata( 'comment', 0, 'convocept_moderation_log', '', true );
+delete_metadata( 'comment', 0, 'convocept_reactions', '', true );
+delete_metadata( 'comment', 0, 'convocept_score', '', true );
+delete_metadata( 'comment', 0, 'convocept_pinned', '', true );
+
+// The {prefix}convocept_reactions table is kept until M11 adds the "delete all data" option.
 delete_metadata( 'comment', 0, '_convocept_edited', '', true );

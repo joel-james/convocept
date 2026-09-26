@@ -354,7 +354,7 @@ Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 
 - **Accept:** size-limit budgets pass; Lighthouse performance on a test post with 200 comments is
   equal to the same post with comments disabled (±2 points); zero requests before scroll.
 
-### M5 — Reactions, votes, pinning, moderation tools (emoji reactions move to 1.2.0)
+### M5 — Reactions, votes, pinning, moderation tools (emoji reactions move to 1.2.0) ✅ done (upvotes, pins, moderator tools, admin column)
 - Fixed reaction set (e.g. 👍 ❤️ 😂 🤔), configurable on/off; optional upvote mode instead.
 - `convocept_reactions` table, counts cached in meta, `convocept_score` recalculated.
 - Pin/unpin (moderators), front-end moderator menu (approve, spam, trash, pin) after session shows

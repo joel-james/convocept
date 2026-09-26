@@ -33,6 +33,21 @@ export function parseHtml( html ) {
 }
 
 /**
+ * Announce that comments were added to the thread after the page loaded.
+ *
+ * Modules that decorate comments (votes, moderator tools) listen for the
+ * `convocept:added` event instead of each insertion point knowing them.
+ *
+ * @param {Element}   root     Thread root.
+ * @param {Element[]} elements Added comment list items.
+ */
+export function added( root, elements ) {
+	root.dispatchEvent(
+		new CustomEvent( 'convocept:added', { detail: elements } )
+	);
+}
+
+/**
  * Parse server-rendered HTML holding several elements (e.g. list items).
  *
  * @param {string} html Server-rendered HTML.

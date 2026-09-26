@@ -33,7 +33,7 @@ abstract class TestCase extends WP_UnitTestCase {
 			update_option( Settings::OPTION, $settings );
 		}
 
-		return new ThreadRenderer( new Settings(), new TemplateLoader(), new ThreadQuery(), new CommentPresenter( new Parser() ), new FormToken(), new FragmentCache() );
+		return new ThreadRenderer( new Settings(), new TemplateLoader(), new ThreadQuery(), new CommentPresenter( new Parser(), new \Convocept\Votes\Votes( new \Convocept\Security\IpResolver( new Settings() ) ), new Settings() ), new FormToken(), new FragmentCache() );
 	}
 
 	/**

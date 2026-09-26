@@ -3,7 +3,7 @@
  */
 import { request } from './api';
 import { config, t } from './config';
-import { announce, cloneTemplate, parseHtml } from './dom';
+import { added, announce, cloneTemplate, parseHtml } from './dom';
 import { getSession } from './session';
 import { readEdits } from './store';
 
@@ -168,6 +168,7 @@ async function openEditor( root, item ) {
 			const button = item.querySelector( '[data-convocept-edit]' );
 
 			oldBody.replaceWith( body );
+			added( root, [ item ] );
 
 			if ( button ) {
 				body.querySelector( '[data-convocept-actions]' ).prepend(

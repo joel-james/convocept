@@ -240,4 +240,12 @@ class CommentsEndpointTest extends RestTestCase {
 
 		$this->assertSame( '<p><strong>b</strong> &lt;script&gt;x&lt;/script&gt;</p>', $data['html'] );
 	}
+
+	public function test_moderators_skip_convocept_checks(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+
+		$data = $this->post_comment( self::factory()->post->create(), array( 'elapsed' => 0 ) )->get_data();
+
+		$this->assertSame( 'approved', $data['status'] );
+	}
 }

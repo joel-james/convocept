@@ -95,6 +95,16 @@ $convocept_thread = $args['thread'];
 	<template data-convocept-template="edit-button">
 		<button type="button" class="convocept-action convocept-action--edit" data-convocept-edit><?php esc_html_e( 'Edit', 'convocept' ); ?></button>
 	</template>
+	<template data-convocept-template="moderate">
+		<span class="convocept-mod" data-convocept-mod-menu>
+			<button type="button" class="convocept-action" data-convocept-mod="approve"><?php esc_html_e( 'Approve', 'convocept' ); ?></button>
+			<button type="button" class="convocept-action" data-convocept-mod="pin"><?php esc_html_e( 'Pin', 'convocept' ); ?></button>
+			<button type="button" class="convocept-action" data-convocept-mod="unpin"><?php esc_html_e( 'Unpin', 'convocept' ); ?></button>
+			<button type="button" class="convocept-action" data-convocept-mod="spam"><?php esc_html_e( 'Spam', 'convocept' ); ?></button>
+			<button type="button" class="convocept-action" data-convocept-mod="trash"><?php esc_html_e( 'Trash', 'convocept' ); ?></button>
+			<a class="convocept-action" data-convocept-mod-edit href="#"><?php esc_html_e( 'Edit in dashboard', 'convocept' ); ?></a>
+		</span>
+	</template>
 	<template data-convocept-template="editor">
 		<form class="convocept-edit" data-convocept-edit-form>
 			<label class="screen-reader-text" for="convocept-edit-input"><?php esc_html_e( 'Edit your comment', 'convocept' ); ?></label>

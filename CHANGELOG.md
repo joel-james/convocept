@@ -6,6 +6,12 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M5 votes and moderation: upvotes (one per reader, remembered across visits, `votes` setting),
+  pinned comments that lead page 1, front-end moderator tools (approve, spam, trash, pin, edit
+  link) with pending comments shown in place for moderators, and a "Convocept" column on the
+  Comments screen explaining why a comment was held or marked spam.
+- Clicks on script-only buttons made before the lazy script loads are replayed; readers who start
+  typing early are no longer held by the timing check. Moderators skip Convocept's spam checks.
 - M4 performance: no Convocept request on page load. The stylesheet is inlined just before the
   thread; a ~440-byte inline loader fetches the script only when the reader nears the comments
   or interacts with them. Rendered comment lists are cached and invalidated automatically.

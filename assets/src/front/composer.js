@@ -6,7 +6,7 @@
  */
 import { request } from './api';
 import { config, t } from './config';
-import { announce, cloneTemplate, parseHtml, reveal } from './dom';
+import { added, announce, cloneTemplate, parseHtml, reveal } from './dom';
 import { getSession, savedGuest } from './session';
 import { addEditButton } from './edit';
 import { cancelReply } from './reply';
@@ -40,7 +40,12 @@ export function initComposer( root ) {
 	const preview = form.querySelector( '[data-convocept-preview]' );
 	const counter = form.querySelector( '[data-convocept-counter]' );
 	const submit = form.querySelector( '[data-convocept-submit]' );
-	let startedAt = 0;
+	// The reader may have started typing before this script loaded.
+	let startedAt =
+		window.convoceptStartedAt ||
+		( input.ownerDocument.activeElement === input || input.value
+			? Date.now()
+			: 0 );
 	let busy = false;
 
 	input.maxLength = config.maxLength;
@@ -118,6 +123,7 @@ export function initComposer( root ) {
 
 			const comment = parseHtml( result.html );
 			placeholder.replaceWith( comment );
+			added( root, [ comment ] );
 
 			if ( result.edit_token ) {
 				saveEdit( result.id, result.edit_token, result.edit_until );

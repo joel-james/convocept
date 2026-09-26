@@ -7,7 +7,13 @@
  */
 import { request } from './api';
 import { t } from './config';
-import { announce, cloneTemplate, focusElement, parseFragment } from './dom';
+import {
+	added,
+	announce,
+	cloneTemplate,
+	focusElement,
+	parseFragment,
+} from './dom';
 
 /**
  * Wire up the load-more button and more-replies links in a thread.
@@ -81,7 +87,9 @@ async function loadPage( root, wrapper, button ) {
 			}
 		} );
 
+		const items = Array.from( fragment.children );
 		list.append( fragment );
+		added( root, items );
 		focusElement( first && first.isConnected ? first : null );
 
 		if ( page >= result.pages ) {
@@ -129,7 +137,9 @@ async function loadReplies( root, link ) {
 			);
 		}
 
+		const items = Array.from( fragment.children );
 		replies.append( fragment );
+		added( root, items );
 		focusElement( first );
 
 		if ( result.remaining > 0 ) {

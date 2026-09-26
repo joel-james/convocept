@@ -6,6 +6,11 @@
  * within 600px of the viewport, or as soon as the reader focuses, taps or
  * types inside it. Links straight to a comment load it immediately.
  *
+ * Buttons that only work with the script (votes, editor tabs, formatting)
+ * do nothing on their own, so a click on one before the script is ready is
+ * remembered and replayed once it is. Links are never intercepted: without
+ * the script they still work as plain links.
+ *
  * Everything the thread needs already works without this script.
  */
 ( () => {
@@ -67,5 +72,25 @@
 		[ 'focusin', 'pointerdown', 'keydown' ].forEach( ( type ) =>
 			root.addEventListener( type, load, { once: true, passive: true } )
 		);
+
+		// Remember when the reader started, for the spam timing check.
+		root.addEventListener(
+			'focusin',
+			() => {
+				window.convoceptStartedAt =
+					window.convoceptStartedAt || Date.now();
+			},
+			{ passive: true }
+		);
+		root.addEventListener( 'click', ( event ) => {
+			const button = event.target.closest(
+				'button[data-convocept-vote],button[data-convocept-tab],button[data-convocept-format]'
+			);
+
+			if ( button && ! root.dataset.convoceptReady ) {
+				window.convoceptQueued = button;
+				load();
+			}
+		} );
 	} );
 } )();

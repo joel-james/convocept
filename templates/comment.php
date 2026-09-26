@@ -31,6 +31,9 @@
  *     @type bool        $is_edited    Whether the comment was edited.
  *     @type int         $author_id    Author's user ID, 0 for guests.
  *     @type int         $timestamp    Unix time the comment was posted.
+ *     @type bool        $votes_on     Whether voting is enabled for this comment.
+ *     @type int         $votes        Upvote count.
+ *     @type bool        $is_pinned    Whether the comment is pinned.
  *     @type string[]    $classes      CSS classes.
  *     @type string      $replies_html Rendered replies (already escaped), or empty.
  *     @type bool        $replies_flat Whether the replies are a flat list (maximum depth).
@@ -50,6 +53,7 @@ $convocept_comment = $args['comment'];
 	data-convocept-comment="<?php echo esc_attr( (string) $args['id'] ); ?>"
 	data-convocept-author="<?php echo esc_attr( (string) $args['author_id'] ); ?>"
 	data-convocept-time="<?php echo esc_attr( (string) $args['timestamp'] ); ?>"
+	<?php echo $args['is_pinned'] ? 'data-convocept-pinned' : ''; ?>
 >
 	<article class="convocept-comment__body">
 		<div class="convocept-comment__avatar">
@@ -89,7 +93,7 @@ $convocept_comment = $args['comment'];
 			</header>
 
 			<?php if ( $args['is_pending'] ) : ?>
-				<p class="convocept-comment__pending"><?php esc_html_e( 'Your comment is awaiting moderation.', 'convocept' ); ?></p>
+				<p class="convocept-comment__pending"><?php esc_html_e( 'Awaiting moderation.', 'convocept' ); ?></p>
 			<?php endif; ?>
 
 			<?php if ( $args['reply_to'] ) : ?>
@@ -106,6 +110,22 @@ $convocept_comment = $args['comment'];
 			</div>
 
 			<footer class="convocept-comment__actions" data-convocept-actions>
+				<?php if ( $args['votes_on'] ) : ?>
+					<?php
+					// A plain button: the script makes it interactive. Without JavaScript it shows the count.
+					?>
+					<button
+						type="button"
+						class="convocept-vote"
+						data-convocept-vote
+						aria-pressed="false"
+						aria-label="<?php echo esc_attr( sprintf( /* translators: %s: Number of upvotes. */ _n( 'Upvote (%s vote)', 'Upvote (%s votes)', $args['votes'], 'convocept' ), number_format_i18n( $args['votes'] ) ) ); ?>"
+					>
+						<svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+						<span data-convocept-vote-count><?php echo esc_html( number_format_i18n( $args['votes'] ) ); ?></span>
+					</button>
+				<?php endif; ?>
+
 				<?php if ( $args['reply_url'] ) : ?>
 					<a
 						class="convocept-action convocept-action--reply"

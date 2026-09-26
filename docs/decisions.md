@@ -2,6 +2,28 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — M5 votes, pins and moderation
+- **Upvotes** use the `{prefix}convocept_reactions` table (migration 2, planned in §5.4) as the
+  reaction `up`; `INSERT IGNORE` + a unique key make one vote per voter a database guarantee.
+  Voter IDs are HMAC hashes of the user ID, or of IP + user agent for guests (no raw IPs stored).
+  Counts are cached in `convocept_reactions` meta and mirrored to `convocept_score` for "Top".
+  The session endpoint returns the visitor's votes on the post, so the page HTML stays shared.
+- **Pinned** comments (`convocept_pinned` meta, top-level and approved only) lead page 1 in every
+  sort, carry a "Pinned" badge, and are excluded from pagination counts and deep-link positions.
+- **Front-end moderation** (session `can_moderate`): approve / spam / trash / pin / unpin in
+  place and an "Edit in dashboard" link; pending comments come from an authenticated
+  `/posts/{id}/pending` call and never reach cached HTML. Routes need `moderate_comments` and
+  `edit_comment` (or `edit_post` for the pending list) plus the REST nonce.
+- **Moderators skip Convocept's checks** (timing, honeypot, links), matching core, which never
+  holds a moderator's comment.
+- **Early clicks and typing before the lazy script loads:** the loader queues a click on a
+  script-only button (vote, editor tab, formatting) and replays it once ready; links are never
+  intercepted. It also records when the reader first focused the thread, so someone who starts
+  typing before the script arrives isn't held by the timing check.
+- **Test infrastructure:** the e2e helper mu-plugin is mapped as a directory. Single-file bind
+  mounts go stale (0 bytes in the container) when an editor replaces the file.
+- The reactions table survives uninstall until M11 adds the "delete all data" option.
+
 ## 2026-09-26 — M4 loading, caching and live updates
 - **CSS is inlined right before the first thread** (`<style id="convocept-css">`, 2.6 KB
   gzipped), not lazy-loaded and not in `<head>`. It costs no request, never blocks the content

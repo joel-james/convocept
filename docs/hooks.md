@@ -17,6 +17,9 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_render_composer_after` | 1.0.0 | `int $post_id` | After the comment form, inside the composer. |
 | `convocept_comment_created` | 1.0.0 | `int $comment_id, int\|string $approved, Context $context` | After a comment is created through Convocept (REST or our form). |
 | `convocept_comment_edited` | 1.0.0 | `WP_Comment $comment` | After a comment is edited through Convocept. |
+| `convocept_reaction_added` | 1.0.0 | `int $comment_id, string $reaction, int $count` | After a visitor upvotes (reaction `up`). |
+| `convocept_comment_status_changed` | 1.0.0 | `int $comment_id, string $action` | After front-end moderation (`approve`, `hold`, `spam`, `trash`). |
+| `convocept_comment_pinned` | 1.0.0 | `int $comment_id, bool $pinned` | After a comment is pinned or unpinned. |
 
 ## Filters
 
@@ -56,6 +59,10 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
 | `/posts/{id}/updates` | GET | public | Comments newer than `after`; ETag + 304 when unchanged. Returns `items`, `total`. |
 | `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`. |
+| `/comments/{id}/reactions` | POST | public, rate-limited | `active` true/false toggles the visitor's upvote; returns `count`, `active`. |
+| `/comments/{id}/moderate` | POST | `moderate_comments` + `edit_comment` | `action`: approve, hold, spam, trash; returns `status`, `html`. |
+| `/comments/{id}/pin` | POST | `moderate_comments` + `edit_comment` | `pinned` true/false; top-level approved comments only. |
+| `/posts/{id}/pending` | GET | `moderate_comments` + `edit_post` | Comments awaiting moderation, rendered. |
 | `/comments/{id}/context` | GET | public (approved) | URL of the page showing the comment; returns `url`. |
 
 ## Query variables

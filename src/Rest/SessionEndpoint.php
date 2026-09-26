@@ -9,6 +9,7 @@
 namespace Convocept\Rest;
 
 use Convocept\Comments\EditWindow;
+use Convocept\Votes\Votes;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -51,14 +52,24 @@ class SessionEndpoint {
 	private $edit_window;
 
 	/**
+	 * Vote service.
+	 *
+	 * @since 1.0.0
+	 * @var Votes
+	 */
+	private $votes;
+
+	/**
 	 * Create the endpoint.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param EditWindow $edit_window Edit window service.
+	 * @param Votes      $votes       Vote service.
 	 */
-	public function __construct( EditWindow $edit_window ) {
+	public function __construct( EditWindow $edit_window, Votes $votes ) {
 		$this->edit_window = $edit_window;
+		$this->votes       = $votes;
 	}
 
 	/**
@@ -74,6 +85,7 @@ class SessionEndpoint {
 	 *     @type bool        $can_moderate Whether the visitor may moderate comments.
 	 *     @type int         $edit_window  Edit window in minutes.
 	 *     @type int         $now          Server time (Unix), to correct clock skew.
+	 *     @type int[]       $votes        IDs of comments on `post_id` the visitor upvoted.
 	 * }
 	 */
 	public function get( WP_REST_Request $request ): WP_REST_Response {
@@ -100,6 +112,7 @@ class SessionEndpoint {
 			'can_moderate' => $user && user_can( $user, 'moderate_comments' ),
 			'edit_window'  => $this->edit_window->minutes(),
 			'now'          => time(),
+			'votes'        => $request->get_param( 'post_id' ) ? $this->votes->voted_on_post( (int) $request->get_param( 'post_id' ) ) : array(),
 		);
 
 		/**

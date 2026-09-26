@@ -132,6 +132,7 @@ class FrontAssets {
 			'editWindow' => $this->edit_window->minutes(),
 			'maxLength'  => (int) Controller::content_arg( true )['maxLength'],
 			'poll'       => $this->settings->get( 'live_updates' ) ? (int) $this->settings->get( 'poll_interval' ) : 0,
+			'adminUrl'   => esc_url_raw( admin_url() ),
 			'i18n'       => array(
 				'posting'        => __( 'Posting…', 'convocept' ),
 				'posted'         => __( 'Your comment was posted.', 'convocept' ),

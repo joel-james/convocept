@@ -30,6 +30,14 @@ defined( 'ABSPATH' ) || exit;
 class ThreadQuery {
 
 	/**
+	 * Comment meta key marking a pinned top-level comment.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	const PINNED_META_KEY = 'convocept_pinned';
+
+	/**
 	 * Load a page of a post's thread.
 	 *
 	 * @since 1.0.0
@@ -64,15 +72,27 @@ class ThreadQuery {
 			return new Thread( $post_id, array(), $sort, 1, 0, 0 );
 		}
 
-		$top_level_total = $this->count( array_merge( $base, array( 'parent' => 0 ) ) );
-		$pages           = (int) ceil( $top_level_total / $per_page );
-		$page            = min( $page, max( 1, $pages ) );
+		// Pinned comments lead page 1 in every sort and are left out of the pagination.
+		$pinned_ids = $this->pinned_ids( $post_id );
+
+		$top_level_total = $this->count(
+			array_merge(
+				$base,
+				array(
+					'parent'          => 0,
+					'comment__not_in' => $pinned_ids,
+				)
+			)
+		);
+		$pages           = max( 1, (int) ceil( $top_level_total / $per_page ) );
+		$page            = min( $page, $pages );
 
 		$query_args = array_merge(
 			$base,
 			Sort::query_args( $sort ),
 			array(
 				'parent'                    => 0,
+				'comment__not_in'           => $pinned_ids,
 				'number'                    => $per_page,
 				'offset'                    => ( $page - 1 ) * $per_page,
 				'hierarchical'              => 'threaded',
@@ -99,7 +119,64 @@ class ThreadQuery {
 		$comments = ( new WP_Comment_Query( $query_args ) )->comments;
 		$comments = is_array( $comments ) ? array_values( array_filter( $comments, array( $this, 'is_comment' ) ) ) : array();
 
+		if ( 1 === $page && $pinned_ids ) {
+			$comments = array_merge( $this->load_pinned( $post_id, $pinned_ids ), $comments );
+		}
+
 		return new Thread( $post_id, $comments, $sort, $page, $pages, $total );
+	}
+
+	/**
+	 * Get the IDs of a post's pinned top-level comments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return int[] Oldest pin first.
+	 */
+	public function pinned_ids( int $post_id ): array {
+		$ids = ( new WP_Comment_Query() )->query(
+			array_merge(
+				$this->base_args( $post_id ),
+				array(
+					'parent'        => 0,
+					'meta_key'      => self::PINNED_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Small lookup, cached by core's comment query cache.
+					'meta_value'    => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Small lookup, cached by core's comment query cache.
+					'orderby'       => 'comment_date_gmt',
+					'order'         => 'ASC',
+					'fields'        => 'ids',
+					'no_found_rows' => true,
+				)
+			)
+		);
+
+		return array_map( 'intval', (array) $ids );
+	}
+
+	/**
+	 * Load pinned comments with their replies.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param int[] $ids     Pinned comment IDs.
+	 * @return WP_Comment[]
+	 */
+	private function load_pinned( int $post_id, array $ids ): array {
+		$comments = ( new WP_Comment_Query() )->query(
+			array_merge(
+				$this->base_args( $post_id ),
+				array(
+					'comment__in'               => $ids,
+					'orderby'                   => 'comment__in',
+					'hierarchical'              => 'threaded',
+					'no_found_rows'             => true,
+					'update_comment_meta_cache' => true,
+				)
+			)
+		);
+
+		return is_array( $comments ) ? array_values( array_filter( $comments, array( $this, 'is_comment' ) ) ) : array();
 	}
 
 	/**
@@ -203,12 +280,20 @@ class ThreadQuery {
 	 * @return int|null Position, or null when the comment is not a visible top-level comment.
 	 */
 	public function position( int $post_id, int $comment_id, string $sort ): ?int {
+		$pinned = $this->pinned_ids( $post_id );
+
+		// Pinned comments are always on page 1.
+		if ( in_array( $comment_id, $pinned, true ) ) {
+			return 0;
+		}
+
 		$ids = ( new WP_Comment_Query() )->query(
 			array_merge(
 				$this->base_args( $post_id ),
 				Sort::query_args( Sort::resolve( $sort, Sort::OLDEST ) ),
 				array(
 					'parent'                    => 0,
+					'comment__not_in'           => $pinned,
 					'fields'                    => 'ids',
 					'no_found_rows'             => true,
 					'update_comment_meta_cache' => false,

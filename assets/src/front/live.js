@@ -7,7 +7,7 @@
  */
 import { routeUrl } from './api';
 import { config, t } from './config';
-import { announce, cloneTemplate, parseHtml } from './dom';
+import { added, announce, cloneTemplate, parseHtml } from './dom';
 
 /**
  * Start polling a thread, if live updates are enabled.
@@ -93,7 +93,7 @@ function insert( root, data ) {
 		convoceptPage: page,
 		convoceptPages: pages,
 	} = root.dataset;
-	let added = 0;
+	const inserted = [];
 
 	data.items.forEach( ( item ) => {
 		if ( root.querySelector( `[data-convocept-comment="${ item.id }"]` ) ) {
@@ -132,12 +132,14 @@ function insert( root, data ) {
 		}
 
 		comment.classList.add( 'convocept-comment--new' );
-		added++;
+		inserted.push( comment );
 	} );
 
-	if ( ! added ) {
+	if ( ! inserted.length ) {
 		return;
 	}
+
+	added( root, inserted );
 
 	const title = root.querySelector( '.convocept-title' );
 
@@ -150,7 +152,7 @@ function insert( root, data ) {
 
 	announce(
 		root.querySelector( '[data-convocept-status]' ),
-		t( 'newComments', added )
+		t( 'newComments', inserted.length )
 	);
 }
 

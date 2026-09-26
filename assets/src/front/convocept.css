@@ -395,6 +395,7 @@
 
 .convocept-comment__actions {
 	display: flex;
+	align-items: center;
 	flex-wrap: wrap;
 	gap: 1rem;
 	margin-block-start: 0.5rem;
@@ -612,6 +613,10 @@
 	opacity: 0.6;
 }
 
+.convocept-comment--pending > .convocept-comment__body {
+	opacity: 0.75;
+}
+
 .convocept-comment__pending {
 	margin: 0.35rem 0 0;
 	padding: 0.35em 0.65em;
@@ -746,4 +751,71 @@
 	.convocept-composer.is-replying {
 		margin-inline-start: 0;
 	}
+}
+
+/* Votes, pins and moderation
+   ------------------------------------------------------------------ */
+
+.convocept .convocept-vote {
+	display: inline-flex;
+	gap: 0.3em;
+	align-items: center;
+	margin: 0;
+	padding: 0.15em 0.6em;
+	border: 1px solid var(--convocept-border);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--convocept-muted);
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.5;
+	cursor: pointer;
+}
+
+.convocept .convocept-vote:hover {
+	border-color: var(--convocept-accent);
+	color: var(--convocept-accent);
+}
+
+.convocept .convocept-vote[aria-pressed="true"] {
+	border-color: var(--convocept-accent);
+	background: color-mix(in srgb, var(--convocept-accent) 12%, transparent);
+	color: var(--convocept-accent);
+}
+
+.convocept .convocept-vote[aria-busy] {
+	opacity: 0.7;
+}
+
+.convocept-list > .convocept-comment--pinned {
+	padding: 1rem;
+	border-radius: var(--convocept-radius);
+	background: var(--convocept-surface);
+}
+
+.convocept-badge--pinned {
+	background: var(--convocept-surface);
+	color: var(--convocept-muted);
+}
+
+.convocept-mod {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-inline-start: auto;
+	padding-inline-start: 0.75rem;
+	border-inline-start: 1px solid var(--convocept-border);
+}
+
+.convocept .convocept-mod .convocept-action {
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	cursor: pointer;
+}
+
+.convocept .convocept-mod [data-convocept-mod="spam"],
+.convocept .convocept-mod [data-convocept-mod="trash"] {
+	color: #b91c1c;
 }

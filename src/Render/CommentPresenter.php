@@ -10,7 +10,10 @@ namespace Convocept\Render;
 
 use Convocept\Comments\EditWindow;
 use Convocept\Comments\Submission;
+use Convocept\Comments\ThreadQuery;
 use Convocept\Markdown\Parser;
+use Convocept\Settings\Settings;
+use Convocept\Votes\Votes;
 use WP_Comment;
 
 defined( 'ABSPATH' ) || exit;
@@ -44,14 +47,34 @@ class CommentPresenter {
 	private $markdown;
 
 	/**
+	 * Vote service.
+	 *
+	 * @since 1.0.0
+	 * @var Votes
+	 */
+	private $votes;
+
+	/**
+	 * Settings service.
+	 *
+	 * @since 1.0.0
+	 * @var Settings
+	 */
+	private $settings;
+
+	/**
 	 * Create the presenter.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Parser $markdown Markdown parser.
+	 * @param Parser   $markdown Markdown parser.
+	 * @param Votes    $votes    Vote service.
+	 * @param Settings $settings Settings service.
 	 */
-	public function __construct( Parser $markdown ) {
+	public function __construct( Parser $markdown, Votes $votes, Settings $settings ) {
 		$this->markdown = $markdown;
+		$this->votes    = $votes;
+		$this->settings = $settings;
 	}
 
 	/**
@@ -87,6 +110,9 @@ class CommentPresenter {
 	 *     @type bool       $is_edited   Whether the comment was edited after posting.
 	 *     @type int        $author_id   Author's user ID, 0 for guests.
 	 *     @type int        $timestamp   Unix time the comment was posted (GMT).
+	 *     @type bool       $votes_on    Whether voting is enabled.
+	 *     @type int        $votes       Upvote count.
+	 *     @type bool       $is_pinned   Whether the comment is pinned.
 	 *     @type string[]   $classes     CSS classes for the comment element (unescaped).
 	 * }
 	 */
@@ -98,6 +124,7 @@ class CommentPresenter {
 
 		$classes    = array( 'convocept-comment', 'convocept-comment--depth-' . $depth );
 		$is_pending = '1' !== (string) $comment->comment_approved;
+		$is_pinned  = 0 === (int) $comment->comment_parent && '1' === (string) get_comment_meta( $id, ThreadQuery::PINNED_META_KEY, true );
 
 		if ( $badges ) {
 			$classes[] = 'convocept-comment--has-badge';
@@ -105,6 +132,10 @@ class CommentPresenter {
 
 		if ( $is_pending ) {
 			$classes[] = 'convocept-comment--pending';
+		}
+
+		if ( $is_pinned ) {
+			$classes[] = 'convocept-comment--pinned';
 		}
 
 		$view = array(
@@ -131,6 +162,9 @@ class CommentPresenter {
 			'is_edited'    => '' !== (string) get_comment_meta( $id, EditWindow::EDITED_META_KEY, true ),
 			'author_id'    => (int) $comment->user_id,
 			'timestamp'    => (int) strtotime( $comment->comment_date_gmt . ' UTC' ),
+			'votes_on'     => (bool) $this->settings->get( 'votes' ) && ! $is_pending,
+			'votes'        => $this->votes->count( $comment ),
+			'is_pinned'    => $is_pinned,
 			'classes'      => $classes,
 		);
 
@@ -195,6 +229,13 @@ class CommentPresenter {
 			$badges[] = array(
 				'label' => __( 'Author', 'convocept' ),
 				'type'  => 'author',
+			);
+		}
+
+		if ( 0 === (int) $comment->comment_parent && '1' === (string) get_comment_meta( (int) $comment->comment_ID, ThreadQuery::PINNED_META_KEY, true ) ) {
+			$badges[] = array(
+				'label' => __( 'Pinned', 'convocept' ),
+				'type'  => 'pinned',
 			);
 		}
 

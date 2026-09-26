@@ -17,7 +17,7 @@
 	"env": {
 		"tests": {
 			"mappings": {
-				"wp-content/mu-plugins/convocept-e2e.php": "./tests/e2e/mu-plugins/convocept-e2e.php"
+				"wp-content/mu-plugins": "./tests/e2e/mu-plugins"
 			}
 		}
 	}

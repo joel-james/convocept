@@ -11,6 +11,7 @@ import { request } from './api';
  * @property {boolean}     can_moderate Whether the visitor moderates comments.
  * @property {number}      edit_window  Edit window in minutes.
  * @property {number}      skew         Server clock minus browser clock, in seconds.
+ * @property {number[]}    votes        Comments on this post the visitor upvoted.
  */
 
 /** @type {Promise<Session>|null} */
@@ -25,7 +26,13 @@ let pending = null;
  */
 export function getSession() {
 	if ( ! pending ) {
-		pending = request( 'session' )
+		const root = document.querySelector( '.convocept' );
+
+		pending = request( 'session', {
+			query: {
+				post_id: root ? root.dataset.convoceptPost || '0' : '0',
+			},
+		} )
 			.then( ( data ) =>
 				Object.assign( data, {
 					skew: ( data.now || 0 ) - Date.now() / 1000,
@@ -38,6 +45,7 @@ export function getSession() {
 				can_moderate: false,
 				edit_window: 0,
 				skew: 0,
+				votes: [],
 			} ) );
 	}
 

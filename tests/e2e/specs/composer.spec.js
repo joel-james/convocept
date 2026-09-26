@@ -139,7 +139,7 @@ test.describe( 'JavaScript composer', () => {
 		await page.getByRole( 'button', { name: 'Post comment' } ).click();
 
 		const comment = page.locator( '.convocept-comment--pending' );
-		await expect( comment ).toContainText( 'awaiting moderation' );
+		await expect( comment ).toContainText( /awaiting moderation/i );
 		await expect(
 			comment.locator( '[data-convocept-edit]' )
 		).toBeVisible();

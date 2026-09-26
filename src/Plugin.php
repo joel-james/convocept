@@ -8,6 +8,7 @@
 
 namespace Convocept;
 
+use Convocept\Admin\CommentsColumn;
 use Convocept\Assets\FrontAssets;
 use Convocept\Comments\EditWindow;
 use Convocept\Comments\Sort;
@@ -28,6 +29,7 @@ use Convocept\Security\FormToken;
 use Convocept\Security\IpResolver;
 use Convocept\Security\RateLimiter;
 use Convocept\Settings\Settings;
+use Convocept\Votes\Votes;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -120,8 +122,15 @@ final class Plugin {
 		// Submissions can arrive on any request type (wp-comments-post.php, REST).
 		$this->submission()->register();
 
+		// Votes belong to comments; drop them when a comment is deleted for good.
+		add_action( 'deleted_comment', array( $this->votes(), 'delete_for_comment' ) );
+
 		// Comment links appear everywhere: redirects, wp-admin, emails, feeds.
 		( new CommentLinks( $this->renderer() ) )->register();
+
+		if ( is_admin() ) {
+			( new CommentsColumn( $this->votes() ) )->register();
+		}
 
 		// Theme output only exists outside wp-admin; admin requests skip it entirely.
 		if ( ! is_admin() ) {
@@ -199,7 +208,7 @@ final class Plugin {
 					$this->settings(),
 					new TemplateLoader(),
 					new ThreadQuery(),
-					new CommentPresenter( $this->markdown() ),
+					new CommentPresenter( $this->markdown(), $this->votes(), $this->settings() ),
 					new FormToken(),
 					new FragmentCache()
 				);
@@ -267,6 +276,22 @@ final class Plugin {
 			RateLimiter::class,
 			static function () {
 				return new RateLimiter();
+			}
+		);
+	}
+
+	/**
+	 * Get the vote service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Votes
+	 */
+	public function votes(): Votes {
+		return $this->service(
+			Votes::class,
+			function () {
+				return new Votes( $this->ips() );
 			}
 		);
 	}

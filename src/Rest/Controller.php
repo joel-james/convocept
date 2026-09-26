@@ -60,10 +60,12 @@ class Controller {
 	 * @return void
 	 */
 	public function register(): void {
-		$session  = new SessionEndpoint( $this->plugin->edit_window() );
-		$comments = new CommentsEndpoint( $this->plugin );
-		$preview  = new PreviewEndpoint( $this->plugin );
-		$threads  = new ThreadEndpoint( $this->plugin->renderer() );
+		$session    = new SessionEndpoint( $this->plugin->edit_window(), $this->plugin->votes() );
+		$comments   = new CommentsEndpoint( $this->plugin );
+		$preview    = new PreviewEndpoint( $this->plugin );
+		$threads    = new ThreadEndpoint( $this->plugin->renderer() );
+		$reactions  = new ReactionsEndpoint( $this->plugin );
+		$moderation = new ModerationEndpoint( $this->plugin );
 
 		register_rest_route(
 			self::NAMESPACE,
@@ -72,7 +74,13 @@ class Controller {
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $session, 'get' ),
 				'permission_callback' => '__return_true',
-				'args'                => array(),
+				'args'                => array(
+					'post_id' => array(
+						'type'    => 'integer',
+						'default' => 0,
+						'minimum' => 0,
+					),
+				),
 			)
 		);
 
@@ -144,6 +152,50 @@ class Controller {
 					'permission_callback' => array( $comments, 'can_update' ),
 					'args'                => $comments->update_args(),
 				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/comments/(?P<id>\d+)/reactions',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $reactions, 'update' ),
+				'permission_callback' => array( $reactions, 'can_react' ),
+				'args'                => $reactions->args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/comments/(?P<id>\d+)/moderate',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $moderation, 'moderate' ),
+				'permission_callback' => array( $moderation, 'can_moderate_comment' ),
+				'args'                => $moderation->moderate_args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/comments/(?P<id>\d+)/pin',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $moderation, 'pin' ),
+				'permission_callback' => array( $moderation, 'can_moderate_comment' ),
+				'args'                => $moderation->pin_args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/posts/(?P<post_id>\d+)/pending',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $moderation, 'pending' ),
+				'permission_callback' => array( $moderation, 'can_moderate_post' ),
+				'args'                => $moderation->pending_args(),
 			)
 		);
 
