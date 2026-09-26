@@ -75,10 +75,6 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ### Fixed
 - "Top" sort ordered wrongly when comments had other metadata, or reused cached "oldest" results.
 
-### Changed
-- Migration 1 renames the prototype's `_convocept_edited` comment meta to `convocept_edited_at` and
-  drops prototype-only settings (`live_updates`, `poll_interval`, `load_styles`).
-
 ### Removed
-- The React prototype used to reserve the slug (never released). Until M1 lands, the theme's
-  default comments render.
+- The React prototype used to reserve the slug (never released): its files (`includes/`,
+  `build/`, React sources in `src/`) and its data migration.

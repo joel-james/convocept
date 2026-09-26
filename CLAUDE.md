@@ -8,8 +8,8 @@ a very fast, self-hosted replacement for the default WordPress comment UI. Comme
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
 **Current state (2026-09-26):** rebuild toward release 1.0.0. The slug was reserved with an
-unreleased React prototype (first git commit); the prototype's leftover files (`includes/`,
-`build/`, React files in `src/`) are unused and excluded from release zips, pending deletion.
+unreleased React prototype (first git commit); its files and its data migration were deleted
+after M8.
 
 - **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
   lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
@@ -19,7 +19,7 @@ unreleased React prototype (first git commit); the prototype's leftover files (`
   `convocept_settings` option.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M8 to `main`; delete the prototype files;
+- **Open items to raise with the owner:** merge M1–M8 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
   Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
   investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md).
 

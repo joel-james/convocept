@@ -6,9 +6,6 @@
 /assets/dist/
 /dist/
 
-# Legacy prototype build output
-/build/
-
 # Test and tool output
 /artifacts/
 /test-results/

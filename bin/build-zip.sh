@@ -8,7 +8,7 @@
 #
 # Usage:
 #   bin/build-zip.sh              Full release build.
-#   SKIP_BUILD=1 bin/build-zip.sh Reuse the existing build/ output.
+#   SKIP_BUILD=1 bin/build-zip.sh Reuse the existing assets/dist/ output.
 #   SKIP_POT=1   bin/build-zip.sh Skip regenerating the translation template.
 #
 # The file list is an allowlist: anything not named here is left out, so
@@ -99,7 +99,7 @@ fi
 # ---------------------------------------------------------------------------
 
 if [[ "${SKIP_BUILD:-0}" == "1" ]]; then
-	warn "SKIP_BUILD set; reusing existing build/"
+	warn "SKIP_BUILD set; reusing existing assets/dist/"
 else
 	command -v npm >/dev/null 2>&1 || fail "npm is required to build assets."
 

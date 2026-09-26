@@ -302,8 +302,8 @@ current definition of done (CLAUDE.md) is met.
 
 ### Pre-M0 — Slug reservation ✅ done (slug `convocept` approved, September 2026)
 - The approved prototype (React front end, `includes/` + JS `src/`) is the first git commit. It was
-  never released. M0 retires it in favour of the §4 structure. Keep `convocept_settings`; migrate
-  `_convocept_edited` to `convocept_edited_at` (covers dev/test installs only).
+  never released. M0 retires it in favour of the §4 structure. Its files and its data migration
+  were deleted after M8.
 
 Milestones M0–M7, the Disqus part of M8, M9 lite, M11 and M12 make up release 1.0.0 (§2).
 

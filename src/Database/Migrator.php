@@ -8,7 +8,6 @@
 
 namespace Convocept\Database;
 
-use Convocept\Database\Migrations\PrototypeData;
 use Convocept\Database\Migrations\ReactionsTable;
 use Convocept\Database\Migrations\SubscriptionsTable;
 
@@ -52,7 +51,9 @@ class Migrator {
 	 * Get every migration, keyed by version.
 	 *
 	 * Versions are integers that only ever grow. Never renumber or remove
-	 * a shipped migration.
+	 * a shipped migration. Version 1 (moving the unreleased prototype's
+	 * data) was removed before 1.0.0 shipped; numbering continues at 2 so
+	 * development installs already at version 3 stay consistent.
 	 *
 	 * @since 1.0.0
 	 *
@@ -60,7 +61,6 @@ class Migrator {
 	 */
 	public function migrations(): array {
 		return array(
-			1 => PrototypeData::class,
 			2 => ReactionsTable::class,
 			3 => SubscriptionsTable::class,
 		);

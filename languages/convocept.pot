@@ -2,21 +2,21 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convocept 2.0.0-dev\n"
+"Project-Id-Version: Convocept 1.0.0-dev\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convocept\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T11:28:52+00:00\n"
+"POT-Creation-Date: 2026-09-26T18:11:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convocept\n"
 
 #. Plugin Name of the plugin
 #: convocept.php
-#: includes/class-settings.php:143
+#: src/Admin/CommentsColumn.php:77
 msgid "Convocept"
 msgstr ""
 
@@ -44,246 +44,892 @@ msgstr ""
 msgid "Convocept is missing its autoloader. Run \"composer install\" in the plugin folder, or install a release build."
 msgstr ""
 
-#: includes/class-settings.php:149
-msgid "Enable modern comments"
-msgstr ""
-
-#: includes/class-settings.php:150
-msgid "Edit window (minutes)"
-msgstr ""
-
-#: includes/class-settings.php:151
-msgid "Live updates"
-msgstr ""
-
-#: includes/class-settings.php:152
-msgid "Poll interval (seconds)"
-msgstr ""
-
-#: includes/class-settings.php:153
-msgid "Load default styles"
-msgstr ""
-
-#: includes/class-settings.php:192
-msgid "Settings for the modern comment interface. All comments remain stored in native WordPress tables."
-msgstr ""
-
-#: includes/class-settings.php:228
-msgid "Disable if your theme provides its own styles for the comment app."
-msgstr ""
-
-#: includes/class-settings.php:240
-msgid "How long logged-in users can edit their own comment. 0 disables editing."
-msgstr ""
-
-#: includes/class-settings.php:256
-msgid "Off"
-msgstr ""
-
-#: includes/class-settings.php:257
-msgid "Polling"
-msgstr ""
-
-#: includes/class-settings.php:258
-msgid "Heartbeat API"
-msgstr ""
-
-#: includes/rest/class-routes.php:209
-msgid "Comment not found."
-msgstr ""
-
-#: includes/rest/class-routes.php:218
-msgid "Sorry, you are not allowed to edit this comment."
-msgstr ""
-
-#: includes/rest/class-routes.php:244
-msgid "Comment content cannot be empty."
-msgstr ""
-
-#: includes/rest/class-routes.php:310
-msgid "Comments for this post are not publicly readable."
-msgstr ""
-
-#: includes/rest/class-routes.php:335
-msgid "The \"after\" parameter must be a valid date."
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:35
-msgid "You must be logged in to post a comment."
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:46
-msgid "Please enter a comment."
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:51
-msgid "Name and email are required."
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:75
-msgid "Your comment could not be posted. Please try again."
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:97
-msgid "Write a reply…"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:98
-msgid "Join the discussion…"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:101
-msgid "Comment"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:112
-#: src/components/Composer.jsx:113
-msgid "Name"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:121
-#: src/components/Composer.jsx:122
-msgid "Email"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:130
-msgid "Website (optional)"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:131
-msgid "Website"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:144
-msgid "Save my name, email, and website in this browser for the next time I comment."
-msgstr ""
-
-#: build/index.js:1
-#: build/index.js:2
-#: src/components/Comment.jsx:132
-#: src/components/Composer.jsx:159
-msgid "Cancel"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:169
-msgid "Posting…"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Composer.jsx:170
-msgid "Post comment"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Pagination.jsx:24
-msgid "Comment pagination"
-msgstr ""
-
-#: build/index.js:1
-#: src/components/Pagination.jsx:32
-msgid "Previous"
-msgstr ""
-
-#. translators: 1: current page number, 2: total number of pages.
-#: build/index.js:2
-#: src/components/Pagination.jsx:38
-#, js-format
-msgid "Page %1$d of %2$d"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Pagination.jsx:50
-msgid "Next"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:96
-msgid "(edited)"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:52
-msgid "Your edit could not be saved."
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:118
-msgid "Edit comment"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:125
-msgid "Save"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:148
-msgid "Your comment is awaiting moderation."
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:161
-msgid "Cancel reply"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:162
-msgid "Reply"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Comment.jsx:175
-msgid "Edit"
-msgstr ""
-
-#: build/index.js:2
-#: src/components/Thread.jsx:22
-msgid "No comments yet. Start the discussion!"
-msgstr ""
-
-#: build/index.js:2
-#: src/App.jsx:48
-msgid "Comments could not be loaded."
-msgstr ""
-
-#: build/index.js:2
-#: src/App.jsx:50
-msgid "Retry"
-msgstr ""
-
-#: build/index.js:2
-#: src/App.jsx:63
-msgid "Comments"
-msgstr ""
-
-#. translators: %d: number of comments.
-#: build/index.js:3
-#: src/App.jsx:66
-#, js-format
-msgid "%d Comment"
-msgid_plural "%d Comments"
+#. translators: %s: Number of upvotes.
+#: src/Admin/CommentsColumn.php:116
+#, php-format
+msgid "%s upvote"
+msgid_plural "%s upvotes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/index.js:3
-#: src/App.jsx:79
-msgid "Loading comments…"
+#: src/Admin/CommentsColumn.php:120
+#: src/Render/CommentPresenter.php:237
+msgid "Pinned"
 msgstr ""
 
-#: build/index.js:3
-#: src/App.jsx:97
+#: src/Admin/CommentsColumn.php:165
+msgid "Approved"
+msgstr ""
+
+#: src/Admin/CommentsColumn.php:166
+msgid "Held"
+msgstr ""
+
+#: src/Admin/CommentsColumn.php:167
+#: templates/thread.php:105
+msgid "Spam"
+msgstr ""
+
+#: src/Admin/CommentsColumn.php:168
+msgid "Trashed"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:177
+#: src/Admin/ImportScreen.php:594
+#: src/Admin/ImportScreen.php:623
+msgid "You are not allowed to import comments."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:190
+#: src/Import/Runner.php:148
+msgid "Another import is in progress. Finish or cancel it first."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:242
+msgid "In Disqus, open Admin → Moderation → Export, download the file it emails you, and upload it here (.xml or .xml.gz). Nothing is imported until you have reviewed a dry run. Spam and deleted comments are skipped, and running the same export again never duplicates comments."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:249
+msgid "Export file"
+msgstr ""
+
+#. translators: 1: Maximum upload size, 2: WP-CLI command.
+#: src/Admin/ImportScreen.php:256
+#, php-format
+msgid "Maximum upload size: %1$s. For larger exports, use WP-CLI: %2$s"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:262
+msgid "Upload and analyse"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:276
+msgid "Dry run"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:277
+msgid "Nothing has been imported yet. Review what the export contains:"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:281
+msgid "Comments to import"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:282
+msgid "On posts found on this site"
+msgstr ""
+
+#. translators: %d: Number of Disqus threads.
+#: src/Admin/ImportScreen.php:285
+#, php-format
+msgid "On %d page not found on this site (skipped)"
+msgid_plural "On %d pages not found on this site (skipped)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Admin/ImportScreen.php:288
+#: src/Admin/ImportScreen.php:370
+msgid "Spam (skipped)"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:289
+#: src/Admin/ImportScreen.php:371
+msgid "Deleted (skipped)"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:294
+msgid "Sample"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:295
+#: src/Render/CommentPresenter.php:230
+msgid "Author"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:295
+msgid "Date"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:295
+#: templates/composer.php:110
+msgid "Comment"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:295
+msgid "Post"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:310
+msgid "Imported comments do not email your subscribers. Comments already on this site (from an earlier import or the Disqus plugin's sync) are skipped."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:312
+msgid "Start import"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:324
+msgid "Importing…"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:331
+msgid "Keep this page open. If it closes, come back and click Continue: the import resumes where it stopped."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:333
+msgid "Continue"
+msgstr ""
+
+#. translators: 1: Comments processed, 2: Total comments, 3: Comments imported.
+#: src/Admin/ImportScreen.php:347
+#, php-format
+msgid "Processed %1$s of %2$s comments; %3$s imported."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:363
+msgid "Import complete"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:367
+msgid "Imported"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:368
+msgid "Already on this site (skipped)"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:369
+msgid "Post not found (skipped)"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:372
+msgid "Empty (skipped)"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:373
+msgid "Failed"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:374
+msgid "Replies attached after their parent arrived"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:381
+msgid "View comments"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:441
+msgid "The import stopped. Click Continue to resume."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:453
+msgid "Start another import"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:453
+msgid "Cancel import"
+msgstr ""
+
+#: src/Admin/ImportScreen.php:470
+#: src/Import/Runner.php:144
+#: src/Import/Runner.php:209
+msgid "Unknown import source."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:498
+msgid "Choose an export file to upload."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:505
+msgid "Upload the .xml or .xml.gz file Disqus sent you."
+msgstr ""
+
+#: src/Admin/ImportScreen.php:542
+msgid "The upload failed."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:137
+#: templates/thread.php:85
+msgid "Posting…"
+msgstr ""
+
+#: src/Assets/FrontAssets.php:138
+msgid "Your comment was posted."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:139
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:140
+msgid "Your comment could not be posted."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:141
+msgid "Could not reach the site. Check your connection and try again."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:142
+msgid "Nothing to preview yet."
+msgstr ""
+
+#: src/Assets/FrontAssets.php:143
+msgid "Your changes were saved."
+msgstr ""
+
+#. translators: %s: Remaining time, e.g. 4:59.
+#: src/Assets/FrontAssets.php:145
+#, php-format
+msgid "Edit (%s)"
+msgstr ""
+
+#. translators: %s: Display name.
+#: src/Assets/FrontAssets.php:147
+#, php-format
+msgid "Commenting as %s"
+msgstr ""
+
+#. translators: %s: Number of characters left.
+#: src/Assets/FrontAssets.php:149
+#, php-format
+msgid "%s characters left"
+msgstr ""
+
+#. translators: %s: Number of comments.
+#: src/Assets/FrontAssets.php:151
+#: templates/thread-header.php:29
+#, php-format
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: Number of comments.
+#: src/Assets/FrontAssets.php:153
+#, php-format
+msgid "%s comments"
+msgstr ""
+
+#: src/Assets/FrontAssets.php:154
+msgid "Link address (https://…)"
+msgstr ""
+
+#. translators: %s: Name of the person being replied to.
+#: src/Assets/FrontAssets.php:156
+#: templates/comment.php:103
+#: templates/composer.php:84
+#, php-format
+msgid "Replying to %s"
+msgstr ""
+
+#. translators: %s: Number of hidden replies (one).
+#. translators: %s: Number of hidden replies.
+#: src/Assets/FrontAssets.php:158
+#: templates/comment.php:182
+#, php-format
+msgid "Show %s more reply"
+msgid_plural "Show %s more replies"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: Number of hidden replies.
+#: src/Assets/FrontAssets.php:160
+#, php-format
+msgid "Show %s more replies"
+msgstr ""
+
+#. translators: %s: Number of new comments.
+#: src/Assets/FrontAssets.php:162
+#, php-format
+msgid "New comments: %s"
+msgstr ""
+
+#: src/Assets/FrontAssets.php:163
+msgid "Check your email to confirm your subscription."
+msgstr ""
+
+#: src/Comments/Submission.php:291
+msgid "Comment Submission Failure"
+msgstr ""
+
+#: src/Comments/Submission.php:436
+msgid "You are posting comments too quickly. Please wait a moment and try again."
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:126
+msgid "Disqus (Convocept)"
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:137
+msgid "Import comments from a Disqus XML export into your WordPress comments."
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:175
+msgid "Could not write to the import working folder."
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:230
+msgid "The export contains no comments."
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:377
+msgid "The import working files are missing. Cancel the import and start again."
+msgstr ""
+
+#: src/Import/Disqus/DisqusImporter.php:748
+msgid "Anonymous"
+msgstr ""
+
+#: src/Import/Disqus/Parser.php:74
+msgid "The PHP XMLReader extension is required to import Disqus exports."
+msgstr ""
+
+#: src/Import/Disqus/Parser.php:151
+msgid "This file is not a valid Disqus XML export."
+msgstr ""
+
+#: src/Import/Runner.php:152
+msgid "The export file could not be read."
+msgstr ""
+
+#: src/Import/Runner.php:199
+msgid "There is no import in progress."
+msgstr ""
+
+#: src/Import/Runner.php:217
+msgid "A batch is already running. Try again in a moment."
+msgstr ""
+
+#: src/Import/Workspace.php:62
+msgid "Could not create a working folder in the uploads directory. Check that it is writable."
+msgstr ""
+
+#: src/Moderation/Checks/HoneypotCheck.php:48
+msgid "The hidden honeypot field was filled in."
+msgstr ""
+
+#. translators: %d: Number of links.
+#: src/Moderation/Checks/LinksCheck.php:54
+#, php-format
+msgid "Contains %d link."
+msgid_plural "Contains %d links."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Moderation/Checks/TimingCheck.php:52
+msgid "The form timing token was missing or invalid."
+msgstr ""
+
+#. translators: %s: Number of seconds.
+#: src/Moderation/Checks/TimingCheck.php:61
+#, php-format
+msgid "Submitted %s seconds after the form appeared."
+msgstr ""
+
+#. translators: 1: Comment date, 2: Comment time.
+#: src/Render/CommentPresenter.php:153
+#, php-format
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: src/Render/ThreadRenderer.php:795
+msgid "Oldest"
+msgstr ""
+
+#: src/Render/ThreadRenderer.php:796
+msgid "Newest"
+msgstr ""
+
+#: src/Render/ThreadRenderer.php:797
+msgid "Top"
+msgstr ""
+
+#: src/Rest/CommentsEndpoint.php:166
+#: src/Rest/ThreadEndpoint.php:147
+msgid "Comments are not available for this post."
+msgstr ""
+
+#: src/Rest/CommentsEndpoint.php:238
+#: src/Rest/CommentsEndpoint.php:311
+#: src/Rest/ModerationEndpoint.php:136
+#: src/Rest/ReactionsEndpoint.php:92
+#: src/Rest/ThreadEndpoint.php:165
+msgid "Comment not found."
+msgstr ""
+
+#: src/Rest/CommentsEndpoint.php:242
+msgid "This comment can no longer be edited."
+msgstr ""
+
+#: src/Rest/CommentsEndpoint.php:247
+msgid "Please edit this comment from the dashboard."
+msgstr ""
+
+#: src/Rest/CommentsEndpoint.php:290
+msgid "Too many edits. Please wait a moment."
+msgstr ""
+
+#: src/Rest/ModerationEndpoint.php:140
+msgid "You are not allowed to moderate this comment."
+msgstr ""
+
+#: src/Rest/ModerationEndpoint.php:158
+msgid "You are not allowed to moderate these comments."
+msgstr ""
+
+#: src/Rest/ModerationEndpoint.php:183
+msgid "The comment could not be updated."
+msgstr ""
+
+#: src/Rest/ModerationEndpoint.php:224
+msgid "Only approved top-level comments can be pinned."
+msgstr ""
+
+#: src/Rest/PreviewEndpoint.php:70
+msgid "Too many previews. Please wait a moment."
+msgstr ""
+
+#: src/Rest/ReactionsEndpoint.php:108
+msgid "Too many votes. Please wait a moment."
+msgstr ""
+
+#: src/Subscriptions/ManagePage.php:177
+#: templates/subscription-manage.php:32
+msgid "Your comment subscriptions"
+msgstr ""
+
+#: src/Subscriptions/ManagePage.php:289
+msgid "Thanks! Your subscription is confirmed."
+msgstr ""
+
+#: src/Subscriptions/ManagePage.php:290
+msgid "You are unsubscribed."
+msgstr ""
+
+#: src/Subscriptions/ManagePage.php:291
+msgid "You are unsubscribed from everything on this site."
+msgstr ""
+
+#: src/Subscriptions/ManagePage.php:292
+msgid "You are subscribed again."
+msgstr ""
+
+#. translators: 1: Comment author, 2: Post title.
+#: src/Subscriptions/Notifier.php:298
+#, php-format
+msgid "%1$s replied to your comment on “%2$s”"
+msgstr ""
+
+#. translators: 1: Comment author, 2: Post title.
+#: src/Subscriptions/Notifier.php:300
+#, php-format
+msgid "%1$s commented on “%2$s”"
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:149
+#: src/Subscriptions/SubscribeForm.php:284
+msgid "Thanks! Check your inbox: if this address needs confirming, we have sent you a link."
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:160
+msgid "Too many attempts. Please try again in a few minutes."
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:169
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:176
+msgid "This post does not accept subscriptions."
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:187
+msgid "You are subscribed."
+msgstr ""
+
+#: src/Subscriptions/SubscribeForm.php:285
+msgid "That did not work. Please check the address and try again."
+msgstr ""
+
+#. translators: %s: Post title.
+#: src/Subscriptions/Subscriptions.php:290
+#, php-format
+msgid "Replies to your comment on “%s”"
+msgstr ""
+
+#. translators: %s: Post title.
+#: src/Subscriptions/Subscriptions.php:295
+#, php-format
+msgid "All new comments on “%s”"
+msgstr ""
+
+#: src/Subscriptions/Subscriptions.php:298
+msgid "All new comments on this site"
+msgstr ""
+
+#. translators: %s: Site name.
+#: src/Subscriptions/Subscriptions.php:323
+#, php-format
+msgid "Confirm your subscription to %s"
+msgstr ""
+
+#: templates/comment.php:91
+msgid "(edited)"
+msgstr ""
+
+#: templates/comment.php:96
+msgid "Awaiting moderation."
+msgstr ""
+
+#. translators: %s: Number of upvotes.
+#: templates/comment.php:122
+#, php-format
+msgid "Upvote (%s vote)"
+msgid_plural "Upvote (%s votes)"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: Comment author name.
+#: templates/comment.php:135
+#, php-format
+msgid "Reply to %s"
+msgstr ""
+
+#. translators: %s: Comment author name.
+#: templates/comment.php:136
+msgid "Reply"
+msgstr ""
+
+#: templates/composer.php:63
+msgid "Log in to join the conversation."
+msgstr ""
+
+#: templates/composer.php:87
+#: templates/thread.php:116
+msgid "Cancel"
+msgstr ""
+
+#: templates/composer.php:94
+msgid "Comment editor"
+msgstr ""
+
+#: templates/composer.php:95
+msgid "Write"
+msgstr ""
+
+#: templates/composer.php:96
+msgid "Preview"
+msgstr ""
+
+#: templates/composer.php:98
+msgid "Formatting"
+msgstr ""
+
+#: templates/composer.php:99
+msgid "Bold"
+msgstr ""
+
+#: templates/composer.php:100
+msgid "Italic"
+msgstr ""
+
+#: templates/composer.php:101
+msgid "Link"
+msgstr ""
+
+#: templates/composer.php:102
+msgid "Code"
+msgstr ""
+
+#: templates/composer.php:103
+msgid "Quote"
+msgstr ""
+
+#: templates/composer.php:112
+msgid "Join the discussion…"
+msgstr ""
+
+#: templates/composer.php:126
+msgid "Name"
+msgstr ""
+
+#: templates/composer.php:135
+msgid "Email"
+msgstr ""
+
+#: templates/composer.php:143
+msgid "Website"
+msgstr ""
+
+#: templates/composer.php:150
+msgid "Your email address will not be published. Fields marked * are required."
+msgstr ""
+
+#: templates/composer.php:151
+msgid "Your email address will not be published."
+msgstr ""
+
+#: templates/composer.php:158
+msgid "Save my name, email, and website in this browser for the next time I comment."
+msgstr ""
+
+#: templates/composer.php:167
+msgid "Email me replies to my comment"
+msgstr ""
+
+#: templates/composer.php:171
+msgid "Email me all new comments on this post"
+msgstr ""
+
+#: templates/composer.php:177
+msgid "Leave this field empty"
+msgstr ""
+
+#: templates/composer.php:184
+msgid "Post comment"
+msgstr ""
+
+#: templates/emails/confirm-text.php:18
+#: templates/emails/confirm.php:24
+msgid "Please confirm your subscription"
+msgstr ""
+
+#. translators: 1: What the subscription follows, 2: Site name.
+#: templates/emails/confirm-text.php:20
+#: templates/emails/confirm.php:28
+#, php-format
+msgid "You asked to get emails about: %1$s on %2$s."
+msgstr ""
+
+#: templates/emails/confirm-text.php:21
+msgid "Confirm here:"
+msgstr ""
+
+#: templates/emails/confirm-text.php:22
+#: templates/emails/confirm.php:34
+msgid "If you did not ask for this, ignore this email and nothing will be sent. The link works for 48 hours."
+msgstr ""
+
+#: templates/emails/confirm.php:32
+#: templates/subscription-manage.php:53
+msgid "Confirm subscription"
+msgstr ""
+
+#. translators: 1: Comment author, 2: Post title.
+#: templates/emails/notification-text.php:19
+#: templates/emails/notification.php:33
+#, php-format
+msgid "%1$s replied to your comment on “%2$s”:"
+msgstr ""
+
+#. translators: 1: Comment author, 2: Post title.
+#: templates/emails/notification-text.php:21
+#: templates/emails/notification.php:35
+#, php-format
+msgid "%1$s commented on “%2$s”:"
+msgstr ""
+
+#: templates/emails/notification-text.php:24
+msgid "Read and reply:"
+msgstr ""
+
+#: templates/emails/notification-text.php:26
+msgid "Unsubscribe:"
+msgstr ""
+
+#: templates/emails/notification-text.php:27
+msgid "Manage subscriptions:"
+msgstr ""
+
+#: templates/emails/notification.php:41
+msgid "Read and reply"
+msgstr ""
+
+#. translators: %s: Site name.
+#: templates/emails/notification.php:46
+#, php-format
+msgid "You get this because you subscribed on %s."
+msgstr ""
+
+#: templates/emails/notification.php:48
+#: templates/subscription-manage.php:74
+msgid "Unsubscribe"
+msgstr ""
+
+#: templates/emails/notification.php:50
+msgid "Manage subscriptions"
+msgstr ""
+
+#: templates/pagination.php:34
+msgid "Load more comments"
+msgstr ""
+
+#: templates/pagination.php:37
+msgid "Comment pages"
+msgstr ""
+
+#: templates/pagination.php:39
+msgid "Previous"
+msgstr ""
+
+#: templates/pagination.php:51
+msgid "Page"
+msgstr ""
+
+#: templates/pagination.php:59
+msgid "Next"
+msgstr ""
+
+#: templates/subscribe-form.php:26
+msgid "Get new comments on this post by email"
+msgstr ""
+
+#: templates/subscribe-form.php:27
+msgid "Get new comments on this site by email"
+msgstr ""
+
+#: templates/subscribe-form.php:38
+msgid "Email address"
+msgstr ""
+
+#: templates/subscribe-form.php:39
+msgid "you@example.com"
+msgstr ""
+
+#: templates/subscribe-form.php:40
+msgid "Subscribe"
+msgstr ""
+
+#: templates/subscribe-form.php:47
+msgid "One email per new comment. Unsubscribe with one click at any time."
+msgstr ""
+
+#: templates/subscription-manage.php:39
+msgid "This link is not valid any more. Use the link in your most recent email, or subscribe again from any post."
+msgstr ""
+
+#: templates/subscription-manage.php:43
+msgid "This confirmation link has expired. Please subscribe again."
+msgstr ""
+
+#. translators: 1: What the subscription follows, 2: Email address.
+#: templates/subscription-manage.php:48
+#, php-format
+msgid "Confirm email notifications for: %1$s, sent to %2$s."
+msgstr ""
+
+#. translators: %s: Email address.
+#: templates/subscription-manage.php:61
+#, php-format
+msgid "Subscriptions for %s:"
+msgstr ""
+
+#: templates/subscription-manage.php:77
+msgid "Unsubscribed"
+msgstr ""
+
+#: templates/subscription-manage.php:81
+msgid "Subscribe again"
+msgstr ""
+
+#: templates/subscription-manage.php:84
+msgid "Waiting for confirmation"
+msgstr ""
+
+#: templates/subscription-manage.php:93
+msgid "Unsubscribe from everything"
+msgstr ""
+
+#: templates/thread-header.php:27
+#: templates/thread.php:41
+msgid "Comments"
+msgstr ""
+
+#: templates/thread-header.php:35
+msgid "Sort comments"
+msgstr ""
+
+#: templates/thread.php:61
 msgid "Comments are closed."
+msgstr ""
+
+#: templates/thread.php:65
+msgid "No comments yet. Start the conversation."
+msgstr ""
+
+#: templates/thread.php:98
+msgid "Edit"
+msgstr ""
+
+#: templates/thread.php:102
+msgid "Approve"
+msgstr ""
+
+#: templates/thread.php:103
+msgid "Pin"
+msgstr ""
+
+#: templates/thread.php:104
+msgid "Unpin"
+msgstr ""
+
+#: templates/thread.php:106
+msgid "Trash"
+msgstr ""
+
+#: templates/thread.php:107
+msgid "Edit in dashboard"
+msgstr ""
+
+#: templates/thread.php:112
+msgid "Edit your comment"
+msgstr ""
+
+#: templates/thread.php:117
+msgid "Save"
+msgstr ""
+
+#: assets/src/blocks/subscribe/index.js:35
+msgid "Settings"
+msgstr ""
+
+#: assets/src/blocks/subscribe/index.js:37
+msgid "Readers get new comments on"
+msgstr ""
+
+#: assets/src/blocks/subscribe/index.js:44
+msgid "This post"
+msgstr ""
+
+#: assets/src/blocks/subscribe/index.js:48
+msgid "The whole site"
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block title"
+msgid "Comment Subscription"
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block description"
+msgid "Let readers get new comments by email without commenting."
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block keyword"
+msgid "subscribe"
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block keyword"
+msgid "comments"
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block keyword"
+msgid "email"
+msgstr ""
+
+#: assets/src/blocks/subscribe/block.json
+msgctxt "block keyword"
+msgid "notify"
 msgstr ""

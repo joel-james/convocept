@@ -24,6 +24,12 @@ delete_metadata( 'comment', 0, 'convocept_pinned', '', true );
 
 delete_metadata( 'comment', 0, '_convocept_notified', '', true );
 delete_option( 'convocept_notification_jobs' );
+delete_option( 'convocept_notification_lock' );
+wp_clear_scheduled_hook( 'convocept_send_notifications' );
+
+// The {prefix}convocept_reactions and {prefix}convocept_subscriptions tables
+// are kept until M11 adds the "delete all Convocept data" option.
+
 delete_option( 'convocept_import_job' );
 delete_option( 'convocept_import_lock' );
 delete_metadata( 'comment', 0, '_convocept_disqus_parent', '', true );
@@ -48,9 +54,3 @@ foreach ( $convocept_dirs as $convocept_dir ) {
 }
 
 // `_convocept_disqus_id` is kept: it stops a later re-import from duplicating comments.
-delete_option( 'convocept_notification_lock' );
-wp_clear_scheduled_hook( 'convocept_send_notifications' );
-
-// The {prefix}convocept_reactions and {prefix}convocept_subscriptions tables
-// are kept until M11 adds the "delete all Convocept data" option.
-delete_metadata( 'comment', 0, '_convocept_edited', '', true );

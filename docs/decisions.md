@@ -2,6 +2,15 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-26 — Prototype removed
+- Deleted `includes/`, `build/` and the React prototype in `src/` (App.jsx, components, hooks, …).
+  Nothing loaded them, but `bin/build-zip.sh` ships all of `src/`, so they would have been in the
+  release zip.
+- Deleted migration 1 (`PrototypeData`): it only moved data of a build that was never released,
+  and it dropped `live_updates` / `poll_interval`, names M4 later reused for real settings.
+  Migrations continue at 2 so development installs already at version 3 stay consistent.
+- `readme.txt` still describes the prototype; it is rewritten in M12.
+
 ## 2026-09-26 — M8 Disqus importer
 - **Format checked against real sources**, not guessed: Disqus's own WordPress plugin (thread
   identifier `"{post ID} {guid}"`, synced comments keep `dsq_post_id` meta) and the isso

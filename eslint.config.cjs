@@ -7,7 +7,7 @@ const defaults = require( '@wordpress/scripts/config/eslint.config.cjs' );
 
 module.exports = [
 	{
-		ignores: [ 'assets/dist/**', 'src/**' ],
+		ignores: [ 'assets/dist/**' ],
 	},
 	...defaults,
 	{
