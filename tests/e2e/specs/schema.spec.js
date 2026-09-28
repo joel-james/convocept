@@ -30,7 +30,9 @@ async function jsonLd( page ) {
 for ( const theme of THEMES ) {
 	test.describe( `Structured data on ${ theme }`, () => {
 		test.beforeAll( async ( { requestUtils } ) => {
-			await requestUtils.activatePlugin( 'convocept' );
+			await requestUtils.activatePlugin(
+				'convocept-fast-native-comment-system'
+			);
 			await requestUtils.activateTheme( theme );
 			await requestUtils.deleteAllComments();
 		} );

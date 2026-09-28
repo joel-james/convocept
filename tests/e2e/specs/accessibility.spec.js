@@ -128,7 +128,9 @@ async function openAsGuest( browser, url, options = {} ) {
 
 test.describe( 'Accessibility', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.rest( {
 			method: 'POST',
 			path: '/convocept-e2e/v1/reset-settings',

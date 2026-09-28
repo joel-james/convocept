@@ -46,7 +46,9 @@ function createPost( requestUtils ) {
 
 test.describe( 'Votes and moderation', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.activateTheme( 'twentytwentyfive' );
 	} );
 

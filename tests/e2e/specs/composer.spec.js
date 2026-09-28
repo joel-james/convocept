@@ -39,7 +39,9 @@ async function openAsGuest( browser, url ) {
 
 test.describe( 'JavaScript composer', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.activateTheme( 'twentytwentyfive' );
 	} );
 

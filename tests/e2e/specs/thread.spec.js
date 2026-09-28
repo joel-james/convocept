@@ -63,7 +63,9 @@ async function createPostWithComments( requestUtils, count ) {
 for ( const theme of THEMES ) {
 	test.describe( `Thread on ${ theme }`, () => {
 		test.beforeAll( async ( { requestUtils } ) => {
-			await requestUtils.activatePlugin( 'convocept' );
+			await requestUtils.activatePlugin(
+				'convocept-fast-native-comment-system'
+			);
 			await requestUtils.activateTheme( theme );
 			await requestUtils.deleteAllComments();
 		} );
@@ -112,7 +114,9 @@ for ( const theme of THEMES ) {
 
 test.describe( 'Without JavaScript', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.activateTheme( 'twentytwentyfive' );
 	} );
 

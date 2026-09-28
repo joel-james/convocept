@@ -26,7 +26,9 @@ function longPost( requestUtils ) {
 
 test.describe( 'Lazy loading', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.activateTheme( 'twentytwentyfive' );
 	} );
 
@@ -90,7 +92,9 @@ test.describe( 'Live updates', () => {
 		page,
 		requestUtils,
 	} ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		const post = await requestUtils.createPost( {
 			title: `Live ${ Date.now() }`,
 			status: 'publish',

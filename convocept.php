@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Convocept
+ * Plugin Name:       Convocept – Fast Native Comment System
  * Plugin URI:        https://convocept.com
- * Description:       The fastest comment system for WordPress. Server-rendered, zero JavaScript until readers reach the comments, and every comment stays in your own database.
+ * Description:       Fast, modern comments built on native WordPress comments: no JavaScript on page load, replies, upvotes, email subscriptions and a Disqus importer.
  * Version:           1.0.0-dev
  * Requires at least: 6.5
  * Requires PHP:      7.4

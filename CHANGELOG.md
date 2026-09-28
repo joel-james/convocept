@@ -6,6 +6,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M12 release preparation: the plugin is now named "Convocept – Fast Native Comment System"
+  on WordPress.org; `readme.txt` rewritten for 1.0.0.
 - M11 privacy: Tools → Export/Erase Personal Data include comment subscriptions and the upvotes
   of registered users (counts are updated after erasing); Settings → Privacy has suggested
   policy text that follows the settings; new setting (Advanced → Privacy) to store new
@@ -23,12 +25,6 @@ and versions follow [Semantic Versioning](https://semver.org/).
   view, on the subscription page and on every settings page; keyboard focus and reduced motion
   are checked too.
 
-### Fixed
-- Contrast: muted text in the "Match the theme" scheme (Twenty Twenty-One was 3.6:1, now 5.1:1),
-  links and the subscribe link on dark and tinted backgrounds (accent mixed toward the text
-  colour), and red moderator actions and error messages in the dark scheme.
-- The upvote button's accessible name no longer shows a stale count after voting.
-- The Trusted proxies field on the settings screen had no programmatic label.
 - M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
   General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
   a save bar that appears only with unsaved changes; messages under invalid fields; works down
@@ -103,6 +99,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
   ESLint, Prettier, stylelint, wp-env, PHPUnit, Playwright, GitHub Actions CI, release zip script.
 
 ### Fixed
+- Contrast: muted text in the "Match the theme" scheme (Twenty Twenty-One was 3.6:1, now 5.1:1),
+  links and the subscribe link on dark and tinted backgrounds (accent mixed toward the text
+  colour), and red moderator actions and error messages in the dark scheme.
+- The upvote button's accessible name no longer shows a stale count after voting.
+- The Trusted proxies field on the settings screen had no programmatic label.
 - The Comment Subscription block did not load on WordPress 6.5 (it needed a script only
   WordPress 6.6+ provides).
 - "Top" sort ordered wrongly when comments had other metadata, or reused cached "oldest" results.

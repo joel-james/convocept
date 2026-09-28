@@ -44,7 +44,9 @@ function linkIn( mail, action ) {
 
 test.describe( 'Subscriptions', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
-		await requestUtils.activatePlugin( 'convocept' );
+		await requestUtils.activatePlugin(
+			'convocept-fast-native-comment-system'
+		);
 		await requestUtils.activateTheme( 'twentytwentyfive' );
 	} );
 

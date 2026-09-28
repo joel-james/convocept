@@ -1,4 +1,4 @@
-# Convocept
+# Convocept – Fast Native Comment System
 
 The fastest comment system for WordPress.
 

@@ -2,6 +2,20 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — M12 release preparation
+- **Name "Convocept – Fast Native Comment System"** in both the `Plugin Name` header and the
+  readme title (WordPress.org shows the header; the readme title should match). "Convocept"
+  stays first, and no third-party trademark is in the name: Disqus is in tags and text only.
+  Menus, the settings screen and emails keep the short name "Convocept". The slug stays
+  `convocept`.
+- **Side effect in tests:** outside WordPress.org, WordPress and the e2e utilities derive a
+  plugin's slug from its name, so `activatePlugin()` now takes
+  `convocept-fast-native-comment-system` and the Plugins-screen row is found by
+  `data-plugin="convocept/convocept.php"`.
+- **readme.txt** rewritten from the prototype's text: every claim matches what 1.0 does (for
+  example guests *can* edit within the edit window; wpDiscuz/StCR importers are "1.1").
+  Tags: comments, comment system, disqus, subscribe to comments, spam (only the first five count).
+
 ## 2026-09-28 — M11 accessibility, i18n, privacy, uninstall
 - **Privacy exporters and erasers** cover subscriptions (by email hash) and the upvotes of a
   registered user with that address. Guest votes are a one-way hash of IP and browser and cannot
