@@ -76,7 +76,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 = 🧩 For developers =
 
 * Override any template from your theme: copy it to `your-theme/convocept/`.
-* Restyle with CSS custom properties such as `--convocept-accent` and `--convocept-radius`.
+* Restyle with CSS custom properties such as `--convocept-radius` and `--convocept-font`.
 * Actions and filters at every step: rendering, submission, spam checks, subscriptions, structured data, importers and settings.
 * A REST API and WP-CLI commands.
 
