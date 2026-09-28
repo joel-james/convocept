@@ -9,6 +9,7 @@
 /**
  * External dependencies
  */
+const fs = require( 'fs' );
 const path = require( 'path' );
 
 /**
@@ -249,6 +250,10 @@ test.describe( 'WordPress.org assets', () => {
 		}
 
 		await context.close();
+
+		expect( fs.existsSync( path.join( OUT, 'banner-1544x500.png' ) ) ).toBe(
+			true
+		);
 	} );
 
 	test( 'screenshots of the thread', async ( { browser, requestUtils } ) => {
