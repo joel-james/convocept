@@ -133,6 +133,7 @@ domReady( () => {
 				'proxy_header',
 				'commenter_ip',
 				'structured_data',
+				'delete_data',
 			],
 			render: AdvancedPage,
 		},

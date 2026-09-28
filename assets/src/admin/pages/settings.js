@@ -644,6 +644,26 @@ export function AdvancedPage( { draft, update, errors } ) {
 					onChange={ ( value ) => update( 'structured_data', value ) }
 				/>
 			</Card>
+			<Card
+				title={ __( 'Uninstall', 'convocept' ) }
+				description={ __(
+					'Comments always stay: they belong to WordPress. Deactivating the plugin never deletes anything.',
+					'convocept'
+				) }
+			>
+				<Toggle
+					label={ __(
+						'Delete all Convocept data when the plugin is deleted',
+						'convocept'
+					) }
+					help={ __(
+						'Removes settings, subscriptions, upvotes, pins and edit history. Leave off to keep them for a later reinstall.',
+						'convocept'
+					) }
+					checked={ draft.delete_data }
+					onChange={ ( value ) => update( 'delete_data', value ) }
+				/>
+			</Card>
 		</>
 	);
 }

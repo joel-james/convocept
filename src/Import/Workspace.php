@@ -120,4 +120,34 @@ class Workspace {
 
 		rmdir( $real ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Empty directory we created; WP_Filesystem may need credentials.
 	}
+
+	/**
+	 * Delete every workspace and the root folder.
+	 *
+	 * Used on uninstall: working files of an unfinished import hold
+	 * commenters' email and IP addresses.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function delete_all(): void {
+		$root = $this->root();
+
+		if ( ! is_dir( $root ) ) {
+			return;
+		}
+
+		foreach ( (array) glob( $root . '/*', GLOB_ONLYDIR ) as $path ) {
+			$this->delete( (string) $path );
+		}
+
+		foreach ( array( 'index.php', '.htaccess' ) as $name ) {
+			if ( is_file( $root . '/' . $name ) ) {
+				wp_delete_file( $root . '/' . $name );
+			}
+		}
+
+		rmdir( $root ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Our own folder; fails harmlessly if something else was put in it.
+	}
 }

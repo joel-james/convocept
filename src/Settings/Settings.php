@@ -112,6 +112,8 @@ class Settings {
 	 *     @type string   $commenter_ip What is stored of a new comment's IP address: 'keep'
 	 *                                  (the full address, as WordPress does), 'anonymize'
 	 *                                  (last part zeroed) or 'none'.
+	 *     @type bool     $delete_data  Whether deleting the plugin also deletes its settings,
+	 *                                  subscriptions, votes and comment meta. Comments stay.
 	 * }
 	 */
 	public function defaults(): array {
@@ -135,6 +137,7 @@ class Settings {
 			'poll_interval'   => 60,
 			'structured_data' => true,
 			'commenter_ip'    => 'keep',
+			'delete_data'     => false,
 		);
 
 		/**
@@ -205,6 +208,7 @@ class Settings {
 				'type' => 'string',
 				'enum' => self::IP_MODES,
 			),
+			'delete_data'     => array( 'type' => 'boolean' ),
 		);
 
 		/**

@@ -12,6 +12,11 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   importer applies it too (`wp_insert_comment()` skips that filter). Spam checks (Akismet) run
   earlier and still see the full address. Existing comments are not rewritten. Akismet keeps its
   own copy of the IP in comment meta; that is Akismet's data.
+- **Uninstall keeps data by default** (`delete_data` off), as PLAN.md asks. Before M11 it always
+  removed settings and meta; now only working state goes unless the owner opts in. The logic
+  moved to `Convocept\Uninstaller` so it can be tested; `uninstall.php` loads the autoloader
+  itself because WordPress does not load the plugin on uninstall. Deleting also removes
+  `_convocept_disqus_id`, so a later re-import only recognises comments the Disqus plugin synced.
 
 ## 2026-09-28 — Own Comments screen in 1.1, beside the core one
 - The owner asked whether Convocept should replace the core Comments menu with its own list in

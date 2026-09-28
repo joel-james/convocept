@@ -9,6 +9,7 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_loaded` | 1.0.0 | `Plugin $plugin` | After Convocept registers its hooks on `plugins_loaded`. Add-ons register here. |
 | `convocept_activated` | 1.0.0 | — | After activation and migrations. |
 | `convocept_deactivated` | 1.0.0 | — | After deactivation cleanup. |
+| `convocept_uninstalled` | 1.0.0 | `bool $delete_data` | After uninstall cleaned up a site (runs per site on multisite). |
 | `convocept_migrated` | 1.0.0 | `int $version, string $class` | After each database migration is applied. |
 | `convocept_render_thread_header` | 1.0.0 | `Thread $thread` | Top of the thread, before the header. For summaries and notices. |
 | `convocept_render_badges` | 1.0.0 | `WP_Comment $comment` | After a comment's badges, in its header. |
