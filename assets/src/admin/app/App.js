@@ -27,6 +27,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import {
 	FloatingBar,
 	Notice,
+	PageFooter,
 	PageHeader,
 	Sidebar,
 	Snackbars,
@@ -226,7 +227,11 @@ export default function App( { boot, pages, groups } ) {
 					window.location.hash = id;
 				} }
 			/>
-			<div className="convocept-main">
+			<div
+				className={ `convocept-main${
+					dirty.length > 0 ? ' convocept-main--has-bar' : ''
+				}` }
+			>
 				<PageHeader
 					title={ page.title }
 					chips={
@@ -253,6 +258,28 @@ export default function App( { boot, pages, groups } ) {
 						boot={ boot }
 					/>
 				</main>
+				<PageFooter
+					meta={ sprintf(
+						/* translators: %s: Plugin version. */
+						__( 'Convocept %s · by Foxe Labs', 'convocept' ),
+						boot.version
+					) }
+					label={ __( 'About Convocept', 'convocept' ) }
+					links={ [
+						{
+							label: __( 'Documentation', 'convocept' ),
+							href: boot.urls.docs,
+						},
+						{
+							label: __( 'convocept.com', 'convocept' ),
+							href: boot.urls.website,
+						},
+						{
+							label: __( 'WordPress.org', 'convocept' ),
+							href: boot.urls.wporg,
+						},
+					] }
+				/>
 			</div>
 			{ dirty.length > 0 && (
 				<FloatingBar

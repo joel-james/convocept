@@ -217,6 +217,52 @@
 	box-shadow: none;
 }
 
+/* PageFooter: replaces WordPress's footer, which this screen hides. */
+.convocept-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 24px;
+	margin-top: auto;
+	padding: 20px var(--convocept-space-8);
+	border-top: 1px solid var(--convocept-stroke-header);
+	background: var(--convocept-ground);
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-fg-muted);
+}
+
+.convocept-footer__links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 20px;
+}
+
+.convocept-admin .convocept-footer__links a {
+	color: var(--convocept-fg-muted);
+	text-decoration: none;
+}
+
+.convocept-admin .convocept-footer__links a:hover {
+	color: var(--convocept-fg);
+	text-decoration: underline;
+}
+
+/* While the FloatingBar shows, keep the footer's links clear of it. */
+.convocept-main--has-bar .convocept-footer {
+	padding-bottom: 96px;
+}
+
+/* This stylesheet loads on the plugin screen only, so these reach no other admin page. */
+#wpfooter {
+	display: none;
+}
+
+#wpbody-content {
+	padding-bottom: 0;
+}
+
 .convocept-chip {
 	display: inline-flex;
 	align-items: center;
@@ -239,7 +285,7 @@
 	gap: var(--convocept-space-5);
 	width: 100%;
 	max-width: calc(var(--convocept-content-max) + 2 * var(--convocept-space-8));
-	padding: var(--convocept-space-7) var(--convocept-space-8) 120px;
+	padding: var(--convocept-space-7) var(--convocept-space-8);
 }
 
 .convocept-content--wide {
@@ -823,7 +869,8 @@
 	}
 
 	.convocept-header,
-	.convocept-content {
+	.convocept-content,
+	.convocept-footer {
 		padding-inline: var(--convocept-space-4);
 	}
 

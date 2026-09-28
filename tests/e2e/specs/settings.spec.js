@@ -146,4 +146,31 @@ test.describe( 'Settings screen', () => {
 			page.getByRole( 'heading', { level: 1, name: 'Advanced' } )
 		).toBeVisible();
 	} );
+
+	test( 'our footer replaces the WordPress footer on this screen only', async ( {
+		admin,
+		page,
+	} ) => {
+		await admin.visitAdminPage( SCREEN, QUERY );
+
+		const footer = page.getByRole( 'navigation', {
+			name: 'About Convocept',
+		} );
+		await expect(
+			footer.getByRole( 'link', { name: /Documentation/ } )
+		).toHaveAttribute(
+			'href',
+			'https://docs.foxelabs.com/software/convocept/getting-started'
+		);
+		await expect(
+			footer.getByRole( 'link', { name: /convocept\.com/ } )
+		).toHaveAttribute( 'href', 'https://convocept.com/' );
+		await expect(
+			footer.getByRole( 'link', { name: /WordPress\.org/ } )
+		).toHaveAttribute( 'href', 'https://wordpress.org/plugins/convocept/' );
+		await expect( page.locator( '#wpfooter' ) ).toBeHidden();
+
+		await admin.visitAdminPage( 'index.php' );
+		await expect( page.locator( '#wpfooter' ) ).toBeVisible();
+	} );
 } );

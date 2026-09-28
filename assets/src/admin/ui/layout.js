@@ -1,6 +1,6 @@
 /**
  * Layout components of the Foxe Plugin Admin UI: Sidebar, PageHeader,
- * StatusChip, Card, Notice and FloatingBar.
+ * PageFooter, StatusChip, Card, Notice and FloatingBar.
  */
 
 /**
@@ -131,6 +131,41 @@ export function PageHeader( { title, chips, actions } ) {
 			{ chips }
 			{ actions }
 		</header>
+	);
+}
+
+/**
+ * The last line of the screen: plugin, version, maker and links.
+ *
+ * Replaces WordPress's own admin footer, which the plugin hides on its
+ * screen. Links open in a new tab and say so to screen readers.
+ *
+ * @param {Object}                                 props       Props.
+ * @param {string}                                 props.meta  Plugin, version and maker, e.g. "Convocept 1.0.0 · by Foxe Labs".
+ * @param {string}                                 props.label Name of the link list for screen readers.
+ * @param {Array<{ label: string, href: string }>} props.links Links.
+ * @return {Element} Footer.
+ */
+export function PageFooter( { meta, label, links } ) {
+	return (
+		<footer className="convocept-footer">
+			<span className="convocept-footer__meta">{ meta }</span>
+			<nav className="convocept-footer__links" aria-label={ label }>
+				{ links.map( ( link ) => (
+					<a
+						key={ link.href }
+						href={ link.href }
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{ link.label }
+						<span className="screen-reader-text">
+							{ __( '(opens in a new tab)', 'convocept' ) }
+						</span>
+					</a>
+				) ) }
+			</nav>
+		</footer>
 	);
 }
 

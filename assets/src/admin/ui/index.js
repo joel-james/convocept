@@ -11,6 +11,7 @@ import './ui.css';
 export {
 	Sidebar,
 	PageHeader,
+	PageFooter,
 	StatusChip,
 	Card,
 	Notice,

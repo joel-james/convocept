@@ -2,6 +2,15 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — Own footer on the Convocept screen
+- **PageFooter** added to the design system first (version 8–9), then built: plugin, version and
+  maker on the start side; Documentation, convocept.com and WordPress.org on the end side. On the
+  Convocept screen only, `admin_footer_text` and `update_footer` return '' (hooked on the page's
+  `load-` action) and the app stylesheet, which loads nowhere else, hides `#wpfooter`.
+- Content keeps `space-8` below the last card instead of 120px; the footer gets 96px of bottom
+  padding only while the FloatingBar shows, so short pages end with the footer at the window's
+  bottom and the bar never covers its links.
+
 ## 2026-09-28 — Settings screen under Comments
 - **Comments → Convocept instead of Settings → Convocept** (owner's call, before 1.0): the app
   holds import today and moderation (M14) and Insights (M13) later, so it belongs with comments.

@@ -112,6 +112,26 @@ class SettingsPage {
 			self::SLUG,
 			array( $this, 'render' )
 		);
+
+		if ( '' !== $this->hook_suffix ) {
+			add_action( 'load-' . $this->hook_suffix, array( $this, 'replace_footer' ) );
+		}
+	}
+
+	/**
+	 * Empty WordPress's admin footer on this screen.
+	 *
+	 * The app shows its own footer (PageFooter) with Convocept's links; the
+	 * stylesheet hides the empty `#wpfooter`. Every other admin screen keeps
+	 * WordPress's footer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function replace_footer(): void {
+		add_filter( 'admin_footer_text', '__return_empty_string', 99 );
+		add_filter( 'update_footer', '__return_empty_string', 99 );
 	}
 
 	/**
@@ -216,6 +236,7 @@ class SettingsPage {
 				'docs'       => 'https://docs.foxelabs.com/software/convocept/getting-started',
 				'support'    => 'https://wordpress.org/support/plugin/convocept/',
 				'website'    => 'https://convocept.com/',
+				'wporg'      => 'https://wordpress.org/plugins/convocept/',
 			),
 		);
 

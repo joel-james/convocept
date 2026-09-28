@@ -6,6 +6,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- The Convocept screen has its own footer (version, maker, links to the documentation,
+  convocept.com and WordPress.org) in place of WordPress's admin footer, on that screen only.
 - The settings screen moved from Settings to **Comments → Convocept**, next to the screens it
   works with.
 - Comments → Convocept → Help links to the documentation (docs.foxelabs.com). Sidebar items
