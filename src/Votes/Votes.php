@@ -116,7 +116,8 @@ class Votes {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Privacy export, run rarely.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT comment_id, created_at FROM {$table} WHERE voter_hash = %s AND reaction = %s ORDER BY id LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				'SELECT comment_id, created_at FROM %i WHERE voter_hash = %s AND reaction = %s ORDER BY id LIMIT %d OFFSET %d',
+				$table,
 				$voter,
 				self::UP,
 				$limit,
@@ -156,7 +157,8 @@ class Votes {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Privacy erasure, run rarely.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, comment_id FROM {$table} WHERE voter_hash = %s ORDER BY id LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				'SELECT id, comment_id FROM %i WHERE voter_hash = %s ORDER BY id LIMIT %d',
+				$table,
 				$voter,
 				$limit
 			),
@@ -170,8 +172,8 @@ class Votes {
 		$ids = array_map( 'intval', wp_list_pluck( $rows, 'id' ) );
 		$in  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Privacy erasure; table name from $wpdb->prefix, $in holds %d placeholders.
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$in})", $ids ) );
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Privacy erasure; $in holds %d placeholders.
+		$wpdb->query( $wpdb->prepare( "DELETE FROM %i WHERE id IN ({$in})", array_merge( array( $table ), $ids ) ) );
 		// phpcs:enable
 
 		foreach ( array_unique( array_map( 'intval', wp_list_pluck( $rows, 'comment_id' ) ) ) as $comment_id ) {
@@ -202,7 +204,8 @@ class Votes {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; counts are cached in comment meta.
 			$changed = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT IGNORE INTO {$table} (comment_id, reaction, voter_hash, created_at) VALUES (%d, %s, %s, %s)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+					'INSERT IGNORE INTO %i (comment_id, reaction, voter_hash, created_at) VALUES (%d, %s, %s, %s)',
+					$table,
 					$comment_id,
 					self::UP,
 					$voter,
@@ -270,7 +273,9 @@ class Votes {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Per-visitor data, fetched once per session request.
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT r.comment_id FROM {$table} r INNER JOIN {$wpdb->comments} c ON c.comment_ID = r.comment_id WHERE c.comment_post_ID = %d AND r.voter_hash = %s AND r.reaction = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				'SELECT r.comment_id FROM %i r INNER JOIN %i c ON c.comment_ID = r.comment_id WHERE c.comment_post_ID = %d AND r.voter_hash = %s AND r.reaction = %s',
+				$table,
+				$wpdb->comments,
 				$post_id,
 				$this->voter(),
 				self::UP
@@ -311,7 +316,8 @@ class Votes {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Refreshes the meta cache.
 		$count = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE comment_id = %d AND reaction = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				'SELECT COUNT(*) FROM %i WHERE comment_id = %d AND reaction = %s',
+				$table,
 				$comment_id,
 				self::UP
 			)

@@ -120,7 +120,7 @@ class Repository {
 		global $wpdb;
 
 		$table = SubscriptionsTable::name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ), ARRAY_A );
+		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table, $id ), ARRAY_A );
 
 		return is_array( $row ) ? $this->normalize( $row ) : null;
 	}
@@ -137,7 +137,7 @@ class Repository {
 		global $wpdb;
 
 		$table = SubscriptionsTable::name();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE email_hash = %s ORDER BY id", $email_hash ), ARRAY_A );
+		$rows  = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE email_hash = %s ORDER BY id', $table, $email_hash ), ARRAY_A );
 
 		return array_map( array( $this, 'normalize' ), (array) $rows );
 	}
@@ -157,7 +157,7 @@ class Repository {
 
 		$table = SubscriptionsTable::name();
 
-		return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM {$table} WHERE email_hash = %s AND status = %s LIMIT 1", $this->hash_email( $email ), self::ACTIVE ) );
+		return (bool) $wpdb->get_var( $wpdb->prepare( 'SELECT 1 FROM %i WHERE email_hash = %s AND status = %s LIMIT 1', $table, $this->hash_email( $email ), self::ACTIVE ) );
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Repository {
 		$sql = $wpdb->prepare(
 			"SELECT MIN(id) AS cursor_id, email_hash,
 				MAX(CASE WHEN comment_id IN ({$in}) THEN 1 ELSE 0 END) AS is_reply
-			FROM {$table}
+			FROM %i
 			WHERE status = %s
 				AND email_hash <> %s
 				AND ( ( post_id = %d AND comment_id = 0 ) OR ( post_id = 0 AND comment_id = 0 ) OR comment_id IN ({$in}) )
@@ -214,7 +214,7 @@ class Repository {
 			HAVING MIN(id) > %d
 			ORDER BY cursor_id
 			LIMIT %d",
-			array_merge( $ancestors, array( self::ACTIVE, $exclude_hash, $post_id ), $ancestors, array( $after, $limit ) )
+			array_merge( $ancestors, array( $table, self::ACTIVE, $exclude_hash, $post_id ), $ancestors, array( $after, $limit ) )
 		);
 
 		$groups = (array) $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared above.
@@ -267,7 +267,7 @@ class Repository {
 		global $wpdb;
 
 		$table = SubscriptionsTable::name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE email_hash = %s AND post_id = %d AND comment_id = %d", $email_hash, $post_id, $comment_id ), ARRAY_A );
+		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE email_hash = %s AND post_id = %d AND comment_id = %d', $table, $email_hash, $post_id, $comment_id ), ARRAY_A );
 
 		return is_array( $row ) ? $this->normalize( $row ) : null;
 	}

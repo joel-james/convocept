@@ -31,3 +31,15 @@ tests_add_filter(
 );
 
 require $convocept_tests_dir . '/includes/bootstrap.php';
+
+/*
+ * The test library reinstalls WordPress's own tables but not Convocept's, and
+ * the e2e tests use the same database. Start from empty tables so subscriptions
+ * or votes left by a browser test never reach PHPUnit (a site-wide subscriber
+ * from an e2e run would receive every test's notification).
+ */
+( new Convocept\Database\Migrator() )->maybe_migrate();
+
+foreach ( array( Convocept\Database\Migrations\ReactionsTable::name(), Convocept\Database\Migrations\SubscriptionsTable::name() ) as $convocept_table ) {
+	$GLOBALS['wpdb']->query( "TRUNCATE TABLE {$convocept_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Test setup; table names from $wpdb->prefix.
+}

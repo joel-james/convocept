@@ -21,6 +21,14 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   in the release zip (it goes to the SVN `assets/` folder). Re-run it at release so the admin
   shows `1.0.0`, not `1.0.0-dev`. Icon and banner use the placeholder mark until a real logo exists.
 - The generator found that **replies under a pinned comment were never shown** (fixed, with a test).
+- **Plugin Check** (run on the release zip, unpacked on the dev site): only the stable tag
+  mismatch remains, which the version bump to 1.0.0 fixes. Its 11 `UnescapedDBParameter`
+  warnings were table names built from `$wpdb->prefix`; queries now pass them with the `%i`
+  identifier placeholder (WordPress 6.2+), so they are provably escaped. Running it on the
+  working copy also lists dev files (dotfiles, `*.dist`, CLAUDE.md, PLAN.md); none are in the zip.
+- **PHPUnit empties Convocept's tables at start**: the e2e tests share the tests-site database
+  and WordPress's test installer only resets core tables, so a subscriber left by a browser test
+  made a notification test flaky.
 
 ## 2026-09-28 — M11 accessibility, i18n, privacy, uninstall
 - **Privacy exporters and erasers** cover subscriptions (by email hash) and the upvotes of a
