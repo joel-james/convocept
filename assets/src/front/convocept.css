@@ -39,10 +39,10 @@
 	--convocept-surface: color-mix(in srgb, currentcolor 4%, transparent);
 	--convocept-field-bg: color-mix(in srgb, currentcolor 2%, transparent);
 	--convocept-radius: 10px;
-	--convocept-gap: 1.5rem;
+	--convocept-gap: 2rem;
 	--convocept-avatar: 40px;
 	--convocept-font: inherit;
-	--convocept-font-size: 1rem;
+	--convocept-font-size: 0.9375rem;
 }
 
 .convocept {
@@ -150,7 +150,7 @@
 	gap: 0.75rem 1rem;
 	align-items: center;
 	justify-content: space-between;
-	margin-block-end: 1.25rem;
+	margin-block-end: 1.5rem;
 }
 
 .convocept-title {
@@ -191,7 +191,7 @@
 /* Composer */
 
 .convocept-composer {
-	margin-block-end: 2rem;
+	margin-block-end: 2.5rem;
 }
 
 .convocept-form {
@@ -329,7 +329,7 @@
 .convocept-comment__body {
 	display: grid;
 	grid-template-columns: var(--convocept-avatar) minmax(0, 1fr);
-	gap: 0.85rem;
+	gap: 1rem;
 }
 
 .convocept-avatar {
@@ -391,13 +391,13 @@
 }
 
 .convocept-comment__reply-to {
-	margin: 0.15rem 0 0;
+	margin: 0.125rem 0 0.25rem;
 	color: var(--convocept-muted);
 	font-size: 0.8125em;
 }
 
 .convocept-comment__content {
-	margin-block-start: 0.35rem;
+	margin-block-start: 0.25rem;
 	overflow-wrap: anywhere;
 }
 
@@ -418,7 +418,7 @@
 	align-items: center;
 	flex-wrap: wrap;
 	gap: 1rem;
-	margin-block-start: 0.5rem;
+	margin-block-start: 0.75rem;
 	font-size: 0.875em;
 }
 
@@ -435,14 +435,14 @@
 /* Replies: indented under the parent's text, with a thread line. */
 
 .convocept-replies {
-	margin-block-start: 1.25rem;
+	margin-block-start: 1.75rem;
 	margin-inline-start: calc(var(--convocept-avatar) / 2);
-	padding-inline-start: calc(var(--convocept-avatar) / 2 + 0.85rem - 2px);
+	padding-inline-start: calc(var(--convocept-avatar) / 2 + 1rem - 2px);
 	border-inline-start: 2px solid var(--convocept-border);
 }
 
 .convocept-replies > .convocept-comment + .convocept-comment {
-	margin-block-start: 1.25rem;
+	margin-block-start: 1.75rem;
 }
 
 @media (max-width: 480px) {
@@ -453,7 +453,7 @@
 
 	.convocept-replies {
 		margin-inline-start: 0;
-		padding-inline-start: 0.75rem;
+		padding-inline-start: 1rem;
 	}
 }
 
@@ -713,7 +713,7 @@
 }
 
 .convocept-more-replies {
-	margin: 0.75rem 0 0 calc(var(--convocept-avatar) + 0.85rem);
+	margin: 1rem 0 0 calc(var(--convocept-avatar) + 1rem);
 	font-size: 0.875em;
 }
 
@@ -739,7 +739,7 @@
 }
 
 .convocept-composer.is-replying {
-	margin: 1rem 0 0 calc(var(--convocept-avatar) + 0.85rem);
+	margin: 1rem 0 0 calc(var(--convocept-avatar) + 1rem);
 }
 
 /* A comment reached through a #comment-{ID} link. */
@@ -850,7 +850,7 @@
 }
 
 .convocept-subscribe {
-	margin-block-end: 2rem;
+	margin-block-end: 2.5rem;
 	font-size: 0.9375em;
 }
 

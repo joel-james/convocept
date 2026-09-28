@@ -6,6 +6,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- The comment thread has more breathing space and slightly smaller text (15px instead of 16px
+  at the default root size, set by `--convocept-font-size`). More space between threads (2rem, `--convocept-gap`),
+  between replies and before a comment's first reply (1.75rem), between the avatar and the text
+  (1rem), above Upvote/Reply (0.75rem), and below the comment form (2.5rem).
 - Settings screen fields use WordPress's own sizes, borders and fonts: every text, number,
   select and textarea field is 13px text in a 40px control, and all of them share one width
   (`--convocept-field-width`, 480px, narrower on small screens). Number fields are WordPress text
