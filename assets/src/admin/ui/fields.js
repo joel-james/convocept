@@ -92,10 +92,12 @@ export function Toggle( { label, help, checked, onChange } ) {
 }
 
 /**
- * A number with steppers.
+ * A whole number.
  *
- * The value passed to onChange is a number, or '' while the field is
- * empty, so validation can say what to enter.
+ * WordPress's TextControl as a number input, so it looks and sizes like
+ * every other field; the stepper control in @wordpress/components is
+ * still experimental. The value passed to onChange is a number, or ''
+ * while the field is empty, so validation can say what to enter.
  *
  * @param {Object}                         props          Props.
  * @param {string}                         props.label    Label.
@@ -117,62 +119,27 @@ export function NumberField( {
 	onChange,
 } ) {
 	const id = useInstanceId( NumberField, 'convocept-number' );
-	const current = '' === value ? min : Number( value );
 
-	/**
-	 * Move the value by one step, kept within the limits.
-	 *
-	 * @param {number} delta +1 or -1.
-	 * @return {void}
-	 */
-	const step = ( delta ) =>
-		onChange( Math.min( max, Math.max( min, current + delta ) ) );
-
-	// A plain number input with our own steppers: the stepper control in
-	// @wordpress/components is still experimental.
 	return (
 		<div className={ fieldClass( 'number', error ) }>
-			<label className="convocept-label" htmlFor={ id }>
-				{ label }
-			</label>
-			<div className="convocept-number">
-				<input
+			<div className="convocept-field__control">
+				<TextControl
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
 					id={ id }
-					className="convocept-number__input"
 					type="number"
 					inputMode="numeric"
+					label={ label }
 					value={ value }
 					min={ min }
 					max={ max }
 					step={ 1 }
 					aria-invalid={ !! error }
 					aria-describedby={ `${ id }-describe` }
-					onChange={ ( event ) =>
-						onChange(
-							'' === event.target.value
-								? ''
-								: Number( event.target.value )
-						)
+					onChange={ ( next ) =>
+						onChange( '' === next ? '' : Number( next ) )
 					}
 				/>
-				<button
-					type="button"
-					className="convocept-number__step"
-					aria-label={ __( 'Decrease', 'convocept' ) }
-					disabled={ current <= min }
-					onClick={ () => step( -1 ) }
-				>
-					−
-				</button>
-				<button
-					type="button"
-					className="convocept-number__step"
-					aria-label={ __( 'Increase', 'convocept' ) }
-					disabled={ current >= max }
-					onClick={ () => step( 1 ) }
-				>
-					+
-				</button>
 			</div>
 			<Describe id={ `${ id }-describe` } help={ help } error={ error } />
 		</div>
@@ -504,18 +471,20 @@ export function ColorField( {
 						/>
 					) }
 				/>
-				<TextControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					hideLabelFromVision
-					label={ __( 'Hex value', 'convocept' ) }
-					value={ value }
-					aria-invalid={ !! error }
-					aria-describedby={ `${ id }-describe` }
-					onChange={ ( next ) =>
-						onChange( next.trim().toLowerCase() )
-					}
-				/>
+				<div className="convocept-color__hex">
+					<TextControl
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+						hideLabelFromVision
+						label={ __( 'Hex value', 'convocept' ) }
+						value={ value }
+						aria-invalid={ !! error }
+						aria-describedby={ `${ id }-describe` }
+						onChange={ ( next ) =>
+							onChange( next.trim().toLowerCase() )
+						}
+					/>
+				</div>
 				{ value !== defaultValue && (
 					<Button
 						variant="tertiary"

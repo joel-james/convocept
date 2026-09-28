@@ -133,6 +133,43 @@ test.describe( 'Settings screen', () => {
 		await expect( bar ).toHaveCount( 0 );
 	} );
 
+	// WordPress warns in the console (SCRIPT_DEBUG is on in wp-env) before it
+	// changes or removes a component prop, so this catches a coming break in
+	// the admin UI while it is still a warning. Run it against trunk to see
+	// the next release early.
+	test( 'no page uses a deprecated WordPress component or prop', async ( {
+		admin,
+		page,
+	} ) => {
+		const warnings = [];
+		page.on( 'console', ( message ) => {
+			if (
+				[ 'warning', 'error' ].includes( message.type() ) &&
+				/deprecated|is not a valid prop|unknown prop/i.test(
+					message.text()
+				)
+			) {
+				warnings.push( message.text() );
+			}
+		} );
+
+		await admin.visitAdminPage( SCREEN, QUERY );
+
+		const nav = page.getByRole( 'navigation', {
+			name: 'Convocept sections',
+		} );
+		const links = await nav.getByRole( 'link' ).allTextContents();
+
+		for ( const name of links ) {
+			await nav.getByRole( 'link', { name } ).click();
+			await expect(
+				page.getByRole( 'heading', { level: 1, name } )
+			).toBeVisible();
+		}
+
+		expect( warnings ).toEqual( [] );
+	} );
+
 	test( 'the app loads on its own screen only', async ( { admin, page } ) => {
 		await admin.visitAdminPage( 'index.php' );
 		await expect( page.locator( '#convocept-admin-js' ) ).toHaveCount( 0 );

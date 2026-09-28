@@ -356,7 +356,13 @@
 	color: var(--convocept-warning-fg);
 }
 
-/* WordPress controls, restyled */
+/*
+ * WordPress controls: core sizes, borders and fonts, untouched, so fields
+ * look the same on every WordPress version. Only labels and help lines are
+ * restyled, so our own labels (legends, ColorField) match core ones. The
+ * core class names used here are the only ones this file depends on,
+ * besides buttons and snackbars below; keep it that way.
+ */
 .convocept-admin .components-base-control__label,
 .convocept-admin .components-input-control__label,
 .convocept-admin .convocept-label {
@@ -376,91 +382,14 @@
 	color: var(--convocept-fg-subtle);
 }
 
-.convocept-admin .components-text-control__input,
-.convocept-admin .components-textarea-control__input,
-.convocept-admin .components-select-control__input,
-.convocept-admin .components-input-control__container .components-input-control__input {
-	font-size: 13px;
-}
-
-.convocept-admin .components-input-control__backdrop,
-.convocept-admin .components-text-control__input,
-.convocept-admin .components-textarea-control__input {
-	border-color: var(--convocept-stroke-control);
-	border-radius: var(--convocept-radius-control);
-}
-
-.convocept-field--invalid .components-input-control__backdrop,
-.convocept-field--invalid .components-text-control__input,
-.convocept-field--invalid .components-textarea-control__input,
-.convocept-admin .convocept-field--invalid .components-input-control__backdrop {
+/* Invalid fields: our aria-invalid, not a core class, picks the input. */
+.convocept-admin .convocept-field--invalid [aria-invalid="true"] {
 	border-color: var(--convocept-danger);
 }
 
-/* NumberField: value, then two steppers */
-.convocept-number {
-	display: inline-flex;
-	align-items: stretch;
-	height: var(--convocept-control-height);
-	border: 1px solid var(--convocept-stroke-control);
-	border-radius: var(--convocept-radius-control);
-	background: var(--convocept-surface);
-}
-
-.convocept-field--invalid .convocept-number {
-	border-color: var(--convocept-danger);
-}
-
-.convocept-number:focus-within {
-	outline: 2px solid var(--convocept-ink-raised);
-	outline-offset: -1px;
-}
-
-.convocept-admin .convocept-number__input {
-	width: 72px;
-	min-height: 0;
-	margin: 0;
-	padding: 0 14px;
-	border: 0;
-	border-radius: 0;
-	background: transparent;
-	box-shadow: none;
-	font-size: 18px;
-	font-weight: 600;
-	-moz-appearance: textfield;
-}
-
-.convocept-admin .convocept-number__input:focus {
-	border: 0;
-	box-shadow: none;
-	outline: none;
-}
-
-.convocept-number__input::-webkit-inner-spin-button,
-.convocept-number__input::-webkit-outer-spin-button {
-	margin: 0;
-	-webkit-appearance: none;
-}
-
-.convocept-number__step {
-	width: 36px;
-	border: 0;
-	border-inline-start: 1px solid var(--convocept-stroke-tile);
-	background: var(--convocept-surface);
-	color: var(--convocept-fg);
-	font: inherit;
-	font-size: 16px;
-	cursor: pointer;
-}
-
-.convocept-number__step:disabled {
-	color: var(--convocept-fg-disabled);
-	cursor: default;
-}
-
-.convocept-number__step:focus-visible {
-	outline: 2px solid var(--convocept-ink-raised);
-	outline-offset: -2px;
+/* Short numbers don't need the full width. */
+.convocept-field--number .convocept-field__control {
+	width: 160px;
 }
 
 .convocept-field--select {
@@ -472,10 +401,9 @@
 	max-width: 480px;
 }
 
+/* IP ranges and similar read better in a fixed-width font. */
 .convocept-field--code textarea {
 	font-family: var(--convocept-font-mono);
-	font-size: 12px;
-	line-height: 18px;
 }
 
 /* Toggle: bold label, help under it */
@@ -485,7 +413,6 @@
 	font-weight: 600;
 	text-transform: none;
 }
-
 
 /* CheckboxList */
 .convocept-checks {
@@ -499,10 +426,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 12px 24px;
-}
-
-.convocept-checks .components-base-control__field {
-	margin: 0;
 }
 
 /* ChoiceTiles */
@@ -585,10 +508,8 @@
 	cursor: pointer;
 }
 
-.convocept-color .components-text-control__input {
+.convocept-color__hex {
 	width: 120px;
-	font-family: var(--convocept-font-mono);
-	font-size: 12px;
 }
 
 /* FileField */

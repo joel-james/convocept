@@ -2,6 +2,19 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — Settings fields keep WordPress's own look
+- Compared with a mockup built only from `@wordpress/components` (removed after review). The
+  owner kept our layout (sidebar, cards, floating bar, tiles) but preferred core inputs.
+- `ui.css` no longer restyles inputs, selects or textareas (font size, border, radius). It
+  styles only labels and help lines, plus a red border on `[aria-invalid="true"]` inside an
+  invalid field: our attribute, not a core class. The core class names `ui.css` depends on are
+  the label/help/toggle-label ones, buttons and snackbars; keep that list short.
+- `NumberField` wraps `TextControl type="number"` (stable) rather than `NumberControl`
+  (still `__experimental`) or our own steppers.
+- Guard against WordPress updates: stable components only, `__next40pxDefaultSize` and
+  `__nextHasNoMarginBottom` on every control (the coming defaults), and an e2e test that fails
+  on any deprecation warning on the settings pages (wp-env runs with `SCRIPT_DEBUG`).
+
 ## 2026-09-28 — Token overrides and the stored-IP setting
 - Default CSS tokens live in `:where(.convocept…)` blocks (zero specificity). The stylesheet is
   inlined in the body, after theme styles, so equal-specificity defaults used to beat a theme's
