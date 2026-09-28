@@ -128,6 +128,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   votes on comments of non-public posts are refused; the Disqus parser keeps libxml's limits.
 
 ### Fixed
+- Settings screen: the unsaved-changes bar no longer adds empty space under the footer. It now
+  sits in the page above the footer and sticks to the bottom of the window while you scroll.
 - Themes can override Convocept's CSS custom properties with a plain `.convocept { … }` rule.
   The default tokens now sit in `:where()` blocks; before, the stylesheet (printed after the
   theme's) won on source order.

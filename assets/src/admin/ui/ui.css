@@ -256,11 +256,6 @@
 	letter-spacing: 1px;
 }
 
-/* While the FloatingBar shows, keep the footer's links clear of it. */
-.convocept-main--has-bar .convocept-footer {
-	padding-bottom: 96px;
-}
-
 /* This stylesheet loads on the plugin screen only, so these reach no other admin page. */
 #wpfooter {
 	display: none;
@@ -666,22 +661,34 @@
 	color: var(--convocept-fg);
 }
 
-/* FloatingBar and Snackbar */
+/*
+ * FloatingBar and Snackbar.
+ *
+ * The bar is sticky inside the main column, placed before the footer: it follows the
+ * bottom of the window, then settles above the footer at the end of the
+ * page, so it never covers the footer and needs no extra space below it.
+ * The auto top margin keeps it at the bottom when the page is short.
+ */
 .convocept-floatbar {
-	position: fixed;
+	position: sticky;
 	bottom: var(--convocept-space-7);
-	left: calc(50% + (160px + var(--convocept-sidebar-width)) / 2);
 	z-index: 100;
 	display: inline-flex;
+	align-self: center;
 	align-items: center;
 	gap: 12px;
+	margin: auto var(--convocept-space-4) var(--convocept-space-7);
 	padding: 8px 8px 8px 20px;
-	transform: translateX(-50%);
 	border-radius: var(--convocept-radius-pill);
 	background: var(--convocept-ink);
 	color: var(--convocept-on-ink);
 	box-shadow: var(--convocept-shadow-float);
 	white-space: nowrap;
+}
+
+/* The bar takes the free space above the footer instead. */
+.convocept-floatbar + .convocept-footer {
+	margin-top: 0;
 }
 
 .convocept-admin .convocept-floatbar .components-button {
@@ -728,30 +735,22 @@
 
 	from {
 		opacity: 0;
-		transform: translate(-50%, 12px);
+		transform: translateY(12px);
 	}
 
 	to {
 		opacity: 1;
-		transform: translate(-50%, 0);
+		transform: translateY(0);
 	}
 }
 
 /* WordPress admin menu folded */
-.folded .convocept-floatbar {
-	left: calc(50% + (36px + var(--convocept-sidebar-width)) / 2);
-}
-
 .folded .convocept-snackbars {
 	left: calc(36px + var(--convocept-sidebar-width) + var(--convocept-space-8));
 }
 
 /* Narrow screens: the sidebar becomes a section dropdown. */
 @media (max-width: 960px) {
-
-	.convocept-floatbar {
-		left: calc(50% + (36px + var(--convocept-sidebar-width)) / 2);
-	}
 
 	.convocept-snackbars {
 		left: calc(36px + var(--convocept-sidebar-width) + var(--convocept-space-8));
@@ -797,12 +796,8 @@
 		padding-inline: var(--convocept-space-4);
 	}
 
-	.convocept-floatbar,
 	.convocept-snackbars {
 		left: 50%;
-	}
-
-	.convocept-snackbars {
 		transform: translateX(-50%);
 	}
 }

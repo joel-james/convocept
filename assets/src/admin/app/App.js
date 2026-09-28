@@ -261,11 +261,7 @@ export default function App( { boot, pages, groups } ) {
 				hrefFor={ tabUrl }
 				onNavigate={ navigate }
 			/>
-			<div
-				className={ `convocept-main${
-					dirty.length > 0 ? ' convocept-main--has-bar' : ''
-				}` }
-			>
+			<div className="convocept-main">
 				<PageHeader
 					title={ page.title }
 					chips={
@@ -292,6 +288,41 @@ export default function App( { boot, pages, groups } ) {
 						boot={ boot }
 					/>
 				</main>
+				{ /* In the flow, before the footer: it sticks to the bottom of the window while
+				   there is more page below, and rests above the footer at the end. */ }
+				{ dirty.length > 0 && (
+					<FloatingBar
+						text={
+							errorCount
+								? sprintf(
+										/* translators: %d: Number of settings with an error. */
+										_n(
+											'%d setting needs fixing',
+											'%d settings need fixing',
+											errorCount,
+											'convocept'
+										),
+										errorCount
+									)
+								: sprintf(
+										/* translators: %d: Number of changed settings. */
+										_n(
+											'%d unsaved change',
+											'%d unsaved changes',
+											dirty.length,
+											'convocept'
+										),
+										dirty.length
+									)
+						}
+						undoLabel={ __( 'Discard', 'convocept' ) }
+						onUndo={ discard }
+						actionLabel={ __( 'Save changes', 'convocept' ) }
+						onAction={ save }
+						busy={ saving }
+						disabled={ errorCount > 0 }
+					/>
+				) }
 				<PageFooter
 					meta={ createInterpolateElement(
 						sprintf(
@@ -337,39 +368,6 @@ export default function App( { boot, pages, groups } ) {
 					] }
 				/>
 			</div>
-			{ dirty.length > 0 && (
-				<FloatingBar
-					text={
-						errorCount
-							? sprintf(
-									/* translators: %d: Number of settings with an error. */
-									_n(
-										'%d setting needs fixing',
-										'%d settings need fixing',
-										errorCount,
-										'convocept'
-									),
-									errorCount
-								)
-							: sprintf(
-									/* translators: %d: Number of changed settings. */
-									_n(
-										'%d unsaved change',
-										'%d unsaved changes',
-										dirty.length,
-										'convocept'
-									),
-									dirty.length
-								)
-					}
-					undoLabel={ __( 'Discard', 'convocept' ) }
-					onUndo={ discard }
-					actionLabel={ __( 'Save changes', 'convocept' ) }
-					onAction={ save }
-					busy={ saving }
-					disabled={ errorCount > 0 }
-				/>
-			) }
 			<Snackbars />
 		</>
 	);
