@@ -100,9 +100,11 @@ const PATHS = {
 };
 
 /**
- * Render the Convocept mark: an ink tile with a white speech bubble.
+ * Render the Convocept mark: a black speech bubble with two white lines.
  *
- * A placeholder until Convocept has its own logo.
+ * The convocept.com mark (a rounded square with a square bottom-left corner),
+ * drawn in black and white instead of the site's green, to sit with the
+ * admin UI's ink accents.
  *
  * @return {Element} SVG element.
  */
@@ -115,15 +117,12 @@ export function Logo() {
 			aria-hidden="true"
 			focusable="false"
 		>
-			<rect width="32" height="32" rx="8" fill="#111" />
+			<rect width="32" height="32" rx="11" fill="#000" />
+			<rect y="22" width="10" height="10" fill="#000" />
 			<path
-				d="M8 9.5A2.5 2.5 0 0 1 10.5 7h11A2.5 2.5 0 0 1 24 9.5v8a2.5 2.5 0 0 1-2.5 2.5H15l-4.5 4v-4a2.5 2.5 0 0 1-2.5-2.5z"
-				fill="#fff"
-			/>
-			<path
-				d="M12 12.5h8M12 16h5"
-				stroke="#111"
-				strokeWidth="1.5"
+				d="M9.5 13.5h13M9.5 18.5h8"
+				stroke="#fff"
+				strokeWidth="3.2"
 				strokeLinecap="round"
 			/>
 		</svg>

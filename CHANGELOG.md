@@ -6,6 +6,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- The settings screen's sidebar shows the Convocept mark from convocept.com (speech bubble with
+  two lines), in black with white lines instead of the site's green.
 - Comments → Convocept keeps the open section in the address as `&tab=appearance` instead of
   `#appearance`: a reload or shared link opens the same section, sidebar links can open in a new
   tab, and Back and Forward move between sections.

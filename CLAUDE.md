@@ -37,8 +37,8 @@ after M8.
 - **Open items to raise with the owner:** merge M1–M12 to `main`; Twenty Twenty-One shows its
   own dark submit button instead of our accent colour, and also paints the moderator buttons
   (Pin, Spam, Trash) as dark boxes (not investigated); confirm the plan to ship basic AI checks
-  free in 1.2 (decisions.md); a real Convocept logo for the admin sidebar and the WordPress.org
-  icon/banner (placeholder speech bubble on an ink tile now); the subscription page is plain
+  free in 1.2 (decisions.md); the WordPress.org icon/banner still use the old placeholder mark (the
+  admin sidebar uses the convocept.com mark in black/white since 2026-09-28); the subscription page is plain
   theme markup and looks weak in screenshot 6.
 
 **Working environment notes**
