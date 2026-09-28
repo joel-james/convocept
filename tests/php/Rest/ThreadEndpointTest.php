@@ -8,9 +8,11 @@
 namespace Convocept\Tests\Rest;
 
 use Convocept\Plugin;
+use Convocept\Render\Labels;
 
 /**
  * @covers \Convocept\Rest\ThreadEndpoint
+ * @covers \Convocept\Render\Labels
  */
 class ThreadEndpointTest extends RestTestCase {
 
@@ -71,6 +73,26 @@ class ThreadEndpointTest extends RestTestCase {
 		$this->assertStringContainsString( 'id="comment-' . $two . '"', $data['html'] );
 		$this->assertStringNotContainsString( 'id="comment-' . $one . '"', $data['html'] );
 		$this->assertSame( 0, $data['remaining'] );
+		$this->assertSame( '', $data['more_text'] );
+	}
+
+	public function test_count_labels_use_the_languages_plural_forms(): void {
+		$seen = array();
+		$spy  = static function ( $translation, $single, $plural, $number ) use ( &$seen ) {
+			$seen[] = $number;
+
+			return $translation;
+		};
+
+		add_filter( 'ngettext_convocept', $spy, 10, 4 );
+		$count = Labels::comment_count( 5 );
+		$more  = Labels::more_replies( 21 );
+		remove_filter( 'ngettext_convocept', $spy, 10 );
+
+		$this->assertSame( '5 comments', $count );
+		$this->assertSame( 'Show 21 more replies', $more );
+		$this->assertSame( array( 5, 21 ), $seen, 'gettext picks the form from the real number.' );
+		$this->assertSame( 'Comments', Labels::comment_count( 0 ) );
 	}
 
 	public function test_context_route_and_unapproved_comments(): void {
@@ -99,6 +121,7 @@ class ThreadEndpointTest extends RestTestCase {
 		$this->assertSame( array( $new ), wp_list_pluck( $data['items'], 'id' ) );
 		$this->assertStringContainsString( 'Fresh', $data['items'][0]['html'] );
 		$this->assertSame( 2, $data['total'] );
+		$this->assertSame( '2 comments', $data['count_text'] );
 
 		$unchanged = $this->dispatch( 'GET', "posts/{$post_id}/updates", array( 'after' => $old ), array( 'If-None-Match' => $etag ) );
 		$this->assertSame( 304, $unchanged->get_status() );

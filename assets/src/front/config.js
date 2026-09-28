@@ -28,6 +28,7 @@ function readConfig() {
  * @property {number}                 editWindow Edit window in minutes.
  * @property {number}                 maxLength  Maximum comment length.
  * @property {number}                 poll       Seconds between checks for new comments; 0 = off.
+ * @property {string}                 locale     Site language as a BCP 47 tag, e.g. "de-DE".
  * @property {Object<string, string>} i18n       Translated strings.
  */
 
@@ -38,6 +39,7 @@ export const config = Object.assign(
 		editWindow: 0,
 		maxLength: 20000,
 		poll: 0,
+		locale: '',
 		i18n: {},
 	},
 	readConfig()
@@ -54,4 +56,19 @@ export function t( key, arg ) {
 	const text = config.i18n[ key ] || key;
 
 	return arg === undefined ? text : text.replace( '%s', String( arg ) );
+}
+
+/**
+ * Format a number in the site's language.
+ *
+ * @param {number} value Number.
+ * @return {string} Formatted number.
+ */
+export function number( value ) {
+	try {
+		return value.toLocaleString( config.locale || undefined );
+	} catch {
+		// An unknown language tag throws a RangeError.
+		return value.toLocaleString();
+	}
 }

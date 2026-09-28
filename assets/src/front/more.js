@@ -6,7 +6,6 @@
  * comments and appends them in place.
  */
 import { request } from './api';
-import { t } from './config';
 import {
 	added,
 	announce,
@@ -144,10 +143,7 @@ async function loadReplies( root, link ) {
 
 		if ( result.remaining > 0 ) {
 			link.dataset.convoceptOffset = String( offset + count );
-			link.textContent = t(
-				result.remaining === 1 ? 'moreReply' : 'moreReplies',
-				result.remaining.toLocaleString()
-			);
+			link.textContent = result.more_text;
 		} else {
 			link.parentElement.remove();
 		}

@@ -133,6 +133,8 @@ class FrontAssets {
 			'maxLength'  => (int) Controller::content_arg( true )['maxLength'],
 			'poll'       => $this->settings->get( 'live_updates' ) ? (int) $this->settings->get( 'poll_interval' ) : 0,
 			'adminUrl'   => esc_url_raw( admin_url() ),
+			// Numbers the script updates are formatted like the ones PHP printed.
+			'locale'     => str_replace( '_', '-', determine_locale() ),
 			'i18n'       => array(
 				'posting'        => __( 'Posting…', 'convocept' ),
 				'posted'         => __( 'Your comment was posted.', 'convocept' ),
@@ -145,19 +147,11 @@ class FrontAssets {
 				'editFor'        => __( 'Edit (%s)', 'convocept' ),
 				/* translators: %s: Display name. */
 				'commentingAs'   => __( 'Commenting as %s', 'convocept' ),
-				/* translators: %s: Number of characters left. */
-				'charactersLeft' => __( '%s characters left', 'convocept' ),
-				/* translators: %s: Number of comments. */
-				'countOne'       => __( '%s comment', 'convocept' ),
-				/* translators: %s: Number of comments. */
-				'countMany'      => __( '%s comments', 'convocept' ),
+				/* translators: %s: Number of characters left. Phrased without a plural: the script fills it in. */
+				'charactersLeft' => __( 'Characters left: %s', 'convocept' ),
 				'linkPrompt'     => __( 'Link address (https://…)', 'convocept' ),
 				/* translators: %s: Name of the person being replied to. */
 				'replyingTo'     => __( 'Replying to %s', 'convocept' ),
-				/* translators: %s: Number of hidden replies (one). */
-				'moreReply'      => __( 'Show %s more reply', 'convocept' ),
-				/* translators: %s: Number of hidden replies. */
-				'moreReplies'    => __( 'Show %s more replies', 'convocept' ),
 				/* translators: %s: Number of new comments. */
 				'newComments'    => __( 'New comments: %s', 'convocept' ),
 				'confirmEmail'   => __( 'Check your email to confirm your subscription.', 'convocept' ),

@@ -14,6 +14,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
   HTML, rate-limit counters, import files) on every site of a network. Settings, subscriptions,
   votes and comment meta are kept for a reinstall unless "Delete all Convocept data when the
   plugin is deleted" (Advanced → Uninstall) is on. Comments are never deleted.
+- M11 i18n: counts the script updates ("5 comments", "Show 3 more replies") now come from the
+  server with the language's real plural forms, and numbers are formatted in the site's
+  language instead of the browser's. Notification emails are marked right-to-left for RTL
+  languages. The translation template now includes the settings screen's strings.
 - M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
   General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
   a save bar that appears only with unsaved changes; messages under invalid fields; works down

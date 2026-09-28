@@ -119,10 +119,10 @@ $convocept_comment = $args['comment'];
 						class="convocept-vote"
 						data-convocept-vote
 						aria-pressed="false"
-						aria-label="<?php echo esc_attr( sprintf( /* translators: %s: Number of upvotes. */ _n( 'Upvote (%s vote)', 'Upvote (%s votes)', $args['votes'], 'convocept' ), number_format_i18n( $args['votes'] ) ) ); ?>"
 					>
 						<svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-						<span data-convocept-vote-count><?php echo esc_html( number_format_i18n( $args['votes'] ) ); ?></span>
+						<span class="screen-reader-text"><?php esc_html_e( 'Upvote', 'convocept' ); ?> </span>
+						<span data-convocept-vote-count="<?php echo esc_attr( (string) (int) $args['votes'] ); ?>"><?php echo esc_html( number_format_i18n( $args['votes'] ) ); ?></span>
 					</button>
 				<?php endif; ?>
 
@@ -176,13 +176,7 @@ $convocept_comment = $args['comment'];
 				data-convocept-offset="<?php echo esc_attr( (string) $args['more_replies']['offset'] ); ?>"
 			>
 				<?php
-				echo esc_html(
-					sprintf(
-						/* translators: %s: Number of hidden replies. */
-						_n( 'Show %s more reply', 'Show %s more replies', $args['more_replies']['count'], 'convocept' ),
-						number_format_i18n( $args['more_replies']['count'] )
-					)
-				);
+				echo esc_html( \Convocept\Render\Labels::more_replies( (int) $args['more_replies']['count'] ) );
 				?>
 			</a>
 		</p>

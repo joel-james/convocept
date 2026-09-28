@@ -144,7 +144,11 @@ if [[ "${SKIP_POT:-0}" == "1" ]]; then
 elif command -v wp >/dev/null 2>&1; then
 	info "Generating translation template"
 	mkdir -p languages
-	wp i18n make-pot . languages/convocept.pot --exclude=node_modules,vendor,assets/dist,dist,bin,tests --allow-root >/dev/null 2>&1 \
+	# Scan the built admin and block scripts, not assets/src: WordPress loads a
+	# script's translations from a JSON file named after the md5 of the path
+	# in the .po reference, so references must point at the files it loads.
+	# A bare "dist" would also exclude assets/dist: exclusions match any folder name.
+	wp i18n make-pot . languages/convocept.pot --exclude=node_modules,vendor,assets/src,dist/convocept,bin,tests --allow-root >/dev/null 2>&1 \
 		&& ok "languages/convocept.pot updated" \
 		|| warn "make-pot failed; shipping the existing .pot"
 else

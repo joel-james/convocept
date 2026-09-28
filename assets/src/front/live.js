@@ -6,7 +6,7 @@
  * Nothing runs while the tab is hidden.
  */
 import { routeUrl } from './api';
-import { config, t } from './config';
+import { config, number, t } from './config';
 import { added, announce, cloneTemplate, parseHtml } from './dom';
 
 /**
@@ -143,16 +143,13 @@ function insert( root, data ) {
 
 	const title = root.querySelector( '.convocept-title' );
 
-	if ( title ) {
-		title.textContent = t(
-			data.total === 1 ? 'countOne' : 'countMany',
-			data.total.toLocaleString()
-		);
+	if ( title && data.count_text ) {
+		title.textContent = data.count_text;
 	}
 
 	announce(
 		root.querySelector( '[data-convocept-status]' ),
-		t( 'newComments', inserted.length )
+		t( 'newComments', number( inserted.length ) )
 	);
 }
 

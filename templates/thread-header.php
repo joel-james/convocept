@@ -22,12 +22,7 @@ $convocept_total = $args['thread']->total();
 <header class="convocept-header">
 	<h2 class="convocept-title">
 		<?php
-		echo esc_html(
-			0 === $convocept_total
-				? __( 'Comments', 'convocept' )
-				/* translators: %s: Number of comments. */
-				: sprintf( _n( '%s comment', '%s comments', $convocept_total, 'convocept' ), number_format_i18n( $convocept_total ) )
-		);
+		echo esc_html( \Convocept\Render\Labels::comment_count( $convocept_total ) );
 		?>
 	</h2>
 

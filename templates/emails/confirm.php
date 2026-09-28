@@ -18,7 +18,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>">
+<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <body style="margin:0;padding:24px;background:#f6f7f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1f2937;">
 	<div style="max-width:560px;margin:0 auto;padding:28px;background:#ffffff;border-radius:10px;">
 		<p style="margin:0 0 16px;font-size:18px;font-weight:600;"><?php esc_html_e( 'Please confirm your subscription', 'convocept' ); ?></p>

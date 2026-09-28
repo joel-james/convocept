@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T18:11:30+00:00\n"
+"POT-Creation-Date: 2026-09-28T05:56:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convocept\n"
@@ -17,6 +17,9 @@ msgstr ""
 #. Plugin Name of the plugin
 #: convocept.php
 #: src/Admin/CommentsColumn.php:77
+#: src/Admin/SettingsPage.php:107
+#: src/Admin/SettingsPage.php:108
+#: assets/dist/admin/index.js:13
 msgid "Convocept"
 msgstr ""
 
@@ -74,276 +77,82 @@ msgstr ""
 msgid "Trashed"
 msgstr ""
 
-#: src/Admin/ImportScreen.php:177
-#: src/Admin/ImportScreen.php:594
-#: src/Admin/ImportScreen.php:623
-msgid "You are not allowed to import comments."
+#: src/Admin/SettingsPage.php:124
+#: assets/dist/admin/index.js:13
+#: assets/dist/blocks/subscribe/index.js:1
+msgid "Settings"
 msgstr ""
 
-#: src/Admin/ImportScreen.php:190
-#: src/Import/Runner.php:148
-msgid "Another import is in progress. Finish or cancel it first."
+#: src/Admin/SettingsPage.php:141
+msgid "The Convocept settings need JavaScript. Turn it on in your browser to change them."
 msgstr ""
 
-#: src/Admin/ImportScreen.php:242
-msgid "In Disqus, open Admin → Moderation → Export, download the file it emails you, and upload it here (.xml or .xml.gz). Nothing is imported until you have reviewed a dry run. Spam and deleted comments are skipped, and running the same export again never duplicates comments."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:249
-msgid "Export file"
-msgstr ""
-
-#. translators: 1: Maximum upload size, 2: WP-CLI command.
-#: src/Admin/ImportScreen.php:256
-#, php-format
-msgid "Maximum upload size: %1$s. For larger exports, use WP-CLI: %2$s"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:262
-msgid "Upload and analyse"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:276
-msgid "Dry run"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:277
-msgid "Nothing has been imported yet. Review what the export contains:"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:281
-msgid "Comments to import"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:282
-msgid "On posts found on this site"
-msgstr ""
-
-#. translators: %d: Number of Disqus threads.
-#: src/Admin/ImportScreen.php:285
-#, php-format
-msgid "On %d page not found on this site (skipped)"
-msgid_plural "On %d pages not found on this site (skipped)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/Admin/ImportScreen.php:288
-#: src/Admin/ImportScreen.php:370
-msgid "Spam (skipped)"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:289
-#: src/Admin/ImportScreen.php:371
-msgid "Deleted (skipped)"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:294
-msgid "Sample"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:295
-#: src/Render/CommentPresenter.php:230
-msgid "Author"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:295
-msgid "Date"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:295
-#: templates/composer.php:110
-msgid "Comment"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:295
-msgid "Post"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:310
-msgid "Imported comments do not email your subscribers. Comments already on this site (from an earlier import or the Disqus plugin's sync) are skipped."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:312
-msgid "Start import"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:324
-msgid "Importing…"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:331
-msgid "Keep this page open. If it closes, come back and click Continue: the import resumes where it stopped."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:333
-msgid "Continue"
-msgstr ""
-
-#. translators: 1: Comments processed, 2: Total comments, 3: Comments imported.
-#: src/Admin/ImportScreen.php:347
-#, php-format
-msgid "Processed %1$s of %2$s comments; %3$s imported."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:363
-msgid "Import complete"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:367
-msgid "Imported"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:368
-msgid "Already on this site (skipped)"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:369
-msgid "Post not found (skipped)"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:372
-msgid "Empty (skipped)"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:373
-msgid "Failed"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:374
-msgid "Replies attached after their parent arrived"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:381
-msgid "View comments"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:441
-msgid "The import stopped. Click Continue to resume."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:453
-msgid "Start another import"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:453
-msgid "Cancel import"
-msgstr ""
-
-#: src/Admin/ImportScreen.php:470
-#: src/Import/Runner.php:144
-#: src/Import/Runner.php:209
-msgid "Unknown import source."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:498
-msgid "Choose an export file to upload."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:505
-msgid "Upload the .xml or .xml.gz file Disqus sent you."
-msgstr ""
-
-#: src/Admin/ImportScreen.php:542
-msgid "The upload failed."
-msgstr ""
-
-#: src/Assets/FrontAssets.php:137
+#: src/Assets/FrontAssets.php:139
 #: templates/thread.php:85
 msgid "Posting…"
 msgstr ""
 
-#: src/Assets/FrontAssets.php:138
+#: src/Assets/FrontAssets.php:140
 msgid "Your comment was posted."
 msgstr ""
 
-#: src/Assets/FrontAssets.php:139
+#: src/Assets/FrontAssets.php:141
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: src/Assets/FrontAssets.php:140
+#: src/Assets/FrontAssets.php:142
 msgid "Your comment could not be posted."
 msgstr ""
 
-#: src/Assets/FrontAssets.php:141
+#: src/Assets/FrontAssets.php:143
 msgid "Could not reach the site. Check your connection and try again."
 msgstr ""
 
-#: src/Assets/FrontAssets.php:142
+#: src/Assets/FrontAssets.php:144
 msgid "Nothing to preview yet."
 msgstr ""
 
-#: src/Assets/FrontAssets.php:143
+#: src/Assets/FrontAssets.php:145
 msgid "Your changes were saved."
 msgstr ""
 
 #. translators: %s: Remaining time, e.g. 4:59.
-#: src/Assets/FrontAssets.php:145
+#: src/Assets/FrontAssets.php:147
 #, php-format
 msgid "Edit (%s)"
 msgstr ""
 
 #. translators: %s: Display name.
-#: src/Assets/FrontAssets.php:147
+#: src/Assets/FrontAssets.php:149
 #, php-format
 msgid "Commenting as %s"
 msgstr ""
 
-#. translators: %s: Number of characters left.
-#: src/Assets/FrontAssets.php:149
-#, php-format
-msgid "%s characters left"
-msgstr ""
-
-#. translators: %s: Number of comments.
+#. translators: %s: Number of characters left. Phrased without a plural: the script fills it in.
 #: src/Assets/FrontAssets.php:151
-#: templates/thread-header.php:29
 #, php-format
-msgid "%s comment"
-msgid_plural "%s comments"
-msgstr[0] ""
-msgstr[1] ""
-
-#. translators: %s: Number of comments.
-#: src/Assets/FrontAssets.php:153
-#, php-format
-msgid "%s comments"
+msgid "Characters left: %s"
 msgstr ""
 
-#: src/Assets/FrontAssets.php:154
+#: src/Assets/FrontAssets.php:152
 msgid "Link address (https://…)"
 msgstr ""
 
 #. translators: %s: Name of the person being replied to.
-#: src/Assets/FrontAssets.php:156
+#: src/Assets/FrontAssets.php:154
 #: templates/comment.php:103
 #: templates/composer.php:84
 #, php-format
 msgid "Replying to %s"
 msgstr ""
 
-#. translators: %s: Number of hidden replies (one).
-#. translators: %s: Number of hidden replies.
-#: src/Assets/FrontAssets.php:158
-#: templates/comment.php:182
-#, php-format
-msgid "Show %s more reply"
-msgid_plural "Show %s more replies"
-msgstr[0] ""
-msgstr[1] ""
-
-#. translators: %s: Number of hidden replies.
-#: src/Assets/FrontAssets.php:160
-#, php-format
-msgid "Show %s more replies"
-msgstr ""
-
 #. translators: %s: Number of new comments.
-#: src/Assets/FrontAssets.php:162
+#: src/Assets/FrontAssets.php:156
 #, php-format
 msgid "New comments: %s"
 msgstr ""
 
-#: src/Assets/FrontAssets.php:163
+#: src/Assets/FrontAssets.php:157
 msgid "Check your email to confirm your subscription."
 msgstr ""
 
@@ -355,27 +164,27 @@ msgstr ""
 msgid "You are posting comments too quickly. Please wait a moment and try again."
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:126
+#: src/Import/Disqus/DisqusImporter.php:137
 msgid "Disqus (Convocept)"
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:137
+#: src/Import/Disqus/DisqusImporter.php:148
 msgid "Import comments from a Disqus XML export into your WordPress comments."
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:175
+#: src/Import/Disqus/DisqusImporter.php:186
 msgid "Could not write to the import working folder."
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:230
+#: src/Import/Disqus/DisqusImporter.php:241
 msgid "The export contains no comments."
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:377
+#: src/Import/Disqus/DisqusImporter.php:388
 msgid "The import working files are missing. Cancel the import and start again."
 msgstr ""
 
-#: src/Import/Disqus/DisqusImporter.php:748
+#: src/Import/Disqus/DisqusImporter.php:760
 msgid "Anonymous"
 msgstr ""
 
@@ -387,15 +196,26 @@ msgstr ""
 msgid "This file is not a valid Disqus XML export."
 msgstr ""
 
-#: src/Import/Runner.php:152
+#: src/Import/Runner.php:155
+#: src/Import/Runner.php:220
+#: src/Rest/ImportEndpoint.php:112
+msgid "Unknown import source."
+msgstr ""
+
+#: src/Import/Runner.php:159
+#: src/Rest/ImportEndpoint.php:116
+msgid "Another import is in progress. Finish or cancel it first."
+msgstr ""
+
+#: src/Import/Runner.php:163
 msgid "The export file could not be read."
 msgstr ""
 
-#: src/Import/Runner.php:199
+#: src/Import/Runner.php:210
 msgid "There is no import in progress."
 msgstr ""
 
-#: src/Import/Runner.php:217
+#: src/Import/Runner.php:228
 msgid "A batch is already running. Try again in a moment."
 msgstr ""
 
@@ -425,47 +245,184 @@ msgstr ""
 msgid "Submitted %s seconds after the form appeared."
 msgstr ""
 
+#: src/Privacy/Privacy.php:132
+#: src/Privacy/Privacy.php:155
+msgid "Comment subscriptions (Convocept)"
+msgstr ""
+
+#: src/Privacy/Privacy.php:136
+#: src/Privacy/Privacy.php:159
+msgid "Comment upvotes (Convocept)"
+msgstr ""
+
+#: src/Privacy/Privacy.php:186
+#: templates/composer.php:135
+msgid "Email"
+msgstr ""
+
+#: src/Privacy/Privacy.php:190
+msgid "Follows"
+msgstr ""
+
+#: src/Privacy/Privacy.php:194
+msgid "Status"
+msgstr ""
+
+#: src/Privacy/Privacy.php:198
+msgid "Subscribed"
+msgstr ""
+
+#: src/Privacy/Privacy.php:205
+msgid "Confirmed"
+msgstr ""
+
+#: src/Privacy/Privacy.php:212
+#: assets/dist/admin/index.js:11
+msgid "Post"
+msgstr ""
+
+#: src/Privacy/Privacy.php:219
+msgid "Comment subscriptions"
+msgstr ""
+
+#: src/Privacy/Privacy.php:283
+msgid "Comment upvotes"
+msgstr ""
+
+#: src/Privacy/Privacy.php:287
+#: templates/composer.php:110
+#: assets/dist/admin/index.js:11
+msgid "Comment"
+msgstr ""
+
+#: src/Privacy/Privacy.php:291
+msgid "Upvoted"
+msgstr ""
+
+#: src/Privacy/Privacy.php:341
+msgid "the IP address you comment from is stored with your comment, as WordPress normally does"
+msgstr ""
+
+#: src/Privacy/Privacy.php:342
+msgid "the IP address you comment from is stored with its last part removed, so it no longer identifies you"
+msgstr ""
+
+#: src/Privacy/Privacy.php:343
+msgid "the IP address you comment from is not stored with your comment"
+msgstr ""
+
+#. translators: %s: What happens to the commenter's IP address, e.g. "the IP address you comment from is not stored with your comment".
+#: src/Privacy/Privacy.php:349
+#, php-format
+msgid "When you comment, we store what you enter in the comment form. In addition, %s."
+msgstr ""
+
+#: src/Privacy/Privacy.php:352
+msgid "If you subscribe to comments, we store your email address, what you follow, when you subscribed and confirmed, and your language, so we can email you new comments. Every email has a link to unsubscribe or manage your subscriptions. You can also ask us to export or erase this data."
+msgstr ""
+
+#: src/Privacy/Privacy.php:353
+msgid "If you upvote a comment, we store a one-way code instead of who you are: made from your user account if you are logged in, otherwise from your IP address and browser. We cannot turn it back into your IP address. Votes of logged-in users are included when you ask us to export or erase your data."
+msgstr ""
+
+#: src/Privacy/Privacy.php:354
+msgid "To limit spam, a one-way code made from your IP address is kept for a few minutes to count how often you post. After you comment, your browser keeps a code that lets you edit your comment for a short time; it is not sent to anyone else."
+msgstr ""
+
+#: src/Privacy/Privacy.php:390
+#: assets/dist/admin/index.js:9
+msgid "Active"
+msgstr ""
+
+#: src/Privacy/Privacy.php:391
+#: templates/subscription-manage.php:84
+msgid "Waiting for confirmation"
+msgstr ""
+
+#: src/Privacy/Privacy.php:392
+#: templates/subscription-manage.php:77
+msgid "Unsubscribed"
+msgstr ""
+
 #. translators: 1: Comment date, 2: Comment time.
 #: src/Render/CommentPresenter.php:153
 #, php-format
 msgid "%1$s at %2$s"
 msgstr ""
 
-#: src/Render/ThreadRenderer.php:795
+#: src/Render/CommentPresenter.php:230
+#: assets/dist/admin/index.js:11
+msgid "Author"
+msgstr ""
+
+#: src/Render/Labels.php:35
+#: templates/thread.php:41
+msgid "Comments"
+msgstr ""
+
+#. translators: %s: Number of comments.
+#: src/Render/Labels.php:39
+#, php-format
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: Number of hidden replies.
+#: src/Render/Labels.php:52
+#, php-format
+msgid "Show %s more reply"
+msgid_plural "Show %s more replies"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Render/ThreadRenderer.php:798
 msgid "Oldest"
 msgstr ""
 
-#: src/Render/ThreadRenderer.php:796
+#: src/Render/ThreadRenderer.php:799
 msgid "Newest"
 msgstr ""
 
-#: src/Render/ThreadRenderer.php:797
+#: src/Render/ThreadRenderer.php:800
 msgid "Top"
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:166
-#: src/Rest/ThreadEndpoint.php:147
+#: src/Rest/CommentsEndpoint.php:167
+#: src/Rest/ThreadEndpoint.php:148
 msgid "Comments are not available for this post."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:238
-#: src/Rest/CommentsEndpoint.php:311
+#: src/Rest/CommentsEndpoint.php:241
+#: src/Rest/CommentsEndpoint.php:314
 #: src/Rest/ModerationEndpoint.php:136
 #: src/Rest/ReactionsEndpoint.php:92
-#: src/Rest/ThreadEndpoint.php:165
+#: src/Rest/ThreadEndpoint.php:166
 msgid "Comment not found."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:242
+#: src/Rest/CommentsEndpoint.php:245
 msgid "This comment can no longer be edited."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:247
+#: src/Rest/CommentsEndpoint.php:250
 msgid "Please edit this comment from the dashboard."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:290
+#: src/Rest/CommentsEndpoint.php:293
 msgid "Too many edits. Please wait a moment."
+msgstr ""
+
+#: src/Rest/ImportEndpoint.php:157
+msgid "Choose an export file to upload."
+msgstr ""
+
+#: src/Rest/ImportEndpoint.php:164
+msgid "Upload the .xml or .xml.gz file Disqus sent you."
+msgstr ""
+
+#: src/Rest/ImportEndpoint.php:205
+msgid "The upload failed."
 msgstr ""
 
 #: src/Rest/ModerationEndpoint.php:140
@@ -490,6 +447,65 @@ msgstr ""
 
 #: src/Rest/ReactionsEndpoint.php:108
 msgid "Too many votes. Please wait a moment."
+msgstr ""
+
+#: src/Rest/SettingsEndpoint.php:102
+msgid "Some settings need fixing before they can be saved."
+msgstr ""
+
+#: src/Settings/Settings.php:266
+msgid "This setting does not exist."
+msgstr ""
+
+#: src/Settings/Settings.php:294
+#: assets/dist/admin/index.js:1
+msgid "Choose on or off."
+msgstr ""
+
+#. translators: 1: Smallest allowed number, 2: Largest allowed number.
+#: src/Settings/Settings.php:303
+#: assets/dist/admin/index.js:2
+#, php-format,js-format
+msgid "Enter a number from %1$d to %2$d."
+msgstr ""
+
+#: src/Settings/Settings.php:309
+#: assets/dist/admin/index.js:2
+msgid "Enter text."
+msgstr ""
+
+#: src/Settings/Settings.php:313
+#: assets/dist/admin/index.js:2
+msgid "Choose one of the listed options."
+msgstr ""
+
+#: src/Settings/Settings.php:317
+#: assets/dist/admin/index.js:2
+msgid "Enter a colour as # and six hex digits, like #2563eb."
+msgstr ""
+
+#: src/Settings/Settings.php:317
+#: assets/dist/admin/index.js:2
+msgid "This value is not in the expected format."
+msgstr ""
+
+#: src/Settings/Settings.php:323
+#: assets/dist/admin/index.js:2
+msgid "Enter a list of values."
+msgstr ""
+
+#. translators: %s: Post type name.
+#: src/Settings/Settings.php:330
+#: assets/dist/admin/index.js:3
+#, php-format,js-format
+msgid "There is no post type called \"%s\"."
+msgstr ""
+
+#. translators: %s: The invalid line.
+#: src/Settings/Settings.php:339
+#: assets/dist/admin/index.js:4
+#, php-format,js-format
+msgid "\"%s\" is not an IP address or CIDR range."
 msgstr ""
 
 #: src/Subscriptions/ManagePage.php:177
@@ -580,13 +596,9 @@ msgstr ""
 msgid "Awaiting moderation."
 msgstr ""
 
-#. translators: %s: Number of upvotes.
-#: templates/comment.php:122
-#, php-format
-msgid "Upvote (%s vote)"
-msgid_plural "Upvote (%s votes)"
-msgstr[0] ""
-msgstr[1] ""
+#: templates/comment.php:124
+msgid "Upvote"
+msgstr ""
 
 #. translators: %s: Comment author name.
 #: templates/comment.php:135
@@ -605,6 +617,7 @@ msgstr ""
 
 #: templates/composer.php:87
 #: templates/thread.php:116
+#: assets/dist/admin/index.js:11
 msgid "Cancel"
 msgstr ""
 
@@ -650,10 +663,6 @@ msgstr ""
 
 #: templates/composer.php:126
 msgid "Name"
-msgstr ""
-
-#: templates/composer.php:135
-msgid "Email"
 msgstr ""
 
 #: templates/composer.php:143
@@ -823,28 +832,15 @@ msgstr ""
 msgid "Subscriptions for %s:"
 msgstr ""
 
-#: templates/subscription-manage.php:77
-msgid "Unsubscribed"
-msgstr ""
-
 #: templates/subscription-manage.php:81
 msgid "Subscribe again"
-msgstr ""
-
-#: templates/subscription-manage.php:84
-msgid "Waiting for confirmation"
 msgstr ""
 
 #: templates/subscription-manage.php:93
 msgid "Unsubscribe from everything"
 msgstr ""
 
-#: templates/thread-header.php:27
-#: templates/thread.php:41
-msgid "Comments"
-msgstr ""
-
-#: templates/thread-header.php:35
+#: templates/thread-header.php:30
 msgid "Sort comments"
 msgstr ""
 
@@ -888,48 +884,783 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: assets/src/blocks/subscribe/index.js:35
-msgid "Settings"
+#: assets/dist/admin/index.js:1
+msgid "Convocept sections"
 msgstr ""
 
-#: assets/src/blocks/subscribe/index.js:37
+#: assets/dist/admin/index.js:1
+msgid "Section"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Unsaved changes"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Decrease"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Increase"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Pick a colour"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Hex value"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Reset"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "Choose file"
+msgstr ""
+
+#: assets/dist/admin/index.js:1
+msgid "or drop it here"
+msgstr ""
+
+#: assets/dist/admin/index.js:4
+msgid "Needs fixing"
+msgstr ""
+
+#. translators: %s: Plugin version.
+#: assets/dist/admin/index.js:5
+#, js-format
+msgid "Comments · %s"
+msgstr ""
+
+#: assets/dist/admin/index.js:5
+msgid "Comments replaced"
+msgstr ""
+
+#: assets/dist/admin/index.js:5
+#: assets/dist/admin/index.js:9
+msgid "Off"
+msgstr ""
+
+#. translators: %d: Number of settings with an error.
+#: assets/dist/admin/index.js:6
+#, js-format
+msgid "%d setting needs fixing"
+msgid_plural "%d settings need fixing"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: Number of changed settings.
+#: assets/dist/admin/index.js:7
+#, js-format
+msgid "%d unsaved change"
+msgid_plural "%d unsaved changes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:7
+msgid "Discard"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Save changes"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Settings saved."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "The settings could not be saved. Try again."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Convocept is off"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Turn Convocept on"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Your theme's own comments show on every post. Turn it on to use Convocept's thread and form."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Where it shows"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Convocept replaces the theme's comment list and form on these content types."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Replace the theme's comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Turn it off to go back to your theme’s comments. Nothing is deleted."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Show on"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Other content types keep their theme’s comments."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Thread"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "How comments are ordered and split into pages."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Default order"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Readers can still switch order above the thread."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Oldest first"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Newest first"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Most upvoted"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Comments per page"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Top-level comments; their replies come with them."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Reply depth"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Deeper replies show in one flat list at this depth."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Replies shown"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Per comment, before “Show more replies”. 0 shows them all."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Readers can upvote comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "One vote per reader. Adds the “Most upvoted” order."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Live updates"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "New comments appear while a reader has the page open."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Check for new comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Only while the tab is visible. When nothing is new, a check costs almost nothing."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Check every"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Seconds between checks."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Colours"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "How the thread looks next to your theme."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Colour scheme"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Match the theme"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Uses your theme’s text and background colours."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Follow the reader’s device"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Light or dark, from the reader’s system setting."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Always light"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Dark text on a light background."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Always dark"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Light text on a dark background."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Accent colour"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Links, buttons and focus rings in the thread."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "This colour is hard to read as text on white. Pick a darker one so links stay readable."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Yes"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "No"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Editing after posting"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Authors can fix a typo for a short while after posting, even as guests."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Edit window"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Minutes. 0 turns editing off. Moderators can always edit."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Set in WordPress"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Convocept follows your Discussion settings for who can comment."
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Name and email required"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Must be logged in to comment"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Every comment waits for approval"
+msgstr ""
+
+#: assets/dist/admin/index.js:7
+msgid "Close comments on old posts"
+msgstr ""
+
+#. translators: %d: Number of days.
+#: assets/dist/admin/index.js:8
+#, js-format
+msgid "After %d day"
+msgid_plural "After %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:8
+msgid "Never"
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "Open Discussion settings"
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "On"
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "Spam protection"
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "These checks run on every comment, without asking readers to solve anything."
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "Hidden trap field for bots"
+msgstr ""
+
+#: assets/dist/admin/index.js:8
+msgid "Minimum time to write a comment"
+msgstr ""
+
+#. translators: %s: Number of seconds.
+#: assets/dist/admin/index.js:9
+#, js-format
+msgid "%s second"
+msgid_plural "%s seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:9
+msgid "Limits on how fast one visitor can post"
+msgstr ""
+
+#: assets/dist/admin/index.js:9
+msgid "Akismet"
+msgstr ""
+
+#: assets/dist/admin/index.js:9
+msgid "Not installed"
+msgstr ""
+
+#: assets/dist/admin/index.js:9
+msgid "Convocept works with Akismet and other anti-spam plugins that check core comments."
+msgstr ""
+
+#: assets/dist/admin/index.js:9
+msgid "Waiting for review"
+msgstr ""
+
+#. translators: %s: Number of comments.
+#: assets/dist/admin/index.js:10
+#, js-format
+msgid "%s comment is waiting for approval."
+msgid_plural "%s comments are waiting for approval."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:10
+msgid "No comments are waiting for approval."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Review comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Email subscriptions"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Readers get an email when someone replies, or when a post gets new comments."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Readers can subscribe by email"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Adds the options to the comment form and a “subscribe without commenting” form."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Ask new subscribers to confirm their address"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "They click a link in an email first. Recommended: it keeps strangers from signing others up."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Sending"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Notifications go out in the background, a batch at a time."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Emails per batch"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Lower it if your email service limits how fast you can send."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Visitor IP addresses"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Rate limits and spam checks use the visitor’s IP address. Behind a proxy or CDN, every visitor looks like the proxy unless you trust it here."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Trusted proxies"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "One IP address or CIDR range per line. Leave empty unless your site is behind a proxy."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Header with the visitor’s IP"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Read only on requests from a trusted proxy."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Privacy"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Tools → Export Personal Data and Erase Personal Data include comment subscriptions and the upvotes of registered users. Settings → Privacy has suggested text for your privacy policy."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "IP address stored with new comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Spam checks still see the full address when a comment arrives. Also applies to imported comments. Comments already stored are not changed."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Full address (WordPress default)"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Anonymized (last part removed)"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "None"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Search engines"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Comments are in the page’s HTML either way, so search engines can read them."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Describe comments with structured data"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Adds schema.org data for the comments on each page. With Yoast SEO or Rank Math it joins their data."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Uninstall"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Comments always stay: they belong to WordPress. Deactivating the plugin never deletes anything."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Delete all Convocept data when the plugin is deleted"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Removes settings, subscriptions, upvotes, pins and edit history. Leave off to keep them for a later reinstall."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "The import stopped."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Loading…"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Dry run"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Nothing has been imported yet. This is what the export holds."
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Comments to import"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "On posts found on this site"
+msgstr ""
+
+#. translators: %s: Number of Disqus threads.
+#: assets/dist/admin/index.js:11
+#, js-format
+msgid "On %s pages not found here (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:12
+msgid "Spam (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:12
+msgid "Deleted (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Imported comments don’t email your subscribers. Comments already on this site, from an earlier import or the Disqus plugin, are skipped."
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Start import"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Import cancelled."
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Sample"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "The first comments in the export, as they will be imported."
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Date"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Importing"
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Keep this page open. If it closes, come back and click Continue: the import picks up where it stopped."
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "The import is paused. Continue picks up where it stopped."
+msgstr ""
+
+#: assets/dist/admin/index.js:11
+msgid "Import progress"
+msgstr ""
+
+#. translators: 1: Comments processed, 2: Total comments, 3: Comments imported.
+#: assets/dist/admin/index.js:12
+#, js-format
+msgid "Processed %1$s of %2$s comments; %3$s imported."
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Continue"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Import cancelled. Comments already imported stay."
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Cancel import"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Import complete"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Imported"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Already on this site (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Post not found (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Empty (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Failed"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "View comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Start another import"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Import from Disqus"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "In Disqus, open Admin → Moderation → Export and download the file it emails you. Nothing is imported until you have reviewed a dry run, and running the same export again never duplicates comments."
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Export file"
+msgstr ""
+
+#. translators: 1: Maximum upload size, 2: WP-CLI command.
+#: assets/dist/admin/index.js:13
+#, js-format
+msgid ".xml or .xml.gz, up to %1$s. Bigger exports: %2$s"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Upload and analyse"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Get help"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Ask in the support forum on WordPress.org. Include the versions below."
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Open the support forum"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Visit convocept.com"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Versions"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "WordPress"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "PHP"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Manage"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "More"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "General"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Appearance"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Composer"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Moderation & spam"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Subscriptions"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Advanced"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Import"
+msgstr ""
+
+#: assets/dist/admin/index.js:13
+msgid "Help"
+msgstr ""
+
+#: assets/dist/blocks/subscribe/index.js:1
 msgid "Readers get new comments on"
 msgstr ""
 
-#: assets/src/blocks/subscribe/index.js:44
+#: assets/dist/blocks/subscribe/index.js:1
 msgid "This post"
 msgstr ""
 
-#: assets/src/blocks/subscribe/index.js:48
+#: assets/dist/blocks/subscribe/index.js:1
 msgid "The whole site"
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block title"
 msgid "Comment Subscription"
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block description"
 msgid "Let readers get new comments by email without commenting."
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block keyword"
 msgid "subscribe"
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block keyword"
 msgid "comments"
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block keyword"
 msgid "email"
 msgstr ""
 
-#: assets/src/blocks/subscribe/block.json
+#: assets/dist/blocks/subscribe/block.json
 msgctxt "block keyword"
 msgid "notify"
 msgstr ""

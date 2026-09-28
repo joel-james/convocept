@@ -483,9 +483,12 @@ class ThreadRenderer {
 				: $this->render_list( array( $reply ), $depth + 1, $context );
 		}
 
+		$remaining = max( 0, count( $replies ) - $offset - count( $batch ) );
+
 		return array(
 			'html'      => $html,
-			'remaining' => max( 0, count( $replies ) - $offset - count( $batch ) ),
+			'remaining' => $remaining,
+			'more_text' => $remaining ? Labels::more_replies( $remaining ) : '',
 		);
 	}
 

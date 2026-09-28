@@ -5,6 +5,7 @@
  * marks the comments the visitor already upvoted (from the session).
  */
 import { request } from './api';
+import { number } from './config';
 import { getSession } from './session';
 
 /**
@@ -61,11 +62,21 @@ export function initVotes( root ) {
 			.convoceptComment;
 		const count = button.querySelector( '[data-convocept-vote-count]' );
 		const active = button.getAttribute( 'aria-pressed' ) !== 'true';
-		const before = Number( count.textContent.replace( /\D/g, '' ) ) || 0;
+		const before = Number( count.dataset.convoceptVoteCount ) || 0;
+
+		/**
+		 * Show a count, keeping the raw number for the next click.
+		 *
+		 * @param {number} value Count.
+		 */
+		const show = ( value ) => {
+			count.dataset.convoceptVoteCount = String( value );
+			count.textContent = number( value );
+		};
 
 		// Optimistic: update now, correct from the server's answer.
 		button.setAttribute( 'aria-pressed', String( active ) );
-		count.textContent = ( before + ( active ? 1 : -1 ) ).toLocaleString();
+		show( Math.max( 0, before + ( active ? 1 : -1 ) ) );
 
 		try {
 			const result = await request( `comments/${ id }/reactions`, {
@@ -73,11 +84,11 @@ export function initVotes( root ) {
 				nonce: session.nonce,
 				data: { reaction: 'up', active },
 			} );
-			count.textContent = result.count.toLocaleString();
+			show( result.count );
 			voted[ active ? 'add' : 'delete' ]( id );
 		} catch {
 			button.setAttribute( 'aria-pressed', String( ! active ) );
-			count.textContent = before.toLocaleString();
+			show( before );
 		} finally {
 			button.removeAttribute( 'aria-busy' );
 		}

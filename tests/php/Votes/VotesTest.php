@@ -104,6 +104,6 @@ class VotesTest extends RestTestCase {
 
 		$html = $this->renderer()->render( $post_id );
 
-		$this->assertMatchesRegularExpression( '/data-convocept-vote-count>1</', $html );
+		$this->assertMatchesRegularExpression( '/data-convocept-vote-count="1">1</', $html );
 	}
 }

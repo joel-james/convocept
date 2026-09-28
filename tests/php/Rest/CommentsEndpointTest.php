@@ -28,6 +28,7 @@ class CommentsEndpointTest extends RestTestCase {
 		$this->assertStringContainsString( '&lt;b&gt;raw&lt;/b&gt;', $data['html'] );
 		$this->assertNotEmpty( $data['edit_token'] );
 		$this->assertSame( 1, $data['total'] );
+		$this->assertSame( '1 comment', $data['count_text'] );
 		$this->assertSame( 'markdown', get_comment_meta( $data['id'], Submission::FORMAT_META_KEY, true ) );
 		$this->assertSame( 'Hi **there** &lt;b&gt;raw&lt;/b&gt;', get_comment( $data['id'] )->comment_content );
 		$this->assertSame( 'no-store, private', $response->get_headers()['Cache-Control'] );

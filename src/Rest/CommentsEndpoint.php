@@ -12,6 +12,7 @@ use Convocept\Comments\EditWindow;
 use Convocept\Comments\Submission;
 use Convocept\Comments\ThreadQuery;
 use Convocept\Plugin;
+use Convocept\Render\Labels;
 use WP_Comment;
 use WP_Error;
 use WP_Post;
@@ -177,7 +178,7 @@ class CommentsEndpoint {
 	 * @param WP_REST_Request $request Request.
 	 * @return WP_REST_Response|WP_Error Response data: 'id', 'status' ('approved' or
 	 *                                   'pending'), 'parent', 'html', 'edit_token',
-	 *                                   'edit_until', 'total' and 'subscription'
+	 *                                   'edit_until', 'total', 'count_text' and 'subscription'
 	 *                                   ('active', 'pending' or '').
 	 */
 	public function create( WP_REST_Request $request ) {
@@ -206,6 +207,7 @@ class CommentsEndpoint {
 		do_action( 'set_comment_cookies', $comment, wp_get_current_user(), (bool) $request->get_param( 'cookies_consent' ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core hook.
 
 		$edit_window = $this->plugin->edit_window();
+		$total       = ( new ThreadQuery() )->total( (int) $comment->comment_post_ID );
 
 		return Controller::response(
 			array(
@@ -216,7 +218,8 @@ class CommentsEndpoint {
 				'html'         => $this->plugin->renderer()->render_single( $comment ),
 				'edit_token'   => $submission->edit_token(),
 				'edit_until'   => $edit_window->minutes() > 0 ? $edit_window->closes_at( $comment ) : 0,
-				'total'        => ( new ThreadQuery() )->total( (int) $comment->comment_post_ID ),
+				'total'        => $total,
+				'count_text'   => Labels::comment_count( $total ),
 				'subscription' => $this->plugin->subscribe_form()->last_status(),
 			),
 			201

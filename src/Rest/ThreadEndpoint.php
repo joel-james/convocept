@@ -10,6 +10,7 @@ namespace Convocept\Rest;
 
 use Convocept\Comments\Sort;
 use Convocept\Comments\ThreadQuery;
+use Convocept\Render\Labels;
 use Convocept\Render\ThreadRenderer;
 use WP_Comment;
 use WP_Error;
@@ -189,7 +190,7 @@ class ThreadEndpoint {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @return WP_REST_Response Response data: 'html' and 'remaining'.
+	 * @return WP_REST_Response Response data: 'html', 'remaining' and 'more_text'.
 	 */
 	public function replies( WP_REST_Request $request ): WP_REST_Response {
 		$comment = get_comment( (int) $request->get_param( 'id' ) );
@@ -200,6 +201,7 @@ class ThreadEndpoint {
 				: array(
 					'html'      => '',
 					'remaining' => 0,
+					'more_text' => '',
 				)
 		);
 	}
@@ -236,7 +238,8 @@ class ThreadEndpoint {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @return WP_REST_Response Response data: 'items' (each 'id', 'parent', 'html') and 'total'.
+	 * @return WP_REST_Response Response data: 'items' (each 'id', 'parent', 'html'), 'total'
+	 *                          and 'count_text'.
 	 */
 	public function updates( WP_REST_Request $request ): WP_REST_Response {
 		$post_id = (int) $request->get_param( 'post_id' );
@@ -264,8 +267,9 @@ class ThreadEndpoint {
 
 		$response = Controller::response(
 			array(
-				'items' => $items,
-				'total' => $total,
+				'items'      => $items,
+				'total'      => $total,
+				'count_text' => Labels::comment_count( $total ),
 			)
 		);
 		$response->header( 'ETag', $etag );

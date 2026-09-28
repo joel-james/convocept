@@ -22,7 +22,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>">
+<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <body style="margin:0;padding:24px;background:#f6f7f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1f2937;">
 	<div style="max-width:560px;margin:0 auto;padding:28px;background:#ffffff;border-radius:10px;">
 		<p style="margin:0 0 16px;font-size:16px;line-height:1.5;">
@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
 			);
 			?>
 		</p>
-		<blockquote style="margin:0 0 24px;padding:12px 16px;border-left:3px solid #d1d5db;color:#374151;line-height:1.6;"><?php echo esc_html( $args['excerpt'] ); ?></blockquote>
+		<blockquote style="margin:0 0 24px;padding:12px 16px;border-<?php echo is_rtl() ? 'right' : 'left'; ?>:3px solid #d1d5db;color:#374151;line-height:1.6;"><?php echo esc_html( $args['excerpt'] ); ?></blockquote>
 		<p style="margin:0 0 28px;">
 			<a href="<?php echo esc_url( $args['comment_url'] ); ?>" style="display:inline-block;padding:12px 20px;background:#2563eb;color:#ffffff;border-radius:8px;text-decoration:none;font-weight:600;"><?php esc_html_e( 'Read and reply', 'convocept' ); ?></a>
 		</p>

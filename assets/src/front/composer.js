@@ -5,7 +5,7 @@
  * form posts to wp-comments-post.php.
  */
 import { request } from './api';
-import { config, t } from './config';
+import { config, number, t } from './config';
 import { added, announce, cloneTemplate, parseHtml, reveal } from './dom';
 import { getSession, savedGuest } from './session';
 import { addEditButton } from './edit';
@@ -137,7 +137,7 @@ export function initComposer( root ) {
 			}
 
 			addEditButton( root, comment, result.edit_until );
-			updateCount( root, result.total );
+			updateCount( root, result.count_text );
 			reveal( comment );
 
 			if ( parent ) {
@@ -259,17 +259,14 @@ function insertPlaceholder( root, parent, content, author ) {
 /**
  * Update the comment count in the thread header.
  *
- * @param {Element} root  Thread root.
- * @param {number}  total New total.
+ * @param {Element} root Thread root.
+ * @param {string}  text New heading, from the server (it knows the plural forms).
  */
-function updateCount( root, total ) {
+function updateCount( root, text ) {
 	const title = root.querySelector( '.convocept-title' );
 
-	if ( title && total ) {
-		title.textContent = t(
-			total === 1 ? 'countOne' : 'countMany',
-			total.toLocaleString()
-		);
+	if ( title && text ) {
+		title.textContent = text;
 	}
 }
 
@@ -383,5 +380,5 @@ function updateCounter( input, counter ) {
 	const left = config.maxLength - input.value.length;
 
 	counter.hidden = left > 1000;
-	counter.textContent = t( 'charactersLeft', left.toLocaleString() );
+	counter.textContent = t( 'charactersLeft', number( left ) );
 }

@@ -17,6 +17,17 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   moved to `Convocept\Uninstaller` so it can be tested; `uninstall.php` loads the autoloader
   itself because WordPress does not load the plugin on uninstall. Deleting also removes
   `_convocept_disqus_id`, so a later re-import only recognises comments the Disqus plugin synced.
+- **Plural counts come from PHP.** The front end used `countOne`/`countMany` strings, which is
+  wrong for languages with more than two plural forms. REST responses now carry `count_text`
+  and `more_text` built by `Render\Labels` (also used by the templates). The composer's counter
+  became "Characters left: %s", which needs no plural.
+- **Script translations**: `make-pot` scans `assets/dist` (the built files WordPress loads)
+  instead of `assets/src`, because JSON translation files are matched by the md5 of the path in
+  the reference. The old command also excluded `assets/dist` by accident (`dist` matched it), so
+  the settings screen's strings were missing from the .pot.
+- **Front-end CSS was already direction-neutral** (logical properties only); no RTL stylesheet
+  is needed. The upvote button's name no longer includes the count in `aria-label` (it went
+  stale after voting): it is "Upvote" plus the visible count.
 
 ## 2026-09-28 — Own Comments screen in 1.1, beside the core one
 - The owner asked whether Convocept should replace the core Comments menu with its own list in
