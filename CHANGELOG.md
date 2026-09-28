@@ -99,6 +99,17 @@ and versions follow [Semantic Versioning](https://semver.org/).
   (loader 1 KB, JS 8 KB, CSS 5 KB gzipped), phpcs (WPCS + PHPCompatibility), PHPStan level 6,
   ESLint, Prettier, stylelint, wp-env, PHPUnit, Playwright, GitHub Actions CI, release zip script.
 
+### Security
+- Comments on private, draft or password-protected posts are no longer emailed to subscribers.
+- Every subscription from an unproven address needs email confirmation, and the response no
+  longer reveals whether an address is already subscribed. Pending subscriptions can be
+  confirmed from the subscription page.
+- Comment form posts that skip Convocept's form (straight to `wp-comments-post.php`) get the
+  same spam checks; REST submissions need the form's signed token for the timing check.
+- Guest upvotes count once per IP address, whatever the browser claims to be.
+- Edits that add disallowed words are held; the edit token is sent in a header, not the URL;
+  votes on comments of non-public posts are refused; the Disqus parser keeps libxml's limits.
+
 ### Fixed
 - Replies to a pinned comment were not shown: core fetches each level of a threaded query
   with the same arguments, so the pinned query's `comment__in` filtered every reply out.

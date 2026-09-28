@@ -106,4 +106,23 @@ class VotesTest extends RestTestCase {
 
 		$this->assertMatchesRegularExpression( '/data-convocept-vote-count="1">1</', $html );
 	}
+
+	public function test_a_guest_is_one_voter_whatever_the_browser(): void {
+		$id                     = $this->comment( self::factory()->post->create() );
+		$_SERVER['REMOTE_ADDR'] = '198.51.100.44';
+
+		$_SERVER['HTTP_USER_AGENT'] = 'Browser A';
+		$this->vote( $id );
+		$_SERVER['HTTP_USER_AGENT'] = 'Browser B';
+		$count                      = $this->vote( $id )->get_data()['count'];
+		unset( $_SERVER['HTTP_USER_AGENT'] );
+
+		$this->assertSame( 1, $count );
+	}
+
+	public function test_cannot_vote_on_comments_of_private_posts(): void {
+		$id = $this->comment( self::factory()->post->create( array( 'post_status' => 'private' ) ) );
+
+		$this->assertSame( 404, $this->vote( $id )->get_status() );
+	}
 }

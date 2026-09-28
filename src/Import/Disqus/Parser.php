@@ -79,7 +79,9 @@ class Parser {
 		$errors = libxml_use_internal_errors( true );
 
 		// No LIBXML_NOENT / LIBXML_DTDLOAD: entities stay unexpanded and no external DTD is loaded.
-		if ( ! $reader->open( $uri, 'UTF-8', LIBXML_NONET | LIBXML_COMPACT | LIBXML_PARSEHUGE ) ) {
+		// No LIBXML_PARSEHUGE either: libxml's size limits also cap entity amplification, and no
+		// single Disqus element comes near them (the file itself can be any size).
+		if ( ! $reader->open( $uri, 'UTF-8', LIBXML_NONET | LIBXML_COMPACT ) ) {
 			libxml_use_internal_errors( $errors );
 
 			return $this->invalid();

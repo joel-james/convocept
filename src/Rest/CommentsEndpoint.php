@@ -95,6 +95,10 @@ class CommentsEndpoint {
 				'type'    => 'number',
 				'minimum' => 0,
 			),
+			'token'             => array(
+				'type'    => 'string',
+				'default' => '',
+			),
 			'cookies_consent'   => array(
 				'type'    => 'boolean',
 				'default' => false,
@@ -193,6 +197,7 @@ class CommentsEndpoint {
 				'url'               => (string) $request->get_param( 'url' ),
 				'honeypot'          => (string) $request->get_param( 'honeypot' ),
 				'elapsed'           => $request->get_param( 'elapsed' ),
+				'token'             => (string) $request->get_param( 'token' ),
 				'subscribe_replies' => (bool) $request->get_param( 'subscribe_replies' ),
 				'subscribe_post'    => (bool) $request->get_param( 'subscribe_post' ),
 			)
@@ -241,7 +246,11 @@ class CommentsEndpoint {
 			return new WP_Error( 'convocept_invalid_comment', __( 'Comment not found.', 'convocept' ), array( 'status' => 404 ) );
 		}
 
-		if ( ! $this->plugin->edit_window()->can_edit( $comment, (string) $request->get_param( 'edit_token' ) ) ) {
+		// The token travels in a header (or the JSON body), never the URL, so it stays out of access logs.
+		$token = (string) $request->get_header( 'x_convocept_edit_token' );
+		$token = '' !== $token ? $token : (string) $request->get_param( 'edit_token' );
+
+		if ( ! $this->plugin->edit_window()->can_edit( $comment, $token ) ) {
 			return new WP_Error( 'convocept_cannot_edit', __( 'This comment can no longer be edited.', 'convocept' ), array( 'status' => 403 ) );
 		}
 
@@ -349,6 +358,11 @@ class CommentsEndpoint {
 		$max_links = (int) get_option( 'comment_max_links' );
 
 		if ( $max_links > 0 && preg_match_all( '#https?://#i', $comment->comment_content ) >= $max_links ) {
+			return false;
+		}
+
+		// Words on the disallowed list send a new comment to trash; an edit that adds them is held.
+		if ( wp_check_comment_disallowed_list( $comment->comment_author, $comment->comment_author_email, $comment->comment_author_url, $comment->comment_content, $comment->comment_author_IP, $comment->comment_agent ) ) {
 			return false;
 		}
 

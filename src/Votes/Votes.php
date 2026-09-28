@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * Stores upvotes and keeps each comment's count and score up to date.
  *
  * Each vote is a row in the reactions table, identified by a salted hash
- * of the voter: the user ID for logged-in readers, IP address and browser
+ * of the voter: the user ID for logged-in readers, the IP address
  * for guests. Raw IPs are never stored. The count is also cached in comment
  * meta so rendering a thread never touches the reactions table, and the
  * score meta drives the "Top" sort.
@@ -77,7 +77,8 @@ class Votes {
 			return $this->voter_for_user( $user_id );
 		}
 
-		$source = 'guest|' . $this->ips->resolve() . '|' . ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
+		// The IP alone, not IP + browser: a changing User-Agent must not make a new voter.
+		$source = 'guest|' . $this->ips->resolve();
 
 		return hash_hmac( 'sha256', $source, wp_salt( 'nonce' ) );
 	}
@@ -86,7 +87,7 @@ class Votes {
 	 * Get a registered user's voter ID.
 	 *
 	 * Lets privacy requests find a user's votes. Guest votes cannot be
-	 * found this way: their ID is a one-way hash of IP address and browser,
+	 * found this way: their ID is a one-way hash of the IP address,
 	 * which is the point.
 	 *
 	 * @since 1.0.0

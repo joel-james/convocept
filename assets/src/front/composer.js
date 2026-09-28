@@ -109,6 +109,7 @@ export function initComposer( root ) {
 						email: form.elements.email.value,
 						url: form.elements.url.value,
 						honeypot: form.elements.convocept_hp.value,
+						token: form.elements.convocept_token?.value || '',
 						elapsed: startedAt
 							? ( Date.now() - startedAt ) / 1000
 							: 0,

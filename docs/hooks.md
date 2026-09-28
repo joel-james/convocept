@@ -70,8 +70,8 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 |---|---|---|---|
 | `/session` | GET | public | Who is visiting: login state, name, REST nonce, moderator flag. |
 | `/posts/{id}/comments` | GET | public | One page of top-level comments (`page`, `sort`); returns `html`, `page`, `pages`, `total`. |
-| `/posts/{id}/comments` | POST | public (core rules apply) | Create a comment; returns `id`, `status`, `html`, `edit_token`, `edit_until`, `total`, `count_text` (the heading, with the language's plural form). |
-| `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. |
+| `/posts/{id}/comments` | POST | public (core rules apply) | Create a comment (`token`: the form's signed `convocept_token`; without it the comment is held by the timing check); returns `id`, `status`, `html`, `edit_token`, `edit_until`, `total`, `count_text` (the heading, with the language's plural form). |
+| `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. Guests send the edit token in an `X-Convocept-Edit-Token` header. |
 | `/comments/{id}` | PATCH | author in window / moderator | Edit; returns `id`, `status`, `html`. |
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
 | `/subscriptions` | POST | public, rate-limited | Subscribe without commenting (`email`, `post_id` 0 = site); same answer for every address. |

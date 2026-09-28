@@ -26,6 +26,27 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   warnings were table names built from `$wpdb->prefix`; queries now pass them with the `%i`
   identifier placeholder (WordPress 6.2+), so they are provably escaped. Running it on the
   working copy also lists dev files (dotfiles, `*.dist`, CLAUDE.md, PLAN.md); none are in the zip.
+- **Security review before release** (read-only review of every route, template, token and the
+  importer; no critical or high issues). Fixed:
+  - Site-wide and per-post subscribers were emailed comments on private, draft and
+    password-protected posts. The notifier now skips posts that are not publicly viewable,
+    both when queueing and when sending.
+  - Double opt-in could be skipped for any address that already had one active subscription,
+    so anyone could subscribe someone else to the whole site; responses also showed whether an
+    address was subscribed. Every unproven address now confirms by email and always gets
+    "pending". To keep that painless, the subscription page (reachable only from emailed links)
+    has a Confirm button for pending subscriptions.
+  - Plain form posts to `wp-comments-post.php` without Convocept's marker skipped its checks. On
+    posts Convocept handles they now get them (no token means the timing check holds the comment).
+    The REST composer sends the form's signed token; without it the browser's elapsed time is
+    ignored and the comment is held.
+  - Guest votes were keyed on IP + User-Agent, so changing the User-Agent voted again. Now the IP
+    alone (people behind one shared IP share one vote; accepted for a low-stakes upvote).
+  - Edits that add words from the disallowed list are held; the edit token goes in a header
+    (`X-Convocept-Edit-Token`) instead of the URL; votes on comments of non-public posts are
+    refused; the importer no longer passes `LIBXML_PARSEHUGE`.
+- **PHP 7.4 / WordPress 6.5 locally**: a wp-env override to 7.4 + 6.5 hung twice pulling images,
+  so that combination is covered by PHPCompatibility (`testVersion 7.4-`) and the CI matrix job.
 - **PHPUnit empties Convocept's tables at start**: the e2e tests share the tests-site database
   and WordPress's test installer only resets core tables, so a subscriber left by a browser test
   made a notification test flaky.

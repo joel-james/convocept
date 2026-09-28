@@ -152,7 +152,8 @@ class Subscriptions {
 	 * @param int    $comment_id Comment whose replies to follow, or 0.
 	 * @param bool   $verified   Whether the address is already proven (e.g. account email).
 	 * @param string $source     Origin, e.g. 'native'.
-	 * @return string 'active', 'pending', or '' when nothing was done.
+	 * @return string 'active', 'pending' (always, for an unproven address while double opt-in
+	 *                is on), or '' when nothing was done.
 	 */
 	public function subscribe( string $email, int $post_id, int $comment_id, bool $verified, string $source = 'native' ): string {
 		$email = sanitize_email( $email );
@@ -161,8 +162,10 @@ class Subscriptions {
 			return '';
 		}
 
-		$direct = $verified || ! $this->settings->get( 'double_opt_in' ) || $this->repository->has_active( $email );
-		$row    = $this->repository->upsert( $email, $post_id, $comment_id, $direct ? Repository::ACTIVE : Repository::PENDING, $source );
+		// An unproven address always confirms by email, even when it already has other
+		// subscriptions: otherwise anyone could subscribe someone else to everything.
+		$confirm = ! $verified && $this->settings->get( 'double_opt_in' );
+		$row     = $this->repository->upsert( $email, $post_id, $comment_id, $confirm ? Repository::PENDING : Repository::ACTIVE, $source );
 
 		if ( ! $row ) {
 			return '';
@@ -172,7 +175,9 @@ class Subscriptions {
 			$this->send_confirmation( $row );
 		}
 
-		return (string) $row['status'];
+		// Report "pending" for every unproven address, so the answer never reveals
+		// whether that address was already subscribed.
+		return $confirm ? Repository::PENDING : (string) $row['status'];
 	}
 
 	/**

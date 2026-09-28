@@ -74,6 +74,7 @@ abstract class RestTestCase extends TestCase {
 					'author'  => 'Guest',
 					'email'   => 'guest@example.com',
 					'elapsed' => 10,
+					'token'   => ( new \Convocept\Security\FormToken() )->create( time() - 10 ),
 				),
 				$params
 			)

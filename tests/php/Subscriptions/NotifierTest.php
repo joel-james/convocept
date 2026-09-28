@@ -190,4 +190,26 @@ class NotifierTest extends TestCase {
 		$this->assertCount( 5000, $this->sent() );
 		$this->assertCount( 5000, array_unique( $this->recipients() ), 'Nobody gets two emails.' );
 	}
+
+	public function test_comments_on_non_public_posts_are_never_emailed(): void {
+		$private  = self::factory()->post->create( array( 'post_status' => 'private' ) );
+		$password = self::factory()->post->create( array( 'post_password' => 'secret' ) );
+		$public   = self::factory()->post->create();
+		Plugin::instance()->subscriptions()->subscribe( 'everything@example.com', 0, 0, true );
+		reset_phpmailer_instance();
+
+		$this->comment( $private );
+		$this->comment( $password );
+		$later = $this->comment( $public );
+		wp_update_post(
+			array(
+				'ID'          => $public,
+				'post_status' => 'private',
+			)
+		);
+		$this->drain();
+
+		$this->assertCount( 0, $this->sent(), 'Private, protected, and made private after queueing.' );
+		$this->assertNotEmpty( get_comment_meta( $later, Notifier::QUEUED_META_KEY, true ) );
+	}
 }

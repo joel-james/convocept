@@ -114,6 +114,14 @@ class Submission {
 	private $edit_window;
 
 	/**
+	 * Tells whether Convocept handles a post's comments.
+	 *
+	 * @since 1.0.0
+	 * @var callable(int): bool|null
+	 */
+	private $enabled_for;
+
+	/**
 	 * Context of the submission being processed, if it is one of ours.
 	 *
 	 * @since 1.0.0
@@ -142,18 +150,22 @@ class Submission {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param IpResolver  $ips         IP resolver.
-	 * @param RateLimiter $limiter     Rate limiter.
-	 * @param FormToken   $tokens      Form token service.
-	 * @param Pipeline    $pipeline    Moderation pipeline.
-	 * @param EditWindow  $edit_window Edit window service.
+	 * @param IpResolver    $ips         IP resolver.
+	 * @param RateLimiter   $limiter     Rate limiter.
+	 * @param FormToken     $tokens      Form token service.
+	 * @param Pipeline      $pipeline    Moderation pipeline.
+	 * @param EditWindow    $edit_window Edit window service.
+	 * @param callable|null $enabled_for Receives a post ID and returns whether Convocept handles its
+	 *                                   comments; plain form posts to those posts get Convocept's
+	 *                                   checks even without its form marker.
 	 */
-	public function __construct( IpResolver $ips, RateLimiter $limiter, FormToken $tokens, Pipeline $pipeline, EditWindow $edit_window ) {
+	public function __construct( IpResolver $ips, RateLimiter $limiter, FormToken $tokens, Pipeline $pipeline, EditWindow $edit_window, ?callable $enabled_for = null ) {
 		$this->ips         = $ips;
 		$this->limiter     = $limiter;
 		$this->tokens      = $tokens;
 		$this->pipeline    = $pipeline;
 		$this->edit_window = $edit_window;
+		$this->enabled_for = $enabled_for;
 	}
 
 	/**
@@ -189,6 +201,8 @@ class Submission {
 	 *     @type string $url      Guest website.
 	 *     @type string $honeypot Honeypot value.
 	 *     @type float  $elapsed  Seconds between the composer appearing and submitting.
+	 *     @type string $token    The form's signed token. Without a valid one, the elapsed
+	 *                            time is ignored and the timing check holds the comment.
 	 *     @type bool   $subscribe_replies Email the commenter replies to this comment.
 	 *     @type bool   $subscribe_post    Email the commenter every new comment on the post.
 	 * }
@@ -197,6 +211,11 @@ class Submission {
 	public function submit( array $data ) {
 		$post_id = (int) ( $data['post_id'] ?? 0 );
 		$elapsed = isset( $data['elapsed'] ) && is_numeric( $data['elapsed'] ) ? max( 0.0, (float) $data['elapsed'] ) : null;
+
+		// The elapsed time comes from the browser; only trust it from a client that loaded the form.
+		if ( null === $this->tokens->time( $data['token'] ?? '' ) ) {
+			$elapsed = null;
+		}
 
 		$this->begin(
 			new Context(
@@ -253,7 +272,16 @@ class Submission {
 	 */
 	public function on_core_submission( $post_id ): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Public comment form; core does not use a nonce either.
-		if ( null !== $this->context || empty( $_POST[ self::FORM_MARKER ] ) ) {
+		if ( null !== $this->context ) {
+			return;
+		}
+
+		// On a post Convocept handles, its form is the only one shown, so a submission
+		// without the marker is a bot posting straight to wp-comments-post.php: check it
+		// too (no token means the timing check holds it for moderation).
+		$ours = ! empty( $_POST[ self::FORM_MARKER ] ) || ( null !== $this->enabled_for && ( $this->enabled_for )( (int) $post_id ) );
+
+		if ( ! $ours ) {
 			return;
 		}
 

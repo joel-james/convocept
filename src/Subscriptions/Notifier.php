@@ -12,6 +12,7 @@ use Convocept\Render\CommentPresenter;
 use Convocept\Render\TemplateLoader;
 use Convocept\Render\ThreadRenderer;
 use WP_Comment;
+use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -174,8 +175,8 @@ class Notifier {
 	public function deliver( int $comment_id, int $cursor, int $limit ): array {
 		$comment = get_comment( $comment_id );
 
-		// The comment may have been unapproved or deleted since it was queued.
-		if ( ! $comment instanceof WP_Comment || '1' !== (string) $comment->comment_approved ) {
+		// The comment may have been unapproved or deleted, or its post made private, since it was queued.
+		if ( ! $comment instanceof WP_Comment || '1' !== (string) $comment->comment_approved || ! $this->is_public( (int) $comment->comment_post_ID ) ) {
 			return array(
 				'cursor' => $cursor,
 				'sent'   => 0,
@@ -235,6 +236,7 @@ class Notifier {
 			|| ! $comment instanceof WP_Comment
 			|| in_array( $comment->comment_type, array( 'pingback', 'trackback' ), true )
 			|| ! $this->renderer->is_enabled_for( (int) $comment->comment_post_ID )
+			|| ! $this->is_public( (int) $comment->comment_post_ID )
 		) {
 			return;
 		}
@@ -354,5 +356,23 @@ class Notifier {
 		}
 
 		return $ids;
+	}
+
+	/**
+	 * Whether anyone may read a post's comments.
+	 *
+	 * Anyone can subscribe to "all new comments on this site", so comments on
+	 * private, draft or password-protected posts are never emailed: that would
+	 * leak their title and content to strangers.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	private function is_public( int $post_id ): bool {
+		$post = get_post( $post_id );
+
+		return $post instanceof WP_Post && is_post_publicly_viewable( $post ) && '' === (string) $post->post_password;
 	}
 }

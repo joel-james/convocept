@@ -82,6 +82,14 @@ $convocept_active = array_filter(
 						</form>
 					<?php else : ?>
 						<?php esc_html_e( 'Waiting for confirmation', 'convocept' ); ?>
+						<?php
+						// This page is only reachable from a link emailed to the address, so it can confirm.
+						?>
+						<form method="post" style="display:inline">
+							<input type="hidden" name="convocept_do" value="resubscribe">
+							<input type="hidden" name="convocept_subscription" value="<?php echo esc_attr( (string) $convocept_item['id'] ); ?>">
+							<button type="submit" class="wp-element-button"><?php esc_html_e( 'Confirm', 'convocept' ); ?></button>
+						</form>
 					<?php endif; ?>
 				</li>
 			<?php endforeach; ?>

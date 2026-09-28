@@ -341,7 +341,16 @@ final class Plugin {
 		return $this->service(
 			Submission::class,
 			function () {
-				return new Submission( $this->ips(), $this->limiter(), new FormToken(), new Pipeline(), $this->edit_window() );
+				return new Submission(
+					$this->ips(),
+					$this->limiter(),
+					new FormToken(),
+					new Pipeline(),
+					$this->edit_window(),
+					function ( int $post_id ): bool {
+						return $this->renderer()->is_enabled_for( $post_id );
+					}
+				);
 			}
 		);
 	}

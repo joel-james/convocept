@@ -249,4 +249,36 @@ class CommentsEndpointTest extends RestTestCase {
 
 		$this->assertSame( 'approved', $data['status'] );
 	}
+
+	public function test_rest_comments_without_the_form_token_are_held(): void {
+		$data = $this->post_comment( self::factory()->post->create(), array( 'token' => '' ) )->get_data();
+
+		$this->assertSame( 'pending', $data['status'], 'A client-reported elapsed time alone is not trusted.' );
+	}
+
+	public function test_edit_adding_disallowed_words_is_held(): void {
+		update_option( 'disallowed_keys', 'forbiddenword' );
+		$created = $this->post_comment( self::factory()->post->create() )->get_data();
+		$this->assertSame( 'approved', $created['status'] );
+
+		$response = $this->dispatch(
+			'PATCH',
+			"comments/{$created['id']}",
+			array(
+				'content'    => 'Now with forbiddenword',
+				'edit_token' => $created['edit_token'],
+			)
+		);
+
+		$this->assertSame( 'pending', $response->get_data()['status'] );
+	}
+
+	public function test_edit_token_is_accepted_in_a_header(): void {
+		$created = $this->post_comment( self::factory()->post->create(), array( 'content' => 'Header token' ) )->get_data();
+
+		$response = $this->dispatch( 'GET', "comments/{$created['id']}", array(), array( 'X-Convocept-Edit-Token' => $created['edit_token'] ) );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 'Header token', $response->get_data()['content'] );
+	}
 }

@@ -57,13 +57,22 @@ class SubscriptionsTest extends RestTestCase {
 		$this->assertStringNotContainsString( 'new@example.com&', $mails[0]['body'] );
 	}
 
-	public function test_verified_or_known_addresses_skip_confirmation(): void {
+	public function test_only_verified_addresses_skip_confirmation(): void {
 		$post_id       = self::factory()->post->create();
 		$subscriptions = Plugin::instance()->subscriptions();
+		$repository    = $subscriptions->repository();
 
 		$this->assertSame( Repository::ACTIVE, $subscriptions->subscribe( 'known@example.com', $post_id, 0, true ) );
-		$this->assertSame( Repository::ACTIVE, $subscriptions->subscribe( 'known@example.com', 0, 0, false ), 'An address with an active subscription is already proven.' );
 		$this->assertCount( 0, $this->sent() );
+
+		// Anyone can type someone else's address: an active subscription proves nothing about the requester.
+		$this->assertSame( Repository::PENDING, $subscriptions->subscribe( 'known@example.com', 0, 0, false ) );
+		$this->assertCount( 1, $this->sent() );
+		$site = wp_list_filter( $repository->for_email( $repository->hash_email( 'known@example.com' ) ), array( 'post_id' => 0 ) );
+		$this->assertSame( Repository::PENDING, array_values( $site )[0]['status'] );
+
+		// The answer never reveals that the address already follows the post.
+		$this->assertSame( Repository::PENDING, $subscriptions->subscribe( 'known@example.com', $post_id, 0, false ) );
 	}
 
 	public function test_confirmation_emails_are_rate_limited_per_address(): void {

@@ -41,20 +41,21 @@ export function routeUrl( path, query = {} ) {
 /**
  * Send a request to a Convocept REST route.
  *
- * @param {string}                 path             Route path relative to the namespace, e.g. "session".
- * @param {Object}                 [options]        Request options.
- * @param {string}                 [options.method] HTTP method. Default GET.
- * @param {Object}                 [options.data]   JSON body.
- * @param {Object<string, string>} [options.query]  Query arguments.
- * @param {string}                 [options.nonce]  REST nonce for logged-in users.
+ * @param {string}                 path              Route path relative to the namespace, e.g. "session".
+ * @param {Object}                 [options]         Request options.
+ * @param {string}                 [options.method]  HTTP method. Default GET.
+ * @param {Object}                 [options.data]    JSON body.
+ * @param {Object<string, string>} [options.query]   Query arguments.
+ * @param {string}                 [options.nonce]   REST nonce for logged-in users.
+ * @param {Object<string, string>} [options.headers] Extra request headers.
  * @return {Promise<Object>} Parsed JSON response.
  */
 export async function request(
 	path,
-	{ method = 'GET', data, query = {}, nonce } = {}
+	{ method = 'GET', data, query = {}, nonce, headers: extra = {} } = {}
 ) {
 	const url = routeUrl( path, query );
-	const headers = { 'X-Convocept': '1' };
+	const headers = { ...extra, 'X-Convocept': '1' };
 
 	if ( data ) {
 		headers[ 'Content-Type' ] = 'application/json';

@@ -143,24 +143,6 @@ class Repository {
 	}
 
 	/**
-	 * Whether an address already has a confirmed subscription.
-	 *
-	 * Used to skip double opt-in for readers who already proved they own it.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $email Email address.
-	 * @return bool
-	 */
-	public function has_active( string $email ): bool {
-		global $wpdb;
-
-		$table = SubscriptionsTable::name();
-
-		return (bool) $wpdb->get_var( $wpdb->prepare( 'SELECT 1 FROM %i WHERE email_hash = %s AND status = %s LIMIT 1', $table, $this->hash_email( $email ), self::ACTIVE ) );
-	}
-
-	/**
 	 * Update columns of a subscription.
 	 *
 	 * @since 1.0.0

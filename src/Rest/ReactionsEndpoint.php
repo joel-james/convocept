@@ -87,6 +87,7 @@ class ReactionsEndpoint {
 			|| ! $comment instanceof WP_Comment
 			|| '1' !== (string) $comment->comment_approved
 			|| ! $this->plugin->renderer()->is_enabled_for( (int) $comment->comment_post_ID )
+			|| ! is_post_publicly_viewable( (int) $comment->comment_post_ID )
 			|| post_password_required( (int) $comment->comment_post_ID )
 		) {
 			return new WP_Error( 'convocept_invalid_comment', __( 'Comment not found.', 'convocept' ), array( 'status' => 404 ) );

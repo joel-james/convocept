@@ -252,7 +252,7 @@ class Privacy {
 	/**
 	 * Export the upvotes of the registered user with an email address.
 	 *
-	 * Guest votes are stored as a one-way hash of IP address and browser,
+	 * Guest votes are stored as a one-way hash of the IP address,
 	 * so they cannot be linked to an email address and are not exported.
 	 *
 	 * @since 1.0.0
@@ -350,7 +350,7 @@ class Privacy {
 				$ip[ (string) $this->settings->get( 'commenter_ip' ) ] ?? $ip['keep']
 			),
 			__( 'If you subscribe to comments, we store your email address, what you follow, when you subscribed and confirmed, and your language, so we can email you new comments. Every email has a link to unsubscribe or manage your subscriptions. You can also ask us to export or erase this data.', 'convocept' ),
-			__( 'If you upvote a comment, we store a one-way code instead of who you are: made from your user account if you are logged in, otherwise from your IP address and browser. We cannot turn it back into your IP address. Votes of logged-in users are included when you ask us to export or erase your data.', 'convocept' ),
+			__( 'If you upvote a comment, we store a one-way code instead of who you are: made from your user account if you are logged in, otherwise from your IP address. We cannot turn it back into your IP address. Votes of logged-in users are included when you ask us to export or erase your data.', 'convocept' ),
 			__( 'To limit spam, a one-way code made from your IP address is kept for a few minutes to count how often you post. After you comment, your browser keeps a code that lets you edit your comment for a short time; it is not sent to anyone else.', 'convocept' ),
 		);
 

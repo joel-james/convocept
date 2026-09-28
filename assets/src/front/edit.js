@@ -131,7 +131,8 @@ async function openEditor( root, item ) {
 
 	try {
 		const source = await request( `comments/${ id }`, {
-			query: { edit_token: token },
+			// A header, not the query string: URLs end up in access logs.
+			headers: { 'X-Convocept-Edit-Token': token },
 			nonce: session.nonce,
 		} );
 		input.value = source.content;

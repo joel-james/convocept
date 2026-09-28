@@ -6,6 +6,7 @@
  * WordPress 6.6. Convocept supports 6.5, so JSX compiles to
  * `createElement` from @wordpress/element instead (imported automatically
  * into every file that uses JSX), as WordPress itself did before 6.6.
+ * @param api
  */
 module.exports = ( api ) => {
 	api.cache( true );

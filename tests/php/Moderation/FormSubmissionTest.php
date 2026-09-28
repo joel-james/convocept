@@ -93,13 +93,6 @@ class FormSubmissionTest extends TestCase {
 		$this->assertSame( '0', $comment->comment_approved );
 	}
 
-	public function test_other_submissions_are_untouched(): void {
-		$comment = $this->submit_form( self::factory()->post->create(), array( 'convocept_hp' => 'ignored without marker' ) );
-
-		$this->assertSame( '1', $comment->comment_approved );
-		$this->assertSame( '', get_comment_meta( (int) $comment->comment_ID, Submission::LOG_META_KEY, true ) );
-	}
-
 	public function test_form_rate_limit_stops_request(): void {
 		$post_id = self::factory()->post->create();
 		$fields  = array(
@@ -125,5 +118,28 @@ class FormSubmissionTest extends TestCase {
 		$this->assertSame( 0, $pipeline->apply( 0, $approve ) );
 		$this->assertSame( 1, $pipeline->apply( 1, null ) );
 		$this->assertSame( Decision::HOLD, ( new Decision( 'bogus', 'x', 'r' ) )->verdict() );
+	}
+
+	public function test_form_posts_without_the_marker_are_still_checked(): void {
+		$comment = $this->submit_form( self::factory()->post->create(), array() );
+
+		$this->assertInstanceOf( \WP_Comment::class, $comment );
+		$this->assertSame( '0', $comment->comment_approved, 'No token: the timing check holds it.' );
+		$this->assertStringContainsString( 'timing', (string) get_comment_meta( (int) $comment->comment_ID, Submission::LOG_META_KEY, true ) );
+	}
+
+	public function test_form_posts_to_posts_convocept_does_not_handle_are_left_alone(): void {
+		register_post_type(
+			'convocept_other',
+			array(
+				'public'   => true,
+				'supports' => array( 'comments' ),
+			)
+		);
+		$comment = $this->submit_form( self::factory()->post->create( array( 'post_type' => 'convocept_other' ) ), array() );
+		unregister_post_type( 'convocept_other' );
+
+		$this->assertInstanceOf( \WP_Comment::class, $comment );
+		$this->assertSame( '1', $comment->comment_approved );
 	}
 }
