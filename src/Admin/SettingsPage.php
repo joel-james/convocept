@@ -94,7 +94,7 @@ class SettingsPage {
 	public static function url( string $page = '' ): string {
 		$url = admin_url( 'edit-comments.php?page=' . self::SLUG );
 
-		return '' !== $page ? $url . '#' . rawurlencode( $page ) : $url;
+		return '' !== $page ? add_query_arg( 'tab', rawurlencode( $page ), $url ) : $url;
 	}
 
 	/**

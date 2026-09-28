@@ -2,6 +2,15 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — Settings sections in a `tab` query argument
+- Sections are addressed as `edit-comments.php?page=convocept&tab=import`, the usual WordPress
+  admin pattern, instead of `#import`. The server can read it (`SettingsPage::url()` builds it for
+  redirects such as Tools → Import), and it survives redirects that drop a hash.
+- Switching sections does not reload: a plain click calls `history.pushState` and `popstate`
+  handles Back/Forward, so the unsaved draft is kept. Sidebar links carry the full URL so
+  middle-click and Cmd-click open a new tab. Unknown or missing `tab` shows General.
+- Design system version 10 records this in the Sidebar README.
+
 ## 2026-09-28 — Own footer on the Convocept screen
 - **PageFooter** added to the design system first (version 8–9), then built: plugin, version and
   maker on the start side; Documentation, convocept.com and WordPress.org on the end side. On the

@@ -36,7 +36,7 @@ window.convoceptAdmin = window.convoceptAdmin || {
 	 * Add a page to the settings screen.
 	 *
 	 * @param {Object}                     panel        Page.
-	 * @param {string}                     panel.id     Unique ID, used in the URL hash.
+	 * @param {string}                     panel.id     Unique ID, used as the `tab` query argument.
 	 * @param {string}                     panel.group  'settings', 'manage' or 'more'.
 	 * @param {string}                     panel.title  Short noun label.
 	 * @param {string}                     [panel.icon] Icon name from the admin UI icon set.

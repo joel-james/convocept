@@ -107,7 +107,9 @@ test.describe( 'Disqus importer', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'Import' } )
 		).toBeVisible();
-		expect( new URL( page.url() ).hash ).toBe( '#import' );
+		expect( new URL( page.url() ).searchParams.get( 'tab' ) ).toBe(
+			'import'
+		);
 	} );
 
 	test( 'dry run, then import with progress, then report', async ( {
@@ -181,7 +183,7 @@ test.describe( 'Disqus importer', () => {
 	} ) => {
 		await admin.visitAdminPage(
 			'edit-comments.php',
-			'page=convocept#import'
+			'page=convocept&tab=import'
 		);
 		await page.getByLabel( 'Export file' ).setInputFiles( {
 			name: 'export.xml',

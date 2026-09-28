@@ -69,9 +69,21 @@ test.describe( 'Settings screen', () => {
 		);
 		await expect( bar ).toHaveCount( 0 );
 
+		// The page is in the address, so a reload stays on it.
+		expect( new URL( page.url() ).searchParams.get( 'tab' ) ).toBe(
+			'appearance'
+		);
 		await page.reload();
+		await expect(
+			page.getByRole( 'heading', { level: 1, name: 'Appearance' } )
+		).toBeVisible();
 		await expect( page.getByLabel( 'Always dark' ) ).toBeChecked();
-		await page.goto( page.url().replace( /#.*$/, '#general' ) );
+
+		// Back returns to the previous page without a reload.
+		await page.goBack();
+		await expect(
+			page.getByRole( 'heading', { level: 1, name: 'General' } )
+		).toBeVisible();
 		await expect( page.getByLabel( 'Comments per page' ) ).toHaveValue(
 			'12'
 		);

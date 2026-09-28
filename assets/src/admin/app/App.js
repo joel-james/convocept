@@ -3,7 +3,8 @@
  *
  * Settings are edited as a draft shared by every page, so changes on two
  * pages save together. The save bar shows only while the draft differs
- * from what is saved. Pages are chosen by the URL hash (`#appearance`).
+ * from what is saved. Pages are chosen by the `tab` query argument (`&tab=appearance`), so
+ * a reload or a shared link opens the same page.
  */
 
 /**
@@ -47,12 +48,27 @@ function same( a, b ) {
 }
 
 /**
- * Read the page ID from the URL hash.
+ * Read the page ID from the `tab` query argument.
  *
  * @return {string} Page ID, or ''.
  */
-function hashPage() {
-	return decodeURIComponent( window.location.hash.replace( /^#/, '' ) );
+function tabFromUrl() {
+	return new URLSearchParams( window.location.search ).get( 'tab' ) || '';
+}
+
+/**
+ * Address of a page: the current screen with `tab` set.
+ *
+ * @param {string} id Page ID.
+ * @return {string} URL.
+ */
+function tabUrl( id ) {
+	const url = new URL( window.location.href );
+
+	url.searchParams.set( 'tab', id );
+	url.hash = '';
+
+	return url.toString();
 }
 
 /**
@@ -70,7 +86,7 @@ export default function App( { boot, pages, groups } ) {
 	const [ serverErrors, setServerErrors ] = useState( {} );
 	const [ saveError, setSaveError ] = useState( '' );
 	const [ saving, setSaving ] = useState( false );
-	const [ route, setRoute ] = useState( hashPage );
+	const [ route, setRoute ] = useState( tabFromUrl );
 	const navigated = useRef( false );
 	const { createSuccessNotice } = useDispatch( noticesStore );
 
@@ -107,16 +123,33 @@ export default function App( { boot, pages, groups } ) {
 
 	const errorCount = Object.keys( errors ).length;
 
+	// Back and forward move between pages without a reload.
 	useEffect( () => {
-		const onHash = () => {
+		const onPop = () => {
 			navigated.current = true;
-			setRoute( hashPage() );
+			setRoute( tabFromUrl() );
 		};
 
-		window.addEventListener( 'hashchange', onHash );
+		window.addEventListener( 'popstate', onPop );
 
-		return () => window.removeEventListener( 'hashchange', onHash );
+		return () => window.removeEventListener( 'popstate', onPop );
 	}, [] );
+
+	/**
+	 * Show a page and record it in the address and browser history.
+	 *
+	 * @param {string} id Page ID.
+	 * @return {void}
+	 */
+	const navigate = ( id ) => {
+		if ( id === page.id ) {
+			return;
+		}
+
+		window.history.pushState( null, '', tabUrl( id ) );
+		navigated.current = true;
+		setRoute( id );
+	};
 
 	// Move focus to the new page's title, so keyboard and screen reader users land on it.
 	useEffect( () => {
@@ -223,9 +256,8 @@ export default function App( { boot, pages, groups } ) {
 				) }
 				groups={ navGroups }
 				current={ page.id }
-				onNavigate={ ( id ) => {
-					window.location.hash = id;
-				} }
+				hrefFor={ tabUrl }
+				onNavigate={ navigate }
 			/>
 			<div
 				className={ `convocept-main${

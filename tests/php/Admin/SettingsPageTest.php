@@ -42,7 +42,7 @@ class SettingsPageTest extends TestCase {
 	public function test_page_is_added_under_settings(): void {
 		$this->page();
 
-		$this->assertSame( admin_url( 'edit-comments.php?page=convocept#import' ), SettingsPage::url( 'import' ) );
+		$this->assertSame( admin_url( 'edit-comments.php?page=convocept&tab=import' ), SettingsPage::url( 'import' ) );
 		$this->assertNotEmpty( get_plugin_page_hookname( 'convocept', 'edit-comments.php' ) );
 	}
 

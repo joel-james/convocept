@@ -20,15 +20,45 @@ import { Icon, Logo } from './icons';
  * Below 782px the links are replaced by a section dropdown (CSS switches
  * which one shows), so every page stays reachable on a phone.
  *
- * @param {Object}               props            Props.
- * @param {string}               props.name       Plugin name.
- * @param {string}               props.meta       One line under the name (what it is · version).
- * @param {Array}                props.groups     Groups: [{ id, label, pages: [{ id, title, icon, flag }] }].
- * @param {string}               props.current    Current page ID.
- * @param {(id: string) => void} props.onNavigate Called with a page ID when the dropdown changes.
+ * @param {Object}                 props            Props.
+ * @param {string}                 props.name       Plugin name.
+ * @param {string}                 props.meta       One line under the name (what it is · version).
+ * @param {Array}                  props.groups     Groups: [{ id, label, pages: [{ id, title, icon, flag }] }].
+ * @param {string}                 props.current    Current page ID.
+ * @param {(id: string) => string} props.hrefFor    Address of a page, so links can open in a new tab.
+ * @param {(id: string) => void}   props.onNavigate Called with a page ID when a link is clicked or the dropdown changes.
  * @return {Element} Sidebar.
  */
-export function Sidebar( { name, meta, groups, current, onNavigate } ) {
+export function Sidebar( {
+	name,
+	meta,
+	groups,
+	current,
+	hrefFor,
+	onNavigate,
+} ) {
+	/**
+	 * Switch pages in place on a plain click; let modified clicks open a new tab.
+	 *
+	 * @param {MouseEvent} event Click event.
+	 * @param {string}     id    Page ID.
+	 * @return {void}
+	 */
+	const onClick = ( event, id ) => {
+		if (
+			event.button !== 0 ||
+			event.metaKey ||
+			event.ctrlKey ||
+			event.shiftKey ||
+			event.altKey
+		) {
+			return;
+		}
+
+		event.preventDefault();
+		onNavigate( id );
+	};
+
 	return (
 		<aside className="convocept-sidebar">
 			<div className="convocept-brand">
@@ -58,7 +88,10 @@ export function Sidebar( { name, meta, groups, current, onNavigate } ) {
 								<li key={ page.id }>
 									<a
 										className="convocept-nav-item"
-										href={ `#${ page.id }` }
+										href={ hrefFor( page.id ) }
+										onClick={ ( event ) =>
+											onClick( event, page.id )
+										}
 										aria-current={
 											page.id === current
 												? 'page'

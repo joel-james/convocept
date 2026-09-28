@@ -354,7 +354,9 @@ test.describe( 'WordPress.org assets', () => {
 			</post>`
 			)
 			.join( '' );
-		await page.goto( '/wp-admin/edit-comments.php?page=convocept#import' );
+		await page.goto(
+			'/wp-admin/edit-comments.php?page=convocept&tab=import'
+		);
 		await page.getByLabel( 'Export file' ).setInputFiles( {
 			name: 'disqus-export.xml',
 			mimeType: 'text/xml',
