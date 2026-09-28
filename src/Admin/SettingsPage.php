@@ -236,6 +236,7 @@ class SettingsPage {
 				'docs'       => 'https://docs.foxelabs.com/software/convocept/getting-started',
 				'support'    => 'https://wordpress.org/support/plugin/convocept/',
 				'website'    => 'https://convocept.com/',
+				'foxelabs'   => 'https://foxelabs.com/',
 				'wporg'      => 'https://wordpress.org/plugins/convocept/',
 			),
 		);

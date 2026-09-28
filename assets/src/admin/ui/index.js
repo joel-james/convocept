@@ -12,6 +12,7 @@ export {
 	Sidebar,
 	PageHeader,
 	PageFooter,
+	ExternalLink,
 	StatusChip,
 	Card,
 	Notice,

@@ -239,12 +239,12 @@
 	gap: 8px 20px;
 }
 
-.convocept-admin .convocept-footer__links a {
+.convocept-admin .convocept-footer a {
 	color: var(--convocept-fg-muted);
 	text-decoration: none;
 }
 
-.convocept-admin .convocept-footer__links a:hover {
+.convocept-admin .convocept-footer a:hover {
 	color: var(--convocept-fg);
 	text-decoration: underline;
 }

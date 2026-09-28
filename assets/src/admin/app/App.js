@@ -13,6 +13,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch } from '@wordpress/data';
 import {
+	createInterpolateElement,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -28,6 +29,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import {
 	FloatingBar,
 	Notice,
+	ExternalLink,
 	PageFooter,
 	PageHeader,
 	Sidebar,
@@ -291,23 +293,29 @@ export default function App( { boot, pages, groups } ) {
 					/>
 				</main>
 				<PageFooter
-					meta={ sprintf(
-						/* translators: %s: Plugin version. */
-						__( 'Convocept %s · by Foxe Labs', 'convocept' ),
-						boot.version
+					meta={ createInterpolateElement(
+						sprintf(
+							/* translators: %s: Plugin version. <a> links to the maker's website. */
+							__(
+								'Convocept %s · by <a>Foxe Labs</a>',
+								'convocept'
+							),
+							boot.version
+						),
+						{ a: <ExternalLink href={ boot.urls.foxelabs } /> }
 					) }
 					label={ __( 'About Convocept', 'convocept' ) }
 					links={ [
 						{
-							label: __( 'Documentation', 'convocept' ),
+							label: 'docs.foxelabs.com',
 							href: boot.urls.docs,
 						},
 						{
-							label: __( 'convocept.com', 'convocept' ),
+							label: 'convocept.com',
 							href: boot.urls.website,
 						},
 						{
-							label: __( 'WordPress.org', 'convocept' ),
+							label: 'wordpress.org',
 							href: boot.urls.wporg,
 						},
 					] }

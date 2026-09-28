@@ -169,7 +169,7 @@ test.describe( 'Settings screen', () => {
 			name: 'About Convocept',
 		} );
 		await expect(
-			footer.getByRole( 'link', { name: /Documentation/ } )
+			footer.getByRole( 'link', { name: /docs\.foxelabs\.com/ } )
 		).toHaveAttribute(
 			'href',
 			'https://docs.foxelabs.com/software/convocept/getting-started'
@@ -178,8 +178,13 @@ test.describe( 'Settings screen', () => {
 			footer.getByRole( 'link', { name: /convocept\.com/ } )
 		).toHaveAttribute( 'href', 'https://convocept.com/' );
 		await expect(
-			footer.getByRole( 'link', { name: /WordPress\.org/ } )
+			footer.getByRole( 'link', { name: /wordpress\.org/ } )
 		).toHaveAttribute( 'href', 'https://wordpress.org/plugins/convocept/' );
+		await expect(
+			page
+				.locator( '.convocept-footer' )
+				.getByRole( 'link', { name: /Foxe Labs/ } )
+		).toHaveAttribute( 'href', 'https://foxelabs.com/' );
 		await expect( page.locator( '#wpfooter' ) ).toBeHidden();
 
 		await admin.visitAdminPage( 'index.php' );

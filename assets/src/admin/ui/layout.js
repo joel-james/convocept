@@ -1,6 +1,6 @@
 /**
  * Layout components of the Foxe Plugin Admin UI: Sidebar, PageHeader,
- * PageFooter, StatusChip, Card, Notice and FloatingBar.
+ * PageFooter, ExternalLink, StatusChip, Card, Notice and FloatingBar.
  */
 
 /**
@@ -168,15 +168,34 @@ export function PageHeader( { title, chips, actions } ) {
 }
 
 /**
+ * A link that opens in a new tab and says so to screen readers.
+ *
+ * @param {Object}  props          Props.
+ * @param {string}  props.href     Address.
+ * @param {Element} props.children Link text.
+ * @return {Element} Link.
+ */
+export function ExternalLink( { href, children } ) {
+	return (
+		<a href={ href } target="_blank" rel="noopener noreferrer">
+			{ children }
+			<span className="screen-reader-text">
+				{ __( '(opens in a new tab)', 'convocept' ) }
+			</span>
+		</a>
+	);
+}
+
+/**
  * The last line of the screen: plugin, version, maker and links.
  *
  * Replaces WordPress's own admin footer, which the plugin hides on its
  * screen. Links open in a new tab and say so to screen readers.
  *
  * @param {Object}                                 props       Props.
- * @param {string}                                 props.meta  Plugin, version and maker, e.g. "Convocept 1.0.0 · by Foxe Labs".
+ * @param {string|Element}                         props.meta  Plugin, version and maker, e.g. "Convocept 1.0.0 · by Foxe Labs"; the maker may be an ExternalLink.
  * @param {string}                                 props.label Name of the link list for screen readers.
- * @param {Array<{ label: string, href: string }>} props.links Links.
+ * @param {Array<{ label: string, href: string }>} props.links Links, labelled with their domain (convocept.com).
  * @return {Element} Footer.
  */
 export function PageFooter( { meta, label, links } ) {
@@ -185,17 +204,9 @@ export function PageFooter( { meta, label, links } ) {
 			<span className="convocept-footer__meta">{ meta }</span>
 			<nav className="convocept-footer__links" aria-label={ label }>
 				{ links.map( ( link ) => (
-					<a
-						key={ link.href }
-						href={ link.href }
-						target="_blank"
-						rel="noopener noreferrer"
-					>
+					<ExternalLink key={ link.href } href={ link.href }>
 						{ link.label }
-						<span className="screen-reader-text">
-							{ __( '(opens in a new tab)', 'convocept' ) }
-						</span>
-					</a>
+					</ExternalLink>
 				) ) }
 			</nav>
 		</footer>
