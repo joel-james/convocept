@@ -7,7 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Settings screen fields use WordPress's own sizes, borders and fonts: every text, number,
-  select and textarea field is 13px text in a 40px control. Number fields are WordPress text
+  select and textarea field is 13px text in a 40px control, and all of them share one width
+  (`--convocept-field-width`, 480px, narrower on small screens). Number fields are WordPress text
   fields of type number instead of our large stepper boxes. Only labels and help lines keep the
   Convocept style. A new e2e test fails when any settings page triggers a WordPress deprecation
   warning, so a coming component change shows up before it breaks the screen.

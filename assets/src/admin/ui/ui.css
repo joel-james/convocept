@@ -56,6 +56,7 @@
 	--convocept-nav-item-height: 40px;
 	--convocept-control-height: 40px;
 	--convocept-content-max: 880px;
+	--convocept-field-width: 480px;
 	--wp-admin-theme-color: #1e1e1e;
 	--wp-admin-theme-color-darker-10: #000;
 	--wp-admin-theme-color-darker-20: #000;
@@ -387,18 +388,13 @@
 	border-color: var(--convocept-danger);
 }
 
-/* Short numbers don't need the full width. */
-.convocept-field--number .convocept-field__control {
-	width: 160px;
-}
-
-.convocept-field--select {
-	min-width: 220px;
-}
-
-.convocept-field--wide {
+/* One width for every text, number, select and textarea field, so they line up. */
+.convocept-field--text,
+.convocept-field--number,
+.convocept-field--select,
+.convocept-field--textarea {
 	width: 100%;
-	max-width: 480px;
+	max-width: var(--convocept-field-width);
 }
 
 /* IP ranges and similar read better in a fixed-width font. */

@@ -122,25 +122,23 @@ export function NumberField( {
 
 	return (
 		<div className={ fieldClass( 'number', error ) }>
-			<div className="convocept-field__control">
-				<TextControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					id={ id }
-					type="number"
-					inputMode="numeric"
-					label={ label }
-					value={ value }
-					min={ min }
-					max={ max }
-					step={ 1 }
-					aria-invalid={ !! error }
-					aria-describedby={ `${ id }-describe` }
-					onChange={ ( next ) =>
-						onChange( '' === next ? '' : Number( next ) )
-					}
-				/>
-			</div>
+			<TextControl
+				__next40pxDefaultSize
+				__nextHasNoMarginBottom
+				id={ id }
+				type="number"
+				inputMode="numeric"
+				label={ label }
+				value={ value }
+				min={ min }
+				max={ max }
+				step={ 1 }
+				aria-invalid={ !! error }
+				aria-describedby={ `${ id }-describe` }
+				onChange={ ( next ) =>
+					onChange( '' === next ? '' : Number( next ) )
+				}
+			/>
 			<Describe id={ `${ id }-describe` } help={ help } error={ error } />
 		</div>
 	);
@@ -154,28 +152,14 @@ export function NumberField( {
  * @param {string}                  [props.help]   Help.
  * @param {string}                  props.value    Value.
  * @param {string}                  [props.error]  Error text.
- * @param {boolean}                 [props.wide]   Whether it takes up to 480px.
  * @param {(value: string) => void} props.onChange Receives the new value.
  * @return {Element} Field.
  */
-export function TextField( {
-	label,
-	help,
-	value,
-	error,
-	wide = false,
-	onChange,
-} ) {
+export function TextField( { label, help, value, error, onChange } ) {
 	const id = useInstanceId( TextField, 'convocept-text' );
 
 	return (
-		<div
-			className={ fieldClass(
-				'text',
-				error,
-				wide ? 'convocept-field--wide' : ''
-			) }
-		>
+		<div className={ fieldClass( 'text', error ) }>
 			<TextControl
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
@@ -269,7 +253,7 @@ export function TextareaListField( {
 			className={ fieldClass(
 				'textarea',
 				error,
-				`convocept-field--wide${ code ? ' convocept-field--code' : '' }`
+				code ? 'convocept-field--code' : ''
 			) }
 		>
 			{ /* No id: TextareaControl labels its own generated id, and an id passed in would break that. */ }
