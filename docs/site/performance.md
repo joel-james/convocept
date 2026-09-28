@@ -34,7 +34,7 @@ the build.
   loads one page of top-level comments and their replies.
 - **Page-cache friendly.** Nothing personal is printed into the HTML, so the whole page can be
   cached. Personal state (logged-in name, saved details, your votes) is one small request made
-  only when the reader interacts.
+  once the comments come into view.
 - **Optional live updates** are off by default. When on, they check only while the tab is
   visible, and an unchanged thread costs one empty `304` response.
 
