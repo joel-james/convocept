@@ -14,7 +14,15 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   `data-plugin="convocept/convocept.php"`.
 - **readme.txt** rewritten from the prototype's text: every claim matches what 1.0 does (for
   example guests *can* edit within the edit window; wpDiscuz/StCR importers are "1.1").
-  Tags: comments, comment system, disqus, subscribe to comments, spam (only the first five count).
+  Tags: comments, disqus, subscribe to comments, comment form, spam (only the first five count;
+  "comment system" is already in the name, so its tag slot went to "comment form").
+- **readme.txt tuned for search** (owner's request): WordPress.org ranks the name, tags and short
+  description highest, then the description. The short description (≤ 150 characters) and the
+  first paragraph carry the main terms (comment system, threaded replies, upvotes, comment
+  subscriptions, spam protection, Disqus importer); "Disqus alternative", "wpDiscuz" and
+  "Subscribe to Comments Reloaded" appear in text and FAQ questions people search for, never in
+  the name or as keyword lists (the directory penalises stuffing). Section headings use one emoji
+  each, which the directory renders; every claim matches what 1.0 does.
 - **WordPress.org assets are generated**, not hand-made: `npm run wporg:assets` (its own
   Playwright config, `tests/e2e/wporg/`) seeds a demo discussion on the tests site and writes the
   icon, banner and the six readme screenshots to `.wordpress-org/`, which is committed and not
