@@ -79,7 +79,6 @@ class SettingsPage {
 	 */
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_page' ) );
-		add_action( 'admin_init', array( $this, 'redirect_old_location' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( CONVOCEPT_FILE ), array( $this, 'action_links' ) );
 	}
@@ -113,25 +112,6 @@ class SettingsPage {
 			self::SLUG,
 			array( $this, 'render' )
 		);
-	}
-
-	/**
-	 * Send the screen's earlier address (under Settings) to its new place.
-	 *
-	 * Keeps bookmarks and links in older docs or notices working.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public function redirect_old_location(): void {
-		global $pagenow;
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only redirect.
-		if ( 'options-general.php' === $pagenow && isset( $_GET['page'] ) && self::SLUG === $_GET['page'] ) {
-			wp_safe_redirect( self::url() );
-			exit;
-		}
 	}
 
 	/**

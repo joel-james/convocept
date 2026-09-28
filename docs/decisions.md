@@ -6,8 +6,11 @@ Decisions not fully covered by `PLAN.md`. Newest first.
 - **Comments → Convocept instead of Settings → Convocept** (owner's call, before 1.0): the app
   holds import today and moderation (M14) and Insights (M13) later, so it belongs with comments.
   `add_comments_page()` with `manage_options`, so editors, who see the Comments menu, don't see
-  it. `options-general.php?page=convocept` redirects on `admin_init`. The Plugins-screen
-  "Settings" link and Tools → Import follow `SettingsPage::url()`.
+  it. No redirect from the old address: nothing is released, so there is nothing to stay
+  compatible with. The Plugins-screen "Settings" link and Tools → Import follow `SettingsPage::url()`.
+- **No backward-compatibility code before 1.0** (owner's rule): migrations were renumbered to
+  start at 1 (the prototype's migration 1 was deleted earlier). Development sites already at
+  `convocept_db_version` 3 simply have nothing left to run.
 
 ## 2026-09-28 — M12 release preparation
 - **Name "Convocept – Fast Native Comment System"** in both the `Plugin Name` header and the

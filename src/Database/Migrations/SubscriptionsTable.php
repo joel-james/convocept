@@ -1,6 +1,6 @@
 <?php
 /**
- * Migration 3: subscriptions table.
+ * Migration 2: subscriptions table.
  *
  * @package Convocept
  * @since   1.0.0

@@ -146,18 +146,4 @@ test.describe( 'Settings screen', () => {
 			page.getByRole( 'heading', { level: 1, name: 'Advanced' } )
 		).toBeVisible();
 	} );
-
-	test( 'the screen lives under Comments; the old Settings address redirects', async ( {
-		admin,
-		page,
-	} ) => {
-		await admin.visitAdminPage( 'options-general.php', 'page=convocept' );
-
-		expect( new URL( page.url() ).pathname ).toMatch(
-			/edit-comments\.php$/
-		);
-		await expect(
-			page.locator( '#menu-comments .wp-submenu a[aria-current="page"]' )
-		).toHaveText( 'Convocept' );
-	} );
 } );

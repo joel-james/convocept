@@ -476,8 +476,7 @@ widget, moderation emails, the post editor) all point there.
   `register_rest_field`; no second comments API. Capabilities as core (`moderate_comments`,
   `edit_comment`).
 - "Open in Convocept" link on the core Comments screen; core screen otherwise untouched.
-- Menu: the app lives under **Comments → Convocept** (done before 1.0; the old Settings URL
-  redirects), next to Comments → Insights (M13).
+- Menu: the app lives under **Comments → Convocept** (done before 1.0), next to Comments → Insights (M13).
 - Later, opt-in only: setting "Use Convocept for the Comments menu" that points the core menu
   item at our page while `edit-comments.php` stays reachable. Off by default (WordPress.org
   admin-hijacking rule).

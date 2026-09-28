@@ -49,7 +49,7 @@ class UninstallerTest extends TestCase {
 	private function seed(): array {
 		$comment = $this->comment( self::factory()->post->create() );
 
-		update_option( 'convocept_db_version', 3 );
+		update_option( 'convocept_db_version', 2 );
 		update_option( 'convocept_import_lock', time() );
 		update_option( Queue::JOBS_OPTION, array( $comment ) );
 		set_transient( 'convocept_html_test', 'x' );
@@ -101,7 +101,7 @@ class UninstallerTest extends TestCase {
 		$this->assertDirectoryDoesNotExist( ( new Workspace() )->root() );
 
 		$this->assertSame( array( 'per_page' => 12 ), get_option( 'convocept_settings' ) );
-		$this->assertSame( '3', (string) get_option( 'convocept_db_version' ) );
+		$this->assertSame( '2', (string) get_option( 'convocept_db_version' ) );
 		$this->assertSame( '1', get_comment_meta( $seed['comment'], 'convocept_pinned', true ) );
 		$this->assertSame( '123', get_comment_meta( $seed['comment'], '_convocept_disqus_id', true ) );
 		$this->assertSame( array(), $this->drops, 'Tables stay.' );

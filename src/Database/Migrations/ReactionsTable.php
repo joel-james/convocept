@@ -1,6 +1,6 @@
 <?php
 /**
- * Migration 2: reactions table.
+ * Migration 1: reactions table.
  *
  * @package Convocept
  * @since   1.0.0
