@@ -86,17 +86,60 @@ class Privacy {
 	 * @return void
 	 */
 	public function register(): void {
-		add_filter( 'pre_comment_user_ip', array( $this, 'stored_ip' ) );
+		// Early, so later `wp_insert_comment` and `comment_post` callbacks read the stored address.
+		add_action( 'wp_insert_comment', array( $this, 'apply_ip_setting' ), 0, 2 );
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_erasers' ) );
 		add_action( 'admin_init', array( $this, 'add_policy_text' ) );
 	}
 
 	/**
-	 * Apply the `commenter_ip` setting to an IP address about to be stored.
+	 * Apply the `commenter_ip` setting to a comment that was just saved.
 	 *
-	 * Spam checks such as Akismet run before this and still see the full
-	 * address; only what is saved with the comment changes.
+	 * Runs after the comment is inserted rather than on `pre_comment_user_ip`,
+	 * because core's own checks read the address from the comment data before
+	 * insertion: the flood check, duplicate check and the IP entries of the
+	 * moderation and disallowed lists. With an empty address every guest
+	 * would look like the same visitor to the flood check, and an anonymized
+	 * one would match a whole network. So every check, Akismet included, sees
+	 * the full address, and only what is saved changes.
+	 *
+	 * Idempotent, so comments that already carry a stored address (imports)
+	 * are unchanged.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int        $comment_id Comment ID.
+	 * @param WP_Comment $comment    The saved comment.
+	 * @return void
+	 */
+	public function apply_ip_setting( $comment_id, $comment ): void {
+		if ( ! $comment instanceof WP_Comment ) {
+			return;
+		}
+
+		$stored = $this->stored_ip( $comment->comment_author_IP );
+
+		if ( $stored === $comment->comment_author_IP ) {
+			return;
+		}
+
+		global $wpdb;
+
+		// Not wp_update_comment(): that would fire edit hooks and filter the whole comment again.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Single-column write; the cache is cleaned below.
+		$wpdb->update(
+			$wpdb->comments,
+			array( 'comment_author_IP' => $stored ),
+			array( 'comment_ID' => (int) $comment_id )
+		);
+		clean_comment_cache( (int) $comment_id );
+
+		$comment->comment_author_IP = $stored;
+	}
+
+	/**
+	 * What to store for an IP address under the `commenter_ip` setting.
 	 *
 	 * @since 1.0.0
 	 *

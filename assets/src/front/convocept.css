@@ -4,7 +4,13 @@
  * Everything is scoped under .convocept and driven by custom properties, so
  * themes restyle the thread by overriding tokens, not selectors:
  *
- *     .convocept { --convocept-accent: #e11d48; --convocept-radius: 4px; }
+ *     .convocept { --convocept-radius: 4px; --convocept-font: Georgia, serif; }
+ *
+ * Default tokens sit in :where() blocks, which have no specificity. This
+ * stylesheet is printed inside the page body, after the theme's styles, so
+ * with a normal selector our defaults would win on source order; with
+ * :where() any theme rule on .convocept wins. The accent colour is the
+ * exception: the setting is applied inline on the wrapper.
  *
  * Color schemes (data-convocept-theme on the wrapper):
  * - auto:   inherit the theme's text and background; tints are mixed from
@@ -16,7 +22,7 @@
 /* Tokens and base
    ------------------------------------------------------------------ */
 
-.convocept {
+:where(.convocept) {
 	--convocept-accent: #2563eb;
 	--convocept-on-accent: #fff;
 
@@ -37,7 +43,9 @@
 	--convocept-avatar: 40px;
 	--convocept-font: inherit;
 	--convocept-font-size: 1rem;
+}
 
+.convocept {
 	box-sizing: border-box;
 	margin-block: 2.5rem;
 	color: var(--convocept-text);
@@ -47,7 +55,7 @@
 	line-height: 1.6;
 }
 
-.convocept[data-convocept-theme="light"] {
+:where(.convocept[data-convocept-theme="light"]) {
 	--convocept-text: #1f2937;
 	--convocept-bg: #fff;
 	--convocept-muted: #6b7280;
@@ -56,7 +64,7 @@
 	--convocept-field-bg: #fff;
 }
 
-.convocept[data-convocept-theme="dark"] {
+:where(.convocept[data-convocept-theme="dark"]) {
 	--convocept-text: #e5e7eb;
 	--convocept-bg: #111827;
 	--convocept-muted: #9ca3af;
@@ -65,7 +73,7 @@
 	--convocept-field-bg: #0b1220;
 }
 
-.convocept[data-convocept-theme="system"] {
+:where(.convocept[data-convocept-theme="system"]) {
 	--convocept-text: #1f2937;
 	--convocept-bg: #fff;
 	--convocept-muted: #6b7280;
@@ -76,7 +84,7 @@
 
 @media (prefers-color-scheme: dark) {
 
-	.convocept[data-convocept-theme="system"] {
+	:where(.convocept[data-convocept-theme="system"]) {
 		--convocept-text: #e5e7eb;
 		--convocept-bg: #111827;
 		--convocept-muted: #9ca3af;
@@ -89,12 +97,12 @@
 /* Browsers without color-mix() (before 2023) get plain fallbacks. */
 @supports not (color: color-mix(in srgb, red 50%, transparent)) {
 
-	.convocept {
+	:where(.convocept) {
 		--convocept-link: var(--convocept-accent);
 		--convocept-danger: #b91c1c;
 	}
 
-	.convocept[data-convocept-theme="auto"] {
+	:where(.convocept[data-convocept-theme="auto"]) {
 		--convocept-muted: currentcolor;
 		--convocept-border: rgba(127, 127, 127, 0.3);
 		--convocept-surface: rgba(127, 127, 127, 0.06);
@@ -439,7 +447,7 @@
 
 @media (max-width: 480px) {
 
-	.convocept {
+	:where(.convocept) {
 		--convocept-avatar: 32px;
 	}
 

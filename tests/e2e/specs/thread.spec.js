@@ -95,6 +95,37 @@ for ( const theme of THEMES ) {
 			).toHaveCount( 0 );
 		} );
 
+		test( 'a theme stylesheet overrides the default tokens', async ( {
+			page,
+			requestUtils,
+		} ) => {
+			const post = await createPostWithComments( requestUtils, 1 );
+
+			await page.goto( post.link );
+			// Added to <head>, so it comes before Convocept's inline stylesheet, like a theme's.
+			await page.addStyleTag( {
+				content:
+					'.convocept { --convocept-radius: 3px; --convocept-gap: 7px; }',
+			} );
+
+			const tokens = await page
+				.locator( '.convocept' )
+				.first()
+				.evaluate( ( element ) => {
+					const style =
+						element.ownerDocument.defaultView.getComputedStyle(
+							element
+						);
+
+					return [
+						style.getPropertyValue( '--convocept-radius' ).trim(),
+						style.getPropertyValue( '--convocept-gap' ).trim(),
+					];
+				} );
+
+			expect( tokens ).toEqual( [ '3px', '7px' ] );
+		} );
+
 		test( 'sort links reorder comments', async ( {
 			page,
 			requestUtils,

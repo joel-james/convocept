@@ -58,7 +58,8 @@ class PrivacyTest extends TestCase {
 	public function test_ip_setting_decides_what_is_stored(): void {
 		$privacy = $this->privacy();
 
-		$this->assertSame( 10, has_filter( 'pre_comment_user_ip', array( $privacy, 'stored_ip' ) ) );
+		$this->assertSame( 0, has_action( 'wp_insert_comment', array( $privacy, 'apply_ip_setting' ) ) );
+		$this->assertFalse( has_filter( 'pre_comment_user_ip', array( $privacy, 'stored_ip' ) ), 'Core checks must see the full address.' );
 		$this->assertSame( '203.0.113.77', $privacy->stored_ip( '203.0.113.77' ), 'Full address by default.' );
 
 		$this->set( 'commenter_ip', 'anonymize' );
@@ -86,6 +87,54 @@ class PrivacyTest extends TestCase {
 		);
 
 		$this->assertIsInt( $id );
+		$this->assertSame( '198.51.100.0', get_comment( $id )->comment_author_IP );
+	}
+
+	public function test_no_stored_ip_keeps_guests_apart_for_the_flood_check(): void {
+		$this->set( 'commenter_ip', 'none' );
+		$post_id = self::factory()->post->create();
+		$ids     = array();
+
+		foreach ( array( 'one', 'two' ) as $index => $name ) {
+			$ids[] = wp_new_comment(
+				array(
+					'comment_post_ID'      => $post_id,
+					'comment_author'       => $name,
+					'comment_author_email' => $name . '@example.com',
+					'comment_author_url'   => '',
+					'comment_author_IP'    => '203.0.113.' . ( $index + 1 ),
+					'comment_content'      => 'Comment from ' . $name,
+					'comment_type'         => 'comment',
+				),
+				true
+			);
+		}
+
+		$this->assertIsInt( $ids[0] );
+		$this->assertIsInt( $ids[1], 'A second guest a moment later is not flood.' );
+		$this->assertSame( '', get_comment( $ids[1] )->comment_author_IP );
+	}
+
+	public function test_moderation_list_ip_entries_match_the_full_address(): void {
+		$this->set( 'commenter_ip', 'anonymize' );
+		update_option( 'moderation_keys', '198.51.100.23' );
+
+		$id = wp_new_comment(
+			array(
+				'comment_post_ID'      => self::factory()->post->create(),
+				'comment_author'       => 'Reader',
+				'comment_author_email' => 'listed@example.com',
+				'comment_author_url'   => '',
+				'comment_author_IP'    => '198.51.100.23',
+				'comment_content'      => 'Held by address.',
+				'comment_type'         => 'comment',
+			),
+			true
+		);
+
+		delete_option( 'moderation_keys' );
+		$this->assertIsInt( $id );
+		$this->assertSame( '0', get_comment( $id )->comment_approved );
 		$this->assertSame( '198.51.100.0', get_comment( $id )->comment_author_IP );
 	}
 

@@ -120,6 +120,13 @@ and versions follow [Semantic Versioning](https://semver.org/).
   votes on comments of non-public posts are refused; the Disqus parser keeps libxml's limits.
 
 ### Fixed
+- Themes can override Convocept's CSS custom properties with a plain `.convocept { … }` rule.
+  The default tokens now sit in `:where()` blocks; before, the stylesheet (printed after the
+  theme's) won on source order.
+- "IP address stored with new comments" set to None or Anonymized no longer weakens WordPress's
+  own checks. The address is now changed after the comment is saved, so the flood check,
+  duplicate check and IP entries in the moderation and disallowed lists see the full address;
+  before, with None, every guest looked like one visitor to the 15-second flood check.
 - Replies to a pinned comment were not shown: core fetches each level of a threaded query
   with the same arguments, so the pinned query's `comment__in` filtered every reply out.
 - Contrast: muted text in the "Match the theme" scheme (Twenty Twenty-One was 3.6:1, now 5.1:1),

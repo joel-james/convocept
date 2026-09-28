@@ -2,6 +2,16 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — Token overrides and the stored-IP setting
+- Default CSS tokens live in `:where(.convocept…)` blocks (zero specificity). The stylesheet is
+  inlined in the body, after theme styles, so equal-specificity defaults used to beat a theme's
+  `.convocept { --convocept-radius: … }`. Layout properties stay on `.convocept`. The accent
+  stays an inline style on the wrapper: it is a setting, and the docs point to it.
+- `commenter_ip` is applied on `wp_insert_comment` (priority 0) with a one-column update, not on
+  `pre_comment_user_ip`. Core runs `wp_filter_comment()` (which applies that filter) before
+  `wp_allow_comment()`, so the flood/duplicate checks and moderation/disallowed IP entries saw
+  '' or an anonymized address. Akismet was unaffected (it runs on `preprocess_comment`).
+
 ## 2026-09-28 — Settings sections in a `tab` query argument
 - Sections are addressed as `edit-comments.php?page=convocept&tab=import`, the usual WordPress
   admin pattern, instead of `#import`. The server can read it (`SettingsPage::url()` builds it for
