@@ -18,7 +18,9 @@ after M8.
   (privacy exporters/erasers and IP setting, opt-in data deletion on uninstall, server-built
   plural labels, axe checks in `tests/e2e/specs/accessibility.spec.js`). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M12 (release preparation). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
+- **Next:** release 1.0.0 when the owner decides: bump `Version`/`CONVOCEPT_VERSION` to 1.0.0,
+  re-run `npm run wporg:assets` and `npm run release`, then Plugin Check on the zip. M12 is
+  otherwise done (name, readme, assets generator, docs/site/, Plugin Check, security review). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
   not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Settings → Convocept through `POST /convocept/v1/settings`.
 - **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
@@ -28,10 +30,12 @@ after M8.
   system first. No upsells until add-ons exist.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M11 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
-  Twenty Twenty-One shows its own dark submit button instead of our accent colour, and also
-  paints the moderator buttons (Pin, Spam, Trash) as dark boxes (not investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md); a real
-  Convocept logo for the admin sidebar (placeholder speech bubble on an ink tile now).
+- **Open items to raise with the owner:** merge M1–M12 to `main`; Twenty Twenty-One shows its
+  own dark submit button instead of our accent colour, and also paints the moderator buttons
+  (Pin, Spam, Trash) as dark boxes (not investigated); confirm the plan to ship basic AI checks
+  free in 1.2 (decisions.md); a real Convocept logo for the admin sidebar and the WordPress.org
+  icon/banner (placeholder speech bubble on an ink tile now); the subscription page is plain
+  theme markup and looks weak in screenshot 6.
 
 **Working environment notes**
 - Docker Desktop must be running for `npm run env:start` (wp-env: dev :8888, tests :8889).
