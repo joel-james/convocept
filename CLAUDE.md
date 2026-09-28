@@ -28,7 +28,7 @@ after M8.
 - **Open items to raise with the owner:** merge M1–M9 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
   Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
   investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md); a real
-  Convocept logo for the admin sidebar (placeholder speech bubble now).
+  Convocept logo for the admin sidebar (placeholder speech bubble on an ink tile now).
 
 **Working environment notes**
 - Docker Desktop must be running for `npm run env:start` (wp-env: dev :8888, tests :8889).

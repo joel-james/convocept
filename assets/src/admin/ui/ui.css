@@ -81,8 +81,9 @@
 	display: flex;
 	flex-direction: column;
 	padding: 20px 14px;
-	background: var(--convocept-ink);
-	color: var(--convocept-on-ink);
+	border-inline-end: 1px solid var(--convocept-stroke-header);
+	background: var(--convocept-surface);
+	color: var(--convocept-fg);
 }
 
 .convocept-brand {
@@ -101,7 +102,7 @@
 .convocept-brand__meta {
 	font-size: 11px;
 	line-height: 16px;
-	color: var(--convocept-on-ink-subtle);
+	color: var(--convocept-fg-subtle);
 }
 
 .convocept-nav-group {
@@ -112,7 +113,7 @@
 	line-height: 16px;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
-	color: var(--convocept-on-ink-subtle);
+	color: var(--convocept-fg-subtle);
 }
 
 .convocept-nav-list {
@@ -132,24 +133,24 @@
 	height: var(--convocept-nav-item-height);
 	padding: 0 14px;
 	border-radius: var(--convocept-radius-nav);
-	color: var(--convocept-on-ink-muted);
+	color: var(--convocept-fg-muted);
 	text-decoration: none;
 }
 
 .convocept-admin .convocept-nav-item:hover {
-	color: var(--convocept-on-ink);
-	background: var(--convocept-ink-tile);
+	color: var(--convocept-fg);
+	background: var(--convocept-surface-weak);
 }
 
 .convocept-admin .convocept-nav-item:focus {
-	outline: 2px solid var(--convocept-on-ink);
-	outline-offset: -2px;
+	outline: 2px solid var(--convocept-ink-raised);
+	outline-offset: 2px;
 	box-shadow: none;
 }
 
 .convocept-admin .convocept-nav-item[aria-current="page"] {
-	background: var(--convocept-on-ink);
-	color: var(--convocept-ink);
+	background: var(--convocept-ink-raised);
+	color: var(--convocept-on-ink);
 	font-weight: 600;
 }
 

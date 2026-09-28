@@ -34,7 +34,12 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   whose `react-jsx-runtime` script handle only exists from WordPress 6.6. The subscribe block
   (M6) already depended on it, so it could not load on 6.5. A `babel.config.js` compiles JSX to
   `createElement` from `@wordpress/element` for both the block and the app.
-- **Logo**: a placeholder mark (speech bubble on a white tile) until Convocept has one.
+- **Light sidebar** (design system version 4): the dark plugin sidebar sat right beside
+  WordPress's own dark admin menu, which read as one 408px slab and two competing menus. The
+  sidebar is now `surface` with a `stroke-header` edge and an `ink-raised` active item; ink is
+  kept for the save bar and the feature card. Changed in the design system first, for every
+  Foxe plugin.
+- **Logo**: a placeholder mark (white speech bubble on an ink tile) until Convocept has one.
 
 ## 2026-09-26 — Prototype removed
 - Deleted `includes/`, `build/` and the React prototype in `src/` (App.jsx, components, hooks, …).

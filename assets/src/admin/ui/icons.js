@@ -100,7 +100,7 @@ const PATHS = {
 };
 
 /**
- * Render the Convocept mark: a white tile with an ink speech bubble.
+ * Render the Convocept mark: an ink tile with a white speech bubble.
  *
  * A placeholder until Convocept has its own logo.
  *
@@ -115,14 +115,14 @@ export function Logo() {
 			aria-hidden="true"
 			focusable="false"
 		>
-			<rect width="32" height="32" rx="8" fill="#fff" />
+			<rect width="32" height="32" rx="8" fill="#111" />
 			<path
 				d="M8 9.5A2.5 2.5 0 0 1 10.5 7h11A2.5 2.5 0 0 1 24 9.5v8a2.5 2.5 0 0 1-2.5 2.5H15l-4.5 4v-4a2.5 2.5 0 0 1-2.5-2.5z"
-				fill="#111"
+				fill="#fff"
 			/>
 			<path
 				d="M12 12.5h8M12 16h5"
-				stroke="#fff"
+				stroke="#111"
 				strokeWidth="1.5"
 				strokeLinecap="round"
 			/>
