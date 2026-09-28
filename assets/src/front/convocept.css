@@ -19,9 +19,16 @@
 .convocept {
 	--convocept-accent: #2563eb;
 	--convocept-on-accent: #fff;
+
+	/* Accent as text: pulled toward the text colour, so links stay readable (4.5:1) on dark
+	   backgrounds and tinted theme backgrounds, where the plain accent can fall short. */
+	--convocept-link: color-mix(in srgb, var(--convocept-accent) 65%, var(--convocept-text));
+	--convocept-danger: color-mix(in srgb, #dc2626 70%, var(--convocept-text));
 	--convocept-text: currentcolor;
 	--convocept-bg: transparent;
-	--convocept-muted: color-mix(in srgb, currentcolor 62%, transparent);
+
+	/* 75% keeps muted text at 4.5:1 or more on themes with softer contrast (Twenty Twenty-One: 5.1:1). */
+	--convocept-muted: color-mix(in srgb, currentcolor 75%, transparent);
 	--convocept-border: color-mix(in srgb, currentcolor 16%, transparent);
 	--convocept-surface: color-mix(in srgb, currentcolor 4%, transparent);
 	--convocept-field-bg: color-mix(in srgb, currentcolor 2%, transparent);
@@ -82,6 +89,11 @@
 /* Browsers without color-mix() (before 2023) get plain fallbacks. */
 @supports not (color: color-mix(in srgb, red 50%, transparent)) {
 
+	.convocept {
+		--convocept-link: var(--convocept-accent);
+		--convocept-danger: #b91c1c;
+	}
+
 	.convocept[data-convocept-theme="auto"] {
 		--convocept-muted: currentcolor;
 		--convocept-border: rgba(127, 127, 127, 0.3);
@@ -107,7 +119,7 @@
 }
 
 .convocept a {
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 }
 
 .convocept :focus-visible {
@@ -255,7 +267,7 @@
 }
 
 .convocept-form__required {
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 }
 
 .convocept-form__cancel {
@@ -355,7 +367,7 @@
 	padding: 0.1em 0.55em;
 	border-radius: 999px;
 	background: color-mix(in srgb, var(--convocept-accent) 14%, transparent);
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 	font-size: 0.75em;
 	font-weight: 600;
 }
@@ -409,7 +421,7 @@
 }
 
 .convocept .convocept-action:hover {
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 }
 
 /* Replies: indented under the parent's text, with a thread line. */
@@ -599,7 +611,7 @@
 }
 
 .convocept-form__status.is-error {
-	color: #dc2626;
+	color: var(--convocept-danger);
 }
 
 .convocept .convocept-button:disabled {
@@ -774,13 +786,13 @@
 
 .convocept .convocept-vote:hover {
 	border-color: var(--convocept-accent);
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 }
 
 .convocept .convocept-vote[aria-pressed="true"] {
 	border-color: var(--convocept-accent);
 	background: color-mix(in srgb, var(--convocept-accent) 12%, transparent);
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 }
 
 .convocept .convocept-vote[aria-busy] {
@@ -817,7 +829,7 @@
 
 .convocept .convocept-mod [data-convocept-mod="spam"],
 .convocept .convocept-mod [data-convocept-mod="trash"] {
-	color: #b91c1c;
+	color: var(--convocept-danger);
 }
 
 /* Subscriptions
@@ -835,7 +847,7 @@
 }
 
 .convocept-subscribe summary {
-	color: var(--convocept-accent);
+	color: var(--convocept-link);
 	font-weight: 500;
 	cursor: pointer;
 }
@@ -870,5 +882,5 @@
 }
 
 .convocept-subscribe__message.is-error {
-	color: #dc2626;
+	color: var(--convocept-danger);
 }

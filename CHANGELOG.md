@@ -18,6 +18,17 @@ and versions follow [Semantic Versioning](https://semver.org/).
   server with the language's real plural forms, and numbers are formatted in the site's
   language instead of the browser's. Notification emails are marked right-to-left for RTL
   languages. The translation template now includes the settings screen's strings.
+- M11 accessibility: axe (WCAG 2.2 A/AA) runs in the end-to-end tests on the thread in every
+  colour scheme on a classic and a block theme, while replying and previewing, in the moderator
+  view, on the subscription page and on every settings page; keyboard focus and reduced motion
+  are checked too.
+
+### Fixed
+- Contrast: muted text in the "Match the theme" scheme (Twenty Twenty-One was 3.6:1, now 5.1:1),
+  links and the subscribe link on dark and tinted backgrounds (accent mixed toward the text
+  colour), and red moderator actions and error messages in the dark scheme.
+- The upvote button's accessible name no longer shows a stale count after voting.
+- The Trusted proxies field on the settings screen had no programmatic label.
 - M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
   General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
   a save bar that appears only with unsaved changes; messages under invalid fields; works down

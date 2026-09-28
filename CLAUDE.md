@@ -14,9 +14,11 @@ after M8.
 - **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
   lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
   the Disqus part of M8 (`wp convocept import`; StCR/wpDiscuz are 1.1) and the 1.0 part of M9
-  (Settings → Convocept, React on the Foxe Plugin Admin UI design system). Milestones are
+  (Settings → Convocept, React on the Foxe Plugin Admin UI design system), and M11
+  (privacy exporters/erasers and IP setting, opt-in data deletion on uninstall, server-built
+  plural labels, axe checks in `tests/e2e/specs/accessibility.spec.js`). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M11, then M12. Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
+- **Next:** M12 (release preparation). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
   not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Settings → Convocept through `POST /convocept/v1/settings`.
 - **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
@@ -26,9 +28,9 @@ after M8.
   system first. No upsells until add-ons exist.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M9 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
-  Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
-  investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md); a real
+- **Open items to raise with the owner:** merge M1–M11 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
+  Twenty Twenty-One shows its own dark submit button instead of our accent colour, and also
+  paints the moderator buttons (Pin, Spam, Trash) as dark boxes (not investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md); a real
   Convocept logo for the admin sidebar (placeholder speech bubble on an ink tile now).
 
 **Working environment notes**

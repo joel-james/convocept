@@ -23,6 +23,7 @@
 		"build:blocks": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/dist/blocks"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.13.0",
 		"@playwright/test": "^1.63.0",
 		"@size-limit/file": "^14.0.1",
 		"@wordpress/babel-plugin-import-jsx-pragma": "^5.56.0",

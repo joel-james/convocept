@@ -305,9 +305,9 @@ export function TextareaListField( {
 				`convocept-field--wide${ code ? ' convocept-field--code' : '' }`
 			) }
 		>
+			{ /* No id: TextareaControl labels its own generated id, and an id passed in would break that. */ }
 			<TextareaControl
 				__nextHasNoMarginBottom
-				id={ id }
 				label={ label }
 				value={ text }
 				rows={ 4 }

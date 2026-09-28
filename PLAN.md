@@ -419,7 +419,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - Correct permission callbacks mirroring REST capabilities; input/output JSON schemas.
 - **Accept:** abilities appear when available and are absent (no errors) on older WP.
 
-### M11 — Accessibility, i18n, privacy, uninstall
+### M11 — Accessibility, i18n, privacy, uninstall ✅ done (axe: 0 serious/critical issues in every scheme, both themes, settings screen)
 - WCAG 2.2 AA: keyboard flow, visible focus, labelled controls, live regions, reduced motion,
   colour contrast in both schemes. Test with axe in Playwright.
 - `.pot` generation, RTL CSS, date/number localization.

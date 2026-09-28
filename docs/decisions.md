@@ -28,6 +28,17 @@ Decisions not fully covered by `PLAN.md`. Newest first.
 - **Front-end CSS was already direction-neutral** (logical properties only); no RTL stylesheet
   is needed. The upvote button's name no longer includes the count in `aria-label` (it went
   stale after voting): it is "Upvote" plus the visible count.
+- **axe fails only on serious/critical issues inside Convocept's markup** (`section.convocept`,
+  `.convocept-subscriptions`, `.convocept-admin`); the theme around the thread is not ours to
+  fix. It waits for running CSS transitions first, or it samples colours mid-transition.
+- **New colour tokens**: `--convocept-link` (accent mixed 65% with the text colour) for accent
+  used as text, and `--convocept-danger` (red mixed 70% with the text colour). Mixing toward the
+  text colour darkens them on light backgrounds and lightens them on dark ones, so one rule
+  keeps 4.5:1 in auto, light and dark schemes. Buttons keep the plain accent as background.
+  `--convocept-muted` in the auto scheme went from 62% to 75% of the text colour.
+- **TextareaControl ignores an `id` prop for its label** (it labels its own generated id), so
+  TextareaListField no longer passes one. Worth fixing in the design system's TextareaField
+  notes when the shared package is extracted.
 
 ## 2026-09-28 — Own Comments screen in 1.1, beside the core one
 - The owner asked whether Convocept should replace the core Comments menu with its own list in
