@@ -307,15 +307,15 @@ export default function App( { boot, pages, groups } ) {
 					label={ __( 'About Convocept', 'convocept' ) }
 					links={ [
 						{
-							label: 'docs.foxelabs.com',
+							label: __( 'Documentation', 'convocept' ),
 							href: boot.urls.docs,
 						},
 						{
-							label: 'convocept.com',
+							label: __( 'Website', 'convocept' ),
 							href: boot.urls.website,
 						},
 						{
-							label: 'wordpress.org',
+							label: __( 'Plugin directory', 'convocept' ),
 							href: boot.urls.wporg,
 						},
 					] }

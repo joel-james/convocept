@@ -169,16 +169,16 @@ test.describe( 'Settings screen', () => {
 			name: 'About Convocept',
 		} );
 		await expect(
-			footer.getByRole( 'link', { name: /docs\.foxelabs\.com/ } )
+			footer.getByRole( 'link', { name: /Documentation/ } )
 		).toHaveAttribute(
 			'href',
 			'https://docs.foxelabs.com/software/convocept/getting-started'
 		);
 		await expect(
-			footer.getByRole( 'link', { name: /convocept\.com/ } )
+			footer.getByRole( 'link', { name: /Website/ } )
 		).toHaveAttribute( 'href', 'https://convocept.com/' );
 		await expect(
-			footer.getByRole( 'link', { name: /wordpress\.org/ } )
+			footer.getByRole( 'link', { name: /Plugin directory/ } )
 		).toHaveAttribute( 'href', 'https://wordpress.org/plugins/convocept/' );
 		await expect(
 			page
