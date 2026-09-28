@@ -26,6 +26,7 @@ use Convocept\Integration\CommentLinks;
 use Convocept\Integration\SeoPlugins;
 use Convocept\Markdown\Parser;
 use Convocept\Moderation\Pipeline;
+use Convocept\Privacy\Privacy;
 use Convocept\Render\CommentPresenter;
 use Convocept\Render\FragmentCache;
 use Convocept\Render\TemplateLoader;
@@ -137,6 +138,9 @@ final class Plugin {
 
 		// Submissions can arrive on any request type (wp-comments-post.php, REST).
 		$this->submission()->register();
+
+		// IP storage applies to every way a comment arrives; exporters are looked up in wp-admin.
+		$this->privacy()->register();
 
 		// Votes belong to comments; drop them when a comment is deleted for good.
 		add_action( 'deleted_comment', array( $this->votes(), 'delete_for_comment' ) );
@@ -436,6 +440,22 @@ final class Plugin {
 	}
 
 	/**
+	 * Get the privacy service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Privacy
+	 */
+	public function privacy(): Privacy {
+		return $this->service(
+			Privacy::class,
+			function () {
+				return new Privacy( $this->settings(), $this->subscriptions(), $this->votes() );
+			}
+		);
+	}
+
+	/**
 	 * Get the import runner (wp-admin and WP-CLI only).
 	 *
 	 * @since 1.0.0
@@ -445,8 +465,8 @@ final class Plugin {
 	public function import_runner(): Runner {
 		return $this->service(
 			Runner::class,
-			static function () {
-				return new Runner( new Workspace() );
+			function () {
+				return new Runner( new Workspace(), $this->privacy() );
 			}
 		);
 	}

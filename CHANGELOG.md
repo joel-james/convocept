@@ -6,6 +6,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M11 privacy: Tools → Export/Erase Personal Data include comment subscriptions and the upvotes
+  of registered users (counts are updated after erasing); Settings → Privacy has suggested
+  policy text that follows the settings; new setting (Advanced → Privacy) to store new
+  commenters' IP addresses in full, anonymized or not at all, also for imported comments.
 - M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
   General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
   a save bar that appears only with unsaved changes; messages under invalid fields; works down

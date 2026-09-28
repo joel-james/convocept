@@ -2,6 +2,17 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — M11 accessibility, i18n, privacy, uninstall
+- **Privacy exporters and erasers** cover subscriptions (by email hash) and the upvotes of a
+  registered user with that address. Guest votes are a one-way hash of IP and browser and cannot
+  be found by email, which the policy text says. Comments are core data: core's own comment
+  exporter/eraser handle them.
+- **`commenter_ip` setting** (keep / anonymize / none, default keep as WordPress does) filters
+  `pre_comment_user_ip`, so it applies to every path through `wp_new_comment()`; the Disqus
+  importer applies it too (`wp_insert_comment()` skips that filter). Spam checks (Akismet) run
+  earlier and still see the full address. Existing comments are not rewritten. Akismet keeps its
+  own copy of the IP in comment meta; that is Akismet's data.
+
 ## 2026-09-28 — Own Comments screen in 1.1, beside the core one
 - The owner asked whether Convocept should replace the core Comments menu with its own list in
   the admin app (DataViews). Decided: **yes to our own screen, no to replacing core**, and not in

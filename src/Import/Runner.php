@@ -10,6 +10,7 @@ namespace Convocept\Import;
 
 use Convocept\Import\Disqus\DisqusImporter;
 use Convocept\Import\Disqus\Parser;
+use Convocept\Privacy\Privacy;
 use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
@@ -67,14 +68,24 @@ class Runner {
 	private $importers = null;
 
 	/**
+	 * Privacy service, applying the IP setting to imported comments.
+	 *
+	 * @since 1.0.0
+	 * @var Privacy|null
+	 */
+	private $privacy;
+
+	/**
 	 * Create the runner.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Workspace $workspace Workspace service.
+	 * @param Workspace    $workspace Workspace service.
+	 * @param Privacy|null $privacy   Privacy service; null stores IPs as found in the export.
 	 */
-	public function __construct( Workspace $workspace ) {
+	public function __construct( Workspace $workspace, ?Privacy $privacy = null ) {
 		$this->workspace = $workspace;
+		$this->privacy   = $privacy;
 	}
 
 	/**
@@ -87,7 +98,7 @@ class Runner {
 	public function importers(): array {
 		if ( null === $this->importers ) {
 			$importers = array(
-				'disqus' => new DisqusImporter( new Parser() ),
+				'disqus' => new DisqusImporter( new Parser(), $this->privacy ),
 			);
 
 			/**

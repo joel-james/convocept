@@ -57,6 +57,14 @@ class Settings {
 	const PROXY_HEADERS = array( 'X-Forwarded-For', 'CF-Connecting-IP', 'X-Real-IP', 'True-Client-IP' );
 
 	/**
+	 * Allowed values for the `commenter_ip` setting.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const IP_MODES = array( 'keep', 'anonymize', 'none' );
+
+	/**
 	 * Sanitized settings cached for the current request.
 	 *
 	 * @since 1.0.0
@@ -101,6 +109,9 @@ class Settings {
 	 *     @type bool     $structured_data Whether comments are described in schema.org
 	 *                                  JSON-LD (added to Yoast SEO / Rank Math's graph
 	 *                                  when one is active).
+	 *     @type string   $commenter_ip What is stored of a new comment's IP address: 'keep'
+	 *                                  (the full address, as WordPress does), 'anonymize'
+	 *                                  (last part zeroed) or 'none'.
 	 * }
 	 */
 	public function defaults(): array {
@@ -123,6 +134,7 @@ class Settings {
 			'live_updates'    => false,
 			'poll_interval'   => 60,
 			'structured_data' => true,
+			'commenter_ip'    => 'keep',
 		);
 
 		/**
@@ -189,6 +201,10 @@ class Settings {
 			'live_updates'    => array( 'type' => 'boolean' ),
 			'poll_interval'   => self::integer( 15, 600 ),
 			'structured_data' => array( 'type' => 'boolean' ),
+			'commenter_ip'    => array(
+				'type' => 'string',
+				'enum' => self::IP_MODES,
+			),
 		);
 
 		/**
@@ -479,6 +495,9 @@ class Settings {
 
 			case 'proxy_header':
 				return in_array( $value, self::PROXY_HEADERS, true ) ? $value : $fallback;
+
+			case 'commenter_ip':
+				return in_array( $value, self::IP_MODES, true ) ? $value : $fallback;
 
 			case 'accent_color':
 				$color = is_string( $value ) ? sanitize_hex_color( $value ) : null;

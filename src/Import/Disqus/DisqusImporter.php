@@ -10,6 +10,7 @@ namespace Convocept\Import\Disqus;
 
 use Convocept\Import\Importer;
 use Convocept\Import\Job;
+use Convocept\Privacy\Privacy;
 use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
@@ -94,14 +95,24 @@ class DisqusImporter implements Importer {
 	private $maps = array();
 
 	/**
+	 * Privacy service, applying the IP setting.
+	 *
+	 * @since 1.0.0
+	 * @var Privacy|null
+	 */
+	private $privacy;
+
+	/**
 	 * Create the importer.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Parser $parser Export parser.
+	 * @param Parser       $parser  Export parser.
+	 * @param Privacy|null $privacy Privacy service; null stores IPs as found in the export.
 	 */
-	public function __construct( Parser $parser ) {
-		$this->parser = $parser;
+	public function __construct( Parser $parser, ?Privacy $privacy = null ) {
+		$this->parser  = $parser;
+		$this->privacy = $privacy;
 	}
 
 	/**
@@ -505,6 +516,7 @@ class DisqusImporter implements Importer {
 
 		$date_gmt    = $this->gmt_date( (string) $post['created'] );
 		$ip          = (string) filter_var( $post['ip'], FILTER_VALIDATE_IP );
+		$ip          = $this->privacy ? $this->privacy->stored_ip( $ip ) : $ip;
 		$commentdata = array(
 			'comment_post_ID'      => $post_id,
 			'comment_author'       => $this->author_name( $post ),

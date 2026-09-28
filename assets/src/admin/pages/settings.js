@@ -587,6 +587,44 @@ export function AdvancedPage( { draft, update, errors } ) {
 				/>
 			</Card>
 			<Card
+				title={ __( 'Privacy', 'convocept' ) }
+				description={ __(
+					'Tools → Export Personal Data and Erase Personal Data include comment subscriptions and the upvotes of registered users. Settings → Privacy has suggested text for your privacy policy.',
+					'convocept'
+				) }
+			>
+				<SelectField
+					label={ __(
+						'IP address stored with new comments',
+						'convocept'
+					) }
+					help={ __(
+						'Spam checks still see the full address when a comment arrives. Also applies to imported comments. Comments already stored are not changed.',
+						'convocept'
+					) }
+					value={ draft.commenter_ip }
+					options={ [
+						{
+							value: 'keep',
+							label: __(
+								'Full address (WordPress default)',
+								'convocept'
+							),
+						},
+						{
+							value: 'anonymize',
+							label: __(
+								'Anonymized (last part removed)',
+								'convocept'
+							),
+						},
+						{ value: 'none', label: __( 'None', 'convocept' ) },
+					] }
+					error={ errors.commenter_ip }
+					onChange={ ( value ) => update( 'commenter_ip', value ) }
+				/>
+			</Card>
+			<Card
 				title={ __( 'Search engines', 'convocept' ) }
 				description={ __(
 					'Comments are in the page’s HTML either way, so search engines can read them.',

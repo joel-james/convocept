@@ -128,7 +128,12 @@ domReady( () => {
 			group: 'settings',
 			title: __( 'Advanced', 'convocept' ),
 			icon: 'advanced',
-			keys: [ 'trusted_proxies', 'proxy_header', 'structured_data' ],
+			keys: [
+				'trusted_proxies',
+				'proxy_header',
+				'commenter_ip',
+				'structured_data',
+			],
 			render: AdvancedPage,
 		},
 		boot.canImport && {

@@ -72,11 +72,113 @@ class Votes {
 	 */
 	public function voter(): string {
 		$user_id = get_current_user_id();
-		$source  = $user_id
-			? 'user|' . $user_id
-			: 'guest|' . $this->ips->resolve() . '|' . ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
+
+		if ( $user_id ) {
+			return $this->voter_for_user( $user_id );
+		}
+
+		$source = 'guest|' . $this->ips->resolve() . '|' . ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
 
 		return hash_hmac( 'sha256', $source, wp_salt( 'nonce' ) );
+	}
+
+	/**
+	 * Get a registered user's voter ID.
+	 *
+	 * Lets privacy requests find a user's votes. Guest votes cannot be
+	 * found this way: their ID is a one-way hash of IP address and browser,
+	 * which is the point.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id User ID.
+	 * @return string 64 hex characters.
+	 */
+	public function voter_for_user( int $user_id ): string {
+		return hash_hmac( 'sha256', 'user|' . $user_id, wp_salt( 'nonce' ) );
+	}
+
+	/**
+	 * Get a voter's votes, oldest first.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $voter  Voter ID.
+	 * @param int    $limit  Rows to return.
+	 * @param int    $offset Rows to skip.
+	 * @return array<int, array{comment_id: int, created_at: string}>
+	 */
+	public function for_voter( string $voter, int $limit, int $offset = 0 ): array {
+		global $wpdb;
+
+		$table = ReactionsTable::name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Privacy export, run rarely.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT comment_id, created_at FROM {$table} WHERE voter_hash = %s AND reaction = %s ORDER BY id LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				$voter,
+				self::UP,
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+
+		return array_map(
+			static function ( $row ) {
+				return array(
+					'comment_id' => (int) $row['comment_id'],
+					'created_at' => (string) $row['created_at'],
+				);
+			},
+			(array) $rows
+		);
+	}
+
+	/**
+	 * Remove a voter's votes and refresh the counts of the comments involved.
+	 *
+	 * Works in batches so a very active voter cannot time out a privacy
+	 * request; call again until it returns fewer rows than the limit.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $voter Voter ID.
+	 * @param int    $limit Votes to remove in this call.
+	 * @return int Votes removed.
+	 */
+	public function delete_for_voter( string $voter, int $limit ): int {
+		global $wpdb;
+
+		$table = ReactionsTable::name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Privacy erasure, run rarely.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, comment_id FROM {$table} WHERE voter_hash = %s ORDER BY id LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				$voter,
+				$limit
+			),
+			ARRAY_A
+		);
+
+		if ( ! $rows ) {
+			return 0;
+		}
+
+		$ids = array_map( 'intval', wp_list_pluck( $rows, 'id' ) );
+		$in  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Privacy erasure; table name from $wpdb->prefix, $in holds %d placeholders.
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$in})", $ids ) );
+		// phpcs:enable
+
+		foreach ( array_unique( array_map( 'intval', wp_list_pluck( $rows, 'comment_id' ) ) ) as $comment_id ) {
+			$this->recount( $comment_id );
+		}
+
+		return count( $ids );
 	}
 
 	/**
