@@ -103,4 +103,21 @@ class ThreadQueryTest extends TestCase {
 		$this->assertSame( Sort::OLDEST, Sort::resolve( array( 'top' ), 'invalid' ) );
 		$this->assertSame( Sort::TOP, Sort::resolve( 'top', Sort::OLDEST ) );
 	}
+
+	public function test_pinned_comments_keep_their_replies(): void {
+		$post_id = self::factory()->post->create();
+		$pinned  = $this->comment( $post_id );
+		$reply   = $this->comment( $post_id, array( 'comment_parent' => $pinned ) );
+		$deeper  = $this->comment( $post_id, array( 'comment_parent' => $reply ) );
+		$this->comment( $post_id, array( 'comment_parent' => $pinned, 'comment_approved' => 0 ) );
+		$this->comment( $post_id );
+		update_comment_meta( $pinned, ThreadQuery::PINNED_META_KEY, 1 );
+
+		$comments = ( new ThreadQuery() )->run( $post_id )->comments();
+		$first    = $comments[0];
+
+		$this->assertSame( (string) $pinned, $first->comment_ID );
+		$this->assertSame( array( $reply ), array_keys( $first->get_children() ), 'Approved replies only.' );
+		$this->assertSame( array( $deeper ), array_keys( $first->get_children()[ $reply ]->get_children() ) );
+	}
 }

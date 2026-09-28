@@ -99,6 +99,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   ESLint, Prettier, stylelint, wp-env, PHPUnit, Playwright, GitHub Actions CI, release zip script.
 
 ### Fixed
+- Replies to a pinned comment were not shown: core fetches each level of a threaded query
+  with the same arguments, so the pinned query's `comment__in` filtered every reply out.
 - Contrast: muted text in the "Match the theme" scheme (Twenty Twenty-One was 3.6:1, now 5.1:1),
   links and the subscribe link on dark and tinted backgrounds (accent mixed toward the text
   colour), and red moderator actions and error messages in the dark scheme.

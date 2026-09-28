@@ -169,14 +169,41 @@ class ThreadQuery {
 				array(
 					'comment__in'               => $ids,
 					'orderby'                   => 'comment__in',
-					'hierarchical'              => 'threaded',
 					'no_found_rows'             => true,
 					'update_comment_meta_cache' => true,
 				)
 			)
 		);
+		$comments = is_array( $comments ) ? array_values( array_filter( $comments, array( $this, 'is_comment' ) ) ) : array();
 
-		return is_array( $comments ) ? array_values( array_filter( $comments, array( $this, 'is_comment' ) ) ) : array();
+		// Replies need their own query: core fetches each level of a threaded query
+		// with the same arguments, so `comment__in` would filter every reply out.
+		foreach ( $comments as $comment ) {
+			$children = ( new WP_Comment_Query() )->query(
+				array_merge(
+					$this->base_args( $post_id ),
+					array(
+						'parent'                    => (int) $comment->comment_ID,
+						'hierarchical'              => 'threaded',
+						'orderby'                   => 'comment_date_gmt',
+						'order'                     => 'ASC',
+						'no_found_rows'             => true,
+						'update_comment_meta_cache' => true,
+					)
+				)
+			);
+
+			foreach ( is_array( $children ) ? $children : array() as $child ) {
+				if ( $this->is_comment( $child ) ) {
+					$comment->add_child( $child );
+				}
+			}
+
+			// Without this, get_children() would run its own query, including unapproved replies.
+			$comment->populated_children( true );
+		}
+
+		return $comments;
 	}
 
 	/**
