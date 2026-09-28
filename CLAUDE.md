@@ -20,7 +20,7 @@ after M8.
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
 - **Next:** release 1.0.0 when the owner decides: bump `Version`/`CONVOCEPT_VERSION` to 1.0.0,
   re-run `npm run wporg:assets` and `npm run release`, then Plugin Check on the zip. M12 is
-  otherwise done (name, readme, assets generator, docs/site/, Plugin Check, security review). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
+  otherwise done (name, readme, assets generator, user docs, Plugin Check, security review). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
   not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Comments → Convocept through `POST /convocept/v1/settings`.
 - **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
@@ -28,6 +28,10 @@ after M8.
   `assets/src/admin/ui/` (prefix `convocept-`, tokens `--convocept-*`), kept free of Convocept
   logic so they can move to a shared Foxe package later. Add missing components to the design
   system first. No upsells until add-ons exist.
+- **User docs:** docs.foxelabs.com/software/convocept, in the VitePress repo `foxelabs/docs`
+  (local checkout `~/Work/FoxeLabs/docs.foxelabs.com`, pages in `software/convocept/`, sidebar in
+  `software/.vitepress/config.mjs`; pushing `main` deploys through Vercel). Update those pages
+  when behaviour, labels or defaults change. `docs/hooks.md` here stays the developer reference.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
 - **Open items to raise with the owner:** merge M1–M12 to `main`; Twenty Twenty-One shows its
