@@ -201,7 +201,7 @@ class ThreadQuery {
 
 			// Without this, get_children() would run its own query, including unapproved replies.
 			$comment->populated_children( true );
-		}
+		}//end foreach
 
 		return $comments;
 	}

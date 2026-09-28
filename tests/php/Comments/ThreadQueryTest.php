@@ -109,7 +109,13 @@ class ThreadQueryTest extends TestCase {
 		$pinned  = $this->comment( $post_id );
 		$reply   = $this->comment( $post_id, array( 'comment_parent' => $pinned ) );
 		$deeper  = $this->comment( $post_id, array( 'comment_parent' => $reply ) );
-		$this->comment( $post_id, array( 'comment_parent' => $pinned, 'comment_approved' => 0 ) );
+		$this->comment(
+			$post_id,
+			array(
+				'comment_parent'   => $pinned,
+				'comment_approved' => 0,
+			)
+		);
 		$this->comment( $post_id );
 		update_comment_meta( $pinned, ThreadQuery::PINNED_META_KEY, 1 );
 
