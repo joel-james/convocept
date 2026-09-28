@@ -70,13 +70,13 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 |---|---|---|---|
 | `/session` | GET | public | Who is visiting: login state, name, REST nonce, moderator flag. |
 | `/posts/{id}/comments` | GET | public | One page of top-level comments (`page`, `sort`); returns `html`, `page`, `pages`, `total`. |
-| `/posts/{id}/comments` | POST | public (core rules apply) | Create a comment; returns `id`, `status`, `html`, `edit_token`, `edit_until`, `total`. |
+| `/posts/{id}/comments` | POST | public (core rules apply) | Create a comment; returns `id`, `status`, `html`, `edit_token`, `edit_until`, `total`, `count_text` (the heading, with the language's plural form). |
 | `/comments/{id}` | GET | author in window / moderator | Markdown source for the edit form. |
 | `/comments/{id}` | PATCH | author in window / moderator | Edit; returns `id`, `status`, `html`. |
 | `/preview` | POST | public, rate-limited | Render Markdown; returns `html`. |
 | `/subscriptions` | POST | public, rate-limited | Subscribe without commenting (`email`, `post_id` 0 = site); same answer for every address. |
-| `/posts/{id}/updates` | GET | public | Comments newer than `after`; ETag + 304 when unchanged. Returns `items`, `total`. |
-| `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`. |
+| `/posts/{id}/updates` | GET | public | Comments newer than `after`; ETag + 304 when unchanged. Returns `items`, `total`, `count_text`. |
+| `/comments/{id}/replies` | GET | public (approved) | Replies after `offset`; returns `html`, `remaining`, `more_text` (the "Show N more replies" label, or ''). |
 | `/comments/{id}/reactions` | POST | public, rate-limited | `active` true/false toggles the visitor's upvote; returns `count`, `active`. |
 | `/comments/{id}/moderate` | POST | `moderate_comments` + `edit_comment` | `action`: approve, hold, spam, trash; returns `status`, `html`. |
 | `/comments/{id}/pin` | POST | `moderate_comments` + `edit_comment` | `pinned` true/false; top-level approved comments only. |
