@@ -26,7 +26,7 @@ comments through WordPress's own comment handling.
 
 ## Settings
 
-**Settings → Convocept** has these pages:
+**Comments → Convocept** has these pages:
 
 | Page | What you set |
 |---|---|

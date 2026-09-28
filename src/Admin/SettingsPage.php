@@ -13,10 +13,12 @@ use Convocept\Settings\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Adds Settings → Convocept and loads the settings app on it.
+ * Adds Comments → Convocept and loads the settings app on it.
  *
- * The screen is a React app (assets/src/admin) built on the Foxe Plugin
- * Admin UI: a dark sidebar of pages grouped as Settings, Manage and More.
+ * It sits under Comments, next to the screens it works with, rather than
+ * under Settings. The screen is a React app (assets/src/admin) built on the
+ * Foxe Plugin Admin UI: a light sidebar of pages grouped as Settings,
+ * Manage and More.
  * PHP only prints the mount point and the data the app starts with, so
  * the first paint needs no REST request. The app's script and styles load
  * on this screen only.
@@ -77,6 +79,7 @@ class SettingsPage {
 	 */
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_page' ) );
+		add_action( 'admin_init', array( $this, 'redirect_old_location' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( CONVOCEPT_FILE ), array( $this, 'action_links' ) );
 	}
@@ -90,26 +93,45 @@ class SettingsPage {
 	 * @return string
 	 */
 	public static function url( string $page = '' ): string {
-		$url = admin_url( 'options-general.php?page=' . self::SLUG );
+		$url = admin_url( 'edit-comments.php?page=' . self::SLUG );
 
 		return '' !== $page ? $url . '#' . rawurlencode( $page ) : $url;
 	}
 
 	/**
-	 * Add Settings → Convocept.
+	 * Add Comments → Convocept.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
 	public function add_page(): void {
-		$this->hook_suffix = (string) add_options_page(
+		$this->hook_suffix = (string) add_comments_page(
 			__( 'Convocept', 'convocept' ),
 			__( 'Convocept', 'convocept' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render' )
 		);
+	}
+
+	/**
+	 * Send the screen's earlier address (under Settings) to its new place.
+	 *
+	 * Keeps bookmarks and links in older docs or notices working.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function redirect_old_location(): void {
+		global $pagenow;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only redirect.
+		if ( 'options-general.php' === $pagenow && isset( $_GET['page'] ) && self::SLUG === $_GET['page'] ) {
+			wp_safe_redirect( self::url() );
+			exit;
+		}
 	}
 
 	/**

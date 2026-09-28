@@ -5,7 +5,7 @@ with CSS custom properties first, and override templates only for changes to the
 
 ## Colour schemes
 
-**Settings → Convocept → Appearance** sets the scheme. The thread wrapper carries it as
+**Comments → Convocept → Appearance** sets the scheme. The thread wrapper carries it as
 `data-convocept-theme`:
 
 | Setting | `data-convocept-theme` | Colours |

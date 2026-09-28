@@ -307,12 +307,12 @@ test.describe( 'WordPress.org assets', () => {
 	test( 'screenshots of the admin', async ( { page, requestUtils } ) => {
 		await page.setViewportSize( { width: 1440, height: 1000 } );
 
-		// 4. Settings → Convocept.
+		// 4. Comments → Convocept.
 		await requestUtils.rest( {
 			method: 'POST',
 			path: '/convocept-e2e/v1/reset-settings',
 		} );
-		await page.goto( '/wp-admin/options-general.php?page=convocept' );
+		await page.goto( '/wp-admin/edit-comments.php?page=convocept' );
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'General' } )
 		).toBeVisible();
@@ -354,9 +354,7 @@ test.describe( 'WordPress.org assets', () => {
 			</post>`
 			)
 			.join( '' );
-		await page.goto(
-			'/wp-admin/options-general.php?page=convocept#import'
-		);
+		await page.goto( '/wp-admin/edit-comments.php?page=convocept#import' );
 		await page.getByLabel( 'Export file' ).setInputFiles( {
 			name: 'disqus-export.xml',
 			mimeType: 'text/xml',

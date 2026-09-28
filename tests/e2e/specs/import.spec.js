@@ -121,7 +121,7 @@ test.describe( 'Disqus importer', () => {
 			status: 'publish',
 		} );
 
-		await admin.visitAdminPage( 'options-general.php', 'page=convocept' );
+		await admin.visitAdminPage( 'edit-comments.php', 'page=convocept' );
 		await page
 			.getByRole( 'navigation', { name: 'Convocept sections' } )
 			.getByRole( 'link', { name: 'Import' } )
@@ -180,7 +180,7 @@ test.describe( 'Disqus importer', () => {
 		page,
 	} ) => {
 		await admin.visitAdminPage(
-			'options-general.php',
+			'edit-comments.php',
 			'page=convocept#import'
 		);
 		await page.getByLabel( 'Export file' ).setInputFiles( {

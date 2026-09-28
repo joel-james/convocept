@@ -259,7 +259,7 @@ test.describe( 'Accessibility', () => {
 	} );
 
 	test( 'settings screen, every page', async ( { admin, page } ) => {
-		await admin.visitAdminPage( 'options-general.php', 'page=convocept' );
+		await admin.visitAdminPage( 'edit-comments.php', 'page=convocept' );
 		const nav = page.getByRole( 'navigation', {
 			name: 'Convocept sections',
 		} );

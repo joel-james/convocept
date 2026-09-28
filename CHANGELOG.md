@@ -6,7 +6,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
-- Settings → Convocept → Help links to the documentation (docs.foxelabs.com). Sidebar items
+- The settings screen moved from Settings to **Comments → Convocept**, next to the screens it
+  works with; the old address redirects.
+- Comments → Convocept → Help links to the documentation (docs.foxelabs.com). Sidebar items
   sit 2px apart, so a hover highlight no longer touches the active item (design system version 6).
 - M12 release preparation: the plugin is now named "Convocept – Fast Native Comment System"
   on WordPress.org; `readme.txt` rewritten for 1.0.0. WordPress.org icon, banner and screenshots
@@ -28,7 +30,7 @@ and versions follow [Semantic Versioning](https://semver.org/).
   view, on the subscription page and on every settings page; keyboard focus and reduced motion
   are checked too.
 
-- M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
+- M9 settings screen (Comments → Convocept), built on the Foxe Plugin Admin UI: pages for
   General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
   a save bar that appears only with unsaved changes; messages under invalid fields; works down
   to phone widths. Settings are saved through a validated REST route. Disqus imports now run on

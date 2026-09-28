@@ -404,7 +404,7 @@ and via WP-CLI (`wp convocept import <source>`).
   large Disqus fixture imports without timeouts.
 
 ### M9 — Admin settings app (1.0.0 ships tabs + persistence; live preview and onboarding in 1.1/1.2) — 1.0 part ✅ done (Foxe Plugin Admin UI; sidebar pages instead of tabs)
-- React app under **Settings → Convocept** (or top-level "Comments → Convocept"):
+- React app under **Comments → Convocept** (moved there from Settings before 1.0):
   tabs General, Appearance, Composer, Moderation & Spam, Subscriptions, Import, Advanced.
 - Live preview of the thread with current appearance settings.
 - Settings stored in one option (`convocept_settings`), schema-validated via REST settings route.
@@ -476,7 +476,7 @@ widget, moderation emails, the post editor) all point there.
   `register_rest_field`; no second comments API. Capabilities as core (`moderate_comments`,
   `edit_comment`).
 - "Open in Convocept" link on the core Comments screen; core screen otherwise untouched.
-- Menu: the app moves from Settings → Convocept to a **Comments → Convocept** submenu (old URL
+- Menu: the app lives under **Comments → Convocept** (done before 1.0; the old Settings URL
   redirects), next to Comments → Insights (M13).
 - Later, opt-in only: setting "Use Convocept for the Comments menu" that points the core menu
   item at our page while `edit-comments.php` stays reachable. Off by default (WordPress.org

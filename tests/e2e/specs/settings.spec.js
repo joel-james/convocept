@@ -1,7 +1,7 @@
 /**
  * End-to-end tests for the settings screen (M9).
  *
- * Settings → Convocept: sidebar navigation, the save bar, validation,
+ * Comments → Convocept: sidebar navigation, the save bar, validation,
  * saving and the effect on the front end, and the narrow-screen dropdown.
  */
 
@@ -10,7 +10,7 @@
  */
 const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
 
-const SCREEN = 'options-general.php';
+const SCREEN = 'edit-comments.php';
 const QUERY = 'page=convocept';
 
 test.describe( 'Settings screen', () => {
@@ -145,5 +145,19 @@ test.describe( 'Settings screen', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'Advanced' } )
 		).toBeVisible();
+	} );
+
+	test( 'the screen lives under Comments; the old Settings address redirects', async ( {
+		admin,
+		page,
+	} ) => {
+		await admin.visitAdminPage( 'options-general.php', 'page=convocept' );
+
+		expect( new URL( page.url() ).pathname ).toMatch(
+			/edit-comments\.php$/
+		);
+		await expect(
+			page.locator( '#menu-comments .wp-submenu a[aria-current="page"]' )
+		).toHaveText( 'Convocept' );
 	} );
 } );

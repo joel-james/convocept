@@ -90,8 +90,8 @@ Version 1.1 adds importers for wpDiscuz votes and Subscribe to Comments Reloaded
 
 1. In your WordPress admin, go to **Plugins → Add New**, search for **Convocept** and click **Install Now**.
 2. Click **Activate**. Your posts now show the Convocept comment section, with all your existing comments.
-3. Optional: adjust colours, subscriptions and more in **Settings → Convocept**.
-4. Moving from Disqus? Go to **Settings → Convocept → Import**.
+3. Optional: adjust colours, subscriptions and more in **Comments → Convocept**.
+4. Moving from Disqus? Go to **Comments → Convocept → Import**.
 
 Comments stay open, closed and moderated exactly as set in **Settings → Discussion**.
 
@@ -103,7 +103,7 @@ Yes. It gives you a modern comment section like Disqus, but your comments stay i
 
 = How do I migrate from Disqus to WordPress comments? =
 
-In Disqus, open **Admin → Moderation → Export** and download the file it emails you. In WordPress, go to **Settings → Convocept → Import**, upload the file, check the dry run and click **Start import**. For very large exports, use `wp convocept import disqus export.xml.gz`.
+In Disqus, open **Admin → Moderation → Export** and download the file it emails you. In WordPress, go to **Comments → Convocept → Import**, upload the file, check the dry run and click **Start import**. For very large exports, use `wp convocept import disqus export.xml.gz`.
 
 = Can I switch from wpDiscuz? =
 
@@ -151,14 +151,14 @@ Convocept makes no external requests and sets no cookies of its own. WordPress's
 
 = Does uninstalling delete my comments? =
 
-No, never. Your comments are WordPress data. Settings, subscriptions and votes are also kept for a reinstall, unless you turn on "Delete all Convocept data when the plugin is deleted" in Settings → Convocept → Advanced.
+No, never. Your comments are WordPress data. Settings, subscriptions and votes are also kept for a reinstall, unless you turn on "Delete all Convocept data when the plugin is deleted" in Comments → Convocept → Advanced.
 
 == Screenshots ==
 
 1. Threaded comments with upvotes and a pinned comment, in your theme's colours.
 2. The dark comment theme, with nested replies.
 3. Replying inline, with the formatting toolbar and live preview.
-4. Settings → Convocept: all options in one place.
+4. Comments → Convocept: all options in one place.
 5. Importing comments from Disqus: the dry run shows what will be imported.
 6. Readers manage their comment subscriptions on their own page.
 

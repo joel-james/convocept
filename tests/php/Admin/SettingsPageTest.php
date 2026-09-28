@@ -42,8 +42,8 @@ class SettingsPageTest extends TestCase {
 	public function test_page_is_added_under_settings(): void {
 		$this->page();
 
-		$this->assertSame( admin_url( 'options-general.php?page=convocept#import' ), SettingsPage::url( 'import' ) );
-		$this->assertNotEmpty( get_plugin_page_hookname( 'convocept', 'options-general.php' ) );
+		$this->assertSame( admin_url( 'edit-comments.php?page=convocept#import' ), SettingsPage::url( 'import' ) );
+		$this->assertNotEmpty( get_plugin_page_hookname( 'convocept', 'edit-comments.php' ) );
 	}
 
 	public function test_app_loads_on_its_own_screen_only(): void {
@@ -53,7 +53,7 @@ class SettingsPageTest extends TestCase {
 		$this->assertFalse( wp_script_is( SettingsPage::HANDLE, 'enqueued' ), 'Not on the Dashboard.' );
 
 		// The hook name depends on the admin menu globals, which tests don't build.
-		$page->enqueue( get_plugin_page_hookname( 'convocept', 'options-general.php' ) );
+		$page->enqueue( get_plugin_page_hookname( 'convocept', 'edit-comments.php' ) );
 		$this->assertTrue( wp_script_is( SettingsPage::HANDLE, 'enqueued' ) );
 		$this->assertTrue( wp_style_is( SettingsPage::HANDLE, 'enqueued' ) );
 		$this->assertStringContainsString( 'window.convoceptAdminBoot', implode( '', (array) wp_scripts()->get_data( SettingsPage::HANDLE, 'before' ) ) );

@@ -21,4 +21,4 @@ An importer for StCR's subscribers is planned for Convocept 1.1. Until then, kee
 but inactive if you want to move its subscribers later: its data stays in the database.
 
 Running both at once sends readers two emails for each new comment, so deactivate StCR when you
-turn on Convocept's subscriptions (**Settings → Convocept → Subscriptions**).
+turn on Convocept's subscriptions (**Comments → Convocept → Subscriptions**).

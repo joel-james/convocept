@@ -1,7 +1,7 @@
 /**
  * Convocept settings screen (wp-admin only).
  *
- * Mounts the settings app on Settings → Convocept. Add-ons add pages with
+ * Mounts the settings app on Comments → Convocept. Add-ons add pages with
  * `window.convoceptAdmin.registerPanel()` from a script that loads after
  * this one (depend on the `convocept-admin` handle); the app mounts once
  * the DOM is ready, after every such script has run.
