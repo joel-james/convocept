@@ -7,7 +7,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 - M12 release preparation: the plugin is now named "Convocept – Fast Native Comment System"
-  on WordPress.org; `readme.txt` rewritten for 1.0.0.
+  on WordPress.org; `readme.txt` rewritten for 1.0.0. WordPress.org icon, banner and screenshots
+  are generated with `npm run wporg:assets` into `.wordpress-org/`.
 - M11 privacy: Tools → Export/Erase Personal Data include comment subscriptions and the upvotes
   of registered users (counts are updated after erasing); Settings → Privacy has suggested
   policy text that follows the settings; new setting (Advanced → Privacy) to store new

@@ -15,6 +15,12 @@ Decisions not fully covered by `PLAN.md`. Newest first.
 - **readme.txt** rewritten from the prototype's text: every claim matches what 1.0 does (for
   example guests *can* edit within the edit window; wpDiscuz/StCR importers are "1.1").
   Tags: comments, comment system, disqus, subscribe to comments, spam (only the first five count).
+- **WordPress.org assets are generated**, not hand-made: `npm run wporg:assets` (its own
+  Playwright config, `tests/e2e/wporg/`) seeds a demo discussion on the tests site and writes the
+  icon, banner and the six readme screenshots to `.wordpress-org/`, which is committed and not
+  in the release zip (it goes to the SVN `assets/` folder). Re-run it at release so the admin
+  shows `1.0.0`, not `1.0.0-dev`. Icon and banner use the placeholder mark until a real logo exists.
+- The generator found that **replies under a pinned comment were never shown** (fixed, with a test).
 
 ## 2026-09-28 — M11 accessibility, i18n, privacy, uninstall
 - **Privacy exporters and erasers** cover subscriptions (by email hash) and the upvotes of a

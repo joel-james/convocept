@@ -128,6 +128,29 @@ add_action(
 			)
 		);
 
+		// Sets vote counts and pins directly, for WordPress.org screenshots.
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/seed-comment',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $admin,
+				'callback'            => static function ( WP_REST_Request $request ) {
+					$id    = (int) $request->get_param( 'id' );
+					$votes = (int) $request->get_param( 'votes' );
+
+					update_comment_meta( $id, 'convocept_reactions', wp_json_encode( array( 'up' => $votes ) ) );
+					update_comment_meta( $id, 'convocept_score', $votes );
+
+					if ( $request->get_param( 'pinned' ) ) {
+						update_comment_meta( $id, 'convocept_pinned', 1 );
+					}
+
+					return true;
+				},
+			)
+		);
+
 		// Cancels any import left over from an earlier (failed) test run.
 		register_rest_route(
 			'convocept-e2e/v1',
