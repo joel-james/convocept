@@ -6,6 +6,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- Settings → Convocept → Help links to the documentation (docs.foxelabs.com). Sidebar items
+  sit 2px apart, so a hover highlight no longer touches the active item (design system version 6).
 - M12 release preparation: the plugin is now named "Convocept – Fast Native Comment System"
   on WordPress.org; `readme.txt` rewritten for 1.0.0. WordPress.org icon, banner and screenshots
   are generated with `npm run wporg:assets` into `.wordpress-org/`.

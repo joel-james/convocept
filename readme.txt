@@ -80,7 +80,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 * Actions and filters at every step: rendering, submission, spam checks, subscriptions, structured data, importers and settings.
 * A REST API and WP-CLI commands.
 
-Documentation and the full hooks reference: [convocept.com](https://convocept.com).
+Documentation and the full hooks reference: [Convocept docs](https://docs.foxelabs.com/software/convocept/getting-started).
 
 = 🗺️ Coming next =
 

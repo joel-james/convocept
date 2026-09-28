@@ -1,5 +1,5 @@
 /**
- * More → Help: versions and where to get help.
+ * More → Help: documentation, versions and where to get help.
  */
 
 /**
@@ -22,6 +22,24 @@ import { Button, Card, SummaryList } from '../ui';
 export function HelpPage( { boot } ) {
 	return (
 		<>
+			<Card
+				title={ __( 'Documentation', 'convocept' ) }
+				description={ __(
+					'Setting up, moving from Disqus, theming and the hooks reference.',
+					'convocept'
+				) }
+			>
+				<div className="convocept-card__actions">
+					<Button
+						variant="primary"
+						href={ boot.urls.docs }
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{ __( 'Read the documentation', 'convocept' ) }
+					</Button>
+				</div>
+			</Card>
 			<Card
 				title={ __( 'Get help', 'convocept' ) }
 				description={ __(

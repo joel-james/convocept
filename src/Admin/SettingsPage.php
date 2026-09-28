@@ -211,6 +211,7 @@ class SettingsPage {
 				'pending'    => admin_url( 'edit-comments.php?comment_status=moderated' ),
 				'comments'   => admin_url( 'edit-comments.php' ),
 				'plugins'    => admin_url( 'plugins.php' ),
+				'docs'       => 'https://docs.foxelabs.com/software/convocept/getting-started',
 				'support'    => 'https://wordpress.org/support/plugin/convocept/',
 				'website'    => 'https://convocept.com/',
 			),
