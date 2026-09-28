@@ -37,7 +37,8 @@ M11, M12.
 
 **Release 1.1.0 — "Migrate from anything, see what works"**
 M8 remaining importers (Subscribe to Comments Reloaded, wpDiscuz votes/subscriptions), onboarding
-checklist with detected-import prompts, M13 Insights (free comment statistics dashboard).
+checklist with detected-import prompts, M13 Insights (free comment statistics dashboard),
+M14 Comments screen (moderation inside the Convocept app).
 
 **Release 1.2.0 — "Delight"**
 Emoji reactions, optional visible-tab polling, Abilities API (M10), settings live preview,
@@ -58,7 +59,8 @@ analytics, social login, webhooks). Free Insights is complete on its own: no loc
 - Pinned comments, author badge
 - Comment subscriptions: reply notifications, per-post subscriptions, double opt-in,
   one-click unsubscribe, subscriber management page
-- Moderation integrated with core Comments screen + small front-end moderator tools
+- Moderation integrated with core Comments screen + small front-end moderator tools (1.0);
+  our own Comments screen in the admin app, beside the core one (1.1, M14)
 - Spam protection: core checks + Akismet passthrough + honeypot + timing check + rate limits
 - Structured data for comments
 - Importers: Disqus XML (1.0), Subscribe to Comments Reloaded and wpDiscuz votes/subscriptions (1.1).
@@ -458,6 +460,32 @@ scroll-to-thread rate, composer abandonment) through an opt-in, cookieless `send
 after the thread has loaded (never on page load), or by reading views from an existing analytics
 plugin; commenter to subscriber funnel and retention; moderation stats; per author/category/period
 comparisons; CSV export; weekly email reports.
+
+### M14 — Comments screen (1.1.0)
+Moderation inside the Convocept admin app, built with `@wordpress/dataviews` (bundled in our admin
+build: core does not ship it as a script handle). It sits **beside** the core Comments screen,
+never instead of it: Akismet, anti-spam plugins, WooCommerce and others add columns, row actions,
+bulk actions and filters to `edit-comments.php`, and core links (admin bar bubble, Activity
+widget, moderation emails, the post editor) all point there.
+- Page **Comments** in the app: list with status views (all / pending / approved / spam / trash),
+  search, filters (post, author, date), sorting, pagination, saved view per user.
+- Row and bulk actions: approve, unapprove, spam, not spam, trash, restore, delete permanently
+  (with confirmation). Inline reply and edit. Thread context (parent and replies) in a side panel.
+- Convocept fields: votes, pinned, subscribed. Pin/unpin from the list.
+- Data from core `/wp/v2/comments` (context `edit`) plus our fields registered with
+  `register_rest_field`; no second comments API. Capabilities as core (`moderate_comments`,
+  `edit_comment`).
+- "Open in Convocept" link on the core Comments screen; core screen otherwise untouched.
+- Menu: the app moves from Settings → Convocept to a **Comments → Convocept** submenu (old URL
+  redirects), next to Comments → Insights (M13).
+- Later, opt-in only: setting "Use Convocept for the Comments menu" that points the core menu
+  item at our page while `edit-comments.php` stays reachable. Off by default (WordPress.org
+  admin-hijacking rule).
+- Hooks: `convocept_comments_fields` (JS filter/registry for extra columns), row actions registry,
+  so add-ons (AI moderation) extend the same screen.
+- **Accept:** list of 100k comments pages in < 300 ms server time; every action matches core
+  results (counts, hooks such as `transition_comment_status` fire); Akismet spam/ham reported the
+  same as from the core screen; keyboard and screen-reader usable; bundle loads only on its screen.
 
 ---
 

@@ -16,7 +16,8 @@ after M8.
   the Disqus part of M8 (`wp convocept import`; StCR/wpDiscuz are 1.1) and the 1.0 part of M9
   (Settings → Convocept, React on the Foxe Plugin Admin UI design system). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M11, then M12. Settings live in the `convocept_settings` option, edited on
+- **Next:** M11, then M12. Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
+  not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Settings → Convocept through `POST /convocept/v1/settings`.
 - **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
   https://claude.ai/artifact/DMUyGbeBUS6J38hLcS8dZF). Its components live in

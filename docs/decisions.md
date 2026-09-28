@@ -2,6 +2,22 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — Own Comments screen in 1.1, beside the core one
+- The owner asked whether Convocept should replace the core Comments menu with its own list in
+  the admin app (DataViews). Decided: **yes to our own screen, no to replacing core**, and not in
+  1.0 (M11 and M12 come first). Planned as M14 for 1.1.
+- **Why not replace**: other plugins (Akismet, anti-spam, WooCommerce reviews) extend the core
+  list table with columns, row actions, bulk actions and filters that DataViews cannot show, so
+  they would break silently; core links (admin bar, Activity widget, moderation emails, post
+  editor) all point to `edit-comments.php`; taking over a core menu by default is close to the
+  WordPress.org admin-hijacking rule. An opt-in "Use Convocept for the Comments menu" setting may
+  come later, with the core screen still reachable.
+- **Data** comes from core `/wp/v2/comments` plus our fields, not a new comments API.
+- **DataViews** is bundled in our admin build (core has no script handle for it) and its API still
+  changes between WordPress releases; acceptable for admin-only code, pinned and tested on 6.5.
+- **Menu**: when the app holds moderation it moves to a Comments → Convocept submenu, next to
+  Comments → Insights (M13), with a redirect from Settings → Convocept.
+
 ## 2026-09-28 — M9 settings screen
 - **Built on the Foxe Plugin Admin UI design system** (claude.ai artifact "Foxe Plugin Admin UI").
   The owner chose to build the components inside Convocept first (`assets/src/admin/ui/`, no
