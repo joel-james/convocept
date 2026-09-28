@@ -56,6 +56,7 @@ class UninstallerTest extends TestCase {
 		set_transient( 'convocept_rl_test', 1 );
 		set_transient( 'other_plugin_test', 1 );
 		update_comment_meta( $comment, 'convocept_pinned', 1 );
+		update_comment_meta( $comment, 'convocept_format', 'markdown' );
 		update_comment_meta( $comment, '_convocept_edit_token', 'token' );
 		update_comment_meta( $comment, '_convocept_disqus_id', '123' );
 		wp_schedule_single_event( time() + 60, Queue::HOOK );
@@ -119,6 +120,7 @@ class UninstallerTest extends TestCase {
 		$this->assertFalse( get_option( 'convocept_settings' ) );
 		$this->assertFalse( get_option( 'convocept_db_version' ) );
 		$this->assertSame( '', get_comment_meta( $seed['comment'], 'convocept_pinned', true ) );
+		$this->assertSame( '', get_comment_meta( $seed['comment'], 'convocept_format', true ) );
 		$this->assertSame( '', get_comment_meta( $seed['comment'], '_convocept_disqus_id', true ) );
 		$this->assertCount( 2, $this->drops );
 		$this->assertStringContainsString( $wpdb->prefix . 'convocept_reactions', $this->drops[0] );

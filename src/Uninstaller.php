@@ -36,6 +36,7 @@ class Uninstaller {
 	 */
 	const COMMENT_META = array(
 		'convocept_edited_at',
+		'convocept_format',
 		'convocept_moderation_log',
 		'convocept_reactions',
 		'convocept_score',
