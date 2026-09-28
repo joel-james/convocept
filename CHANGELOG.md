@@ -6,6 +6,13 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- M9 settings screen (Settings → Convocept), built on the Foxe Plugin Admin UI: pages for
+  General, Appearance, Composer, Moderation & spam, Subscriptions, Advanced, Import and Help;
+  a save bar that appears only with unsaved changes; messages under invalid fields; works down
+  to phone widths. Settings are saved through a validated REST route. Disqus imports now run on
+  the Import page (Tools → Import leads there). Add-ons can add pages with
+  `window.convoceptAdmin.registerPanel()` and describe their settings with
+  `convocept_settings_schema`.
 - M8 Disqus importer (Tools → Import → "Disqus (Convocept)" and `wp convocept import disqus`):
   dry run with counts and a sample, batched import that resumes after interruptions, threads
   matched by identifier or URL (including moved domains), replies kept in place, spam and deleted
@@ -73,6 +80,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   ESLint, Prettier, stylelint, wp-env, PHPUnit, Playwright, GitHub Actions CI, release zip script.
 
 ### Fixed
+- The Comment Subscription block did not load on WordPress 6.5 (it needed a script only
+  WordPress 6.6+ provides).
 - "Top" sort ordered wrongly when comments had other metadata, or reused cached "oldest" results.
 
 ### Removed

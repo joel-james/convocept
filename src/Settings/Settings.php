@@ -16,8 +16,9 @@ defined( 'ABSPATH' ) || exit;
  * Every setting lives in one autoloaded array option (`convocept_settings`),
  * so a page view costs no extra database query. Values are sanitized on
  * read, which means a corrupted or hand-edited option can never feed an
- * unexpected type into the renderer. The admin UI and REST route that write
- * this option arrive in M9 and will reuse sanitize().
+ * unexpected type into the renderer. The settings screen writes through the
+ * REST settings route, which checks input against schema() with validate()
+ * and stores it through sanitize().
  *
  * @since 1.0.0
  */
@@ -139,6 +140,192 @@ class Settings {
 	}
 
 	/**
+	 * Get the JSON schema of every setting.
+	 *
+	 * Drives validation of the REST settings route and the limits the
+	 * settings screen shows (minimum, maximum, allowed values). Keys must
+	 * match defaults(); a key with no schema entry is still accepted and
+	 * coerced to its default's type.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array<string, array<string, mixed>> JSON schema per setting key.
+	 */
+	public function schema(): array {
+		$schema = array(
+			'enabled'         => array( 'type' => 'boolean' ),
+			'post_types'      => array(
+				'type'  => 'array',
+				'items' => array( 'type' => 'string' ),
+			),
+			'per_page'        => self::integer( 1, 100 ),
+			'max_depth'       => self::integer( 1, 10 ),
+			'replies_shown'   => self::integer( 0, 50 ),
+			'default_sort'    => array(
+				'type' => 'string',
+				'enum' => self::SORTS,
+			),
+			'color_scheme'    => array(
+				'type' => 'string',
+				'enum' => self::COLOR_SCHEMES,
+			),
+			'accent_color'    => array(
+				'type'    => 'string',
+				'pattern' => '^#[0-9a-fA-F]{6}$',
+			),
+			'edit_window'     => self::integer( 0, 1440 ),
+			'trusted_proxies' => array(
+				'type'  => 'array',
+				'items' => array( 'type' => 'string' ),
+			),
+			'proxy_header'    => array(
+				'type' => 'string',
+				'enum' => self::PROXY_HEADERS,
+			),
+			'votes'           => array( 'type' => 'boolean' ),
+			'subscriptions'   => array( 'type' => 'boolean' ),
+			'double_opt_in'   => array( 'type' => 'boolean' ),
+			'batch_size'      => self::integer( 10, 500 ),
+			'live_updates'    => array( 'type' => 'boolean' ),
+			'poll_interval'   => self::integer( 15, 600 ),
+			'structured_data' => array( 'type' => 'boolean' ),
+		);
+
+		/**
+		 * Filters the JSON schema of the settings.
+		 *
+		 * Add-ons describe their own keys (registered through
+		 * `convocept_settings_defaults`) here, so the REST route validates
+		 * them and the settings screen knows their limits.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array<string, array<string, mixed>> $schema JSON schema per setting key.
+		 */
+		return (array) apply_filters( 'convocept_settings_schema', $schema );
+	}
+
+	/**
+	 * Build the schema of an integer setting.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $min Smallest allowed value.
+	 * @param int $max Largest allowed value.
+	 * @return array<string, mixed>
+	 */
+	private static function integer( int $min, int $max ): array {
+		return array(
+			'type'    => 'integer',
+			'minimum' => $min,
+			'maximum' => $max,
+		);
+	}
+
+	/**
+	 * Check submitted settings and explain every invalid value.
+	 *
+	 * Unlike sanitize(), which quietly falls back to defaults, this reports
+	 * what is wrong in words a site owner can act on, so the settings screen
+	 * can show the message under the field.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, mixed> $input Submitted settings (a subset of keys is fine).
+	 * @return array<string, string> Error message per invalid key; empty when all are valid.
+	 */
+	public function validate( array $input ): array {
+		$defaults = $this->defaults();
+		$schema   = $this->schema();
+		$errors   = array();
+
+		foreach ( $input as $key => $value ) {
+			$key = (string) $key;
+
+			if ( ! array_key_exists( $key, $defaults ) ) {
+				$errors[ $key ] = __( 'This setting does not exist.', 'convocept' );
+				continue;
+			}
+
+			$error = $this->validate_value( $key, $value, $schema[ $key ] ?? array() );
+
+			if ( '' !== $error ) {
+				$errors[ $key ] = $error;
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Check one value against its schema and the setting's own rules.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string               $key    Setting key.
+	 * @param mixed                $value  Submitted value.
+	 * @param array<string, mixed> $schema The key's schema.
+	 * @return string Error message, or '' when valid.
+	 */
+	private function validate_value( string $key, $value, array $schema ): string {
+		$type = $schema['type'] ?? '';
+
+		if ( 'boolean' === $type && ! is_bool( $value ) ) {
+			return __( 'Choose on or off.', 'convocept' );
+		}
+
+		if ( 'integer' === $type ) {
+			$min = (int) ( $schema['minimum'] ?? PHP_INT_MIN );
+			$max = (int) ( $schema['maximum'] ?? PHP_INT_MAX );
+
+			if ( ! is_int( $value ) || $value < $min || $value > $max ) {
+				/* translators: 1: Smallest allowed number, 2: Largest allowed number. */
+				return sprintf( __( 'Enter a number from %1$d to %2$d.', 'convocept' ), $min, $max );
+			}
+		}
+
+		if ( 'string' === $type ) {
+			if ( ! is_string( $value ) ) {
+				return __( 'Enter text.', 'convocept' );
+			}
+
+			if ( isset( $schema['enum'] ) && ! in_array( $value, (array) $schema['enum'], true ) ) {
+				return __( 'Choose one of the listed options.', 'convocept' );
+			}
+
+			if ( isset( $schema['pattern'] ) && ! preg_match( '/' . str_replace( '/', '\/', (string) $schema['pattern'] ) . '/', $value ) ) {
+				return 'accent_color' === $key ? __( 'Enter a colour as # and six hex digits, like #2563eb.', 'convocept' ) : __( 'This value is not in the expected format.', 'convocept' );
+			}
+		}
+
+		if ( 'array' === $type ) {
+			if ( ! is_array( $value ) || array_filter( $value, 'is_string' ) !== $value ) {
+				return __( 'Enter a list of values.', 'convocept' );
+			}
+
+			if ( 'post_types' === $key ) {
+				foreach ( $value as $post_type ) {
+					if ( ! post_type_exists( $post_type ) ) {
+						/* translators: %s: Post type name. */
+						return sprintf( __( 'There is no post type called "%s".', 'convocept' ), $post_type );
+					}
+				}
+			}
+
+			if ( 'trusted_proxies' === $key ) {
+				foreach ( $value as $range ) {
+					if ( ! $this->ip_ranges( array( $range ) ) ) {
+						/* translators: %s: The invalid line. */
+						return sprintf( __( '"%s" is not an IP address or CIDR range.', 'convocept' ), $range );
+					}
+				}
+			}
+		}//end if
+
+		return '';
+	}
+
+	/**
 	 * Get all settings, sanitized, with defaults for missing keys.
 	 *
 	 * The result is cached for the rest of the request; call flush() after
@@ -197,6 +384,42 @@ class Settings {
 		}
 
 		return $clean;
+	}
+
+	/**
+	 * Store changed settings.
+	 *
+	 * Merges the changes into the current settings, sanitizes the result
+	 * and saves it. Call validate() first: this never fails, it only falls
+	 * back to defaults for invalid values.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, mixed> $changes Changed keys and their new values.
+	 * @return array<string, mixed> The complete settings now stored.
+	 */
+	public function save( array $changes ): array {
+		$old = $this->all();
+		$new = $this->sanitize( array_merge( $old, $changes ) );
+
+		update_option( self::OPTION, $new );
+		$this->flush();
+
+		/**
+		 * Fires after the settings are saved.
+		 *
+		 * Rendered comment lists are keyed by the settings and refresh on
+		 * their own; full-page caches may still serve older pages until
+		 * they expire. Cache integrations can purge here.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array<string, mixed> $new New settings.
+		 * @param array<string, mixed> $old Previous settings.
+		 */
+		do_action( 'convocept_settings_saved', $new, $old );
+
+		return $new;
 	}
 
 	/**

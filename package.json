@@ -25,6 +25,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.63.0",
 		"@size-limit/file": "^14.0.1",
+		"@wordpress/babel-plugin-import-jsx-pragma": "^5.56.0",
 		"@wordpress/e2e-test-utils-playwright": "^2.1.0",
 		"@wordpress/env": "^11.16.0",
 		"@wordpress/scripts": "^36.0.0",

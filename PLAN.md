@@ -139,7 +139,7 @@ convocept/
 │   └── emails/
 ├── assets/
 │   ├── src/front/                # vanilla JS modules + CSS
-│   ├── src/admin/                # React settings / Insights apps
+│   ├── src/admin/                # React settings / Insights apps; ui/ = Foxe Plugin Admin UI components
 │   └── dist/                     # build output (not committed)
 ├── languages/
 ├── docs/                         # decisions.md, hooks.md
@@ -401,7 +401,7 @@ and via WP-CLI (`wp convocept import <source>`).
 - **Accept:** each importer tested against fixture exports; re-running produces no duplicates;
   large Disqus fixture imports without timeouts.
 
-### M9 — Admin settings app (1.0.0 ships tabs + persistence; live preview and onboarding in 1.1/1.2)
+### M9 — Admin settings app (1.0.0 ships tabs + persistence; live preview and onboarding in 1.1/1.2) — 1.0 part ✅ done (Foxe Plugin Admin UI; sidebar pages instead of tabs)
 - React app under **Settings → Convocept** (or top-level "Comments → Convocept"):
   tabs General, Appearance, Composer, Moderation & Spam, Subscriptions, Import, Advanced.
 - Live preview of the thread with current appearance settings.

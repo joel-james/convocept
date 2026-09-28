@@ -5,7 +5,6 @@
  * - loader.js     Inlined into the thread wrapper by PHP (budget < 1 KB gzipped).
  * - convocept.js  Lazy-loaded interaction bundle (budget 8 KB gzipped).
  * - convocept.css Lazy-loaded styles (budget 5 KB gzipped).
- * - admin-import.js Progress script for the Tools → Import pages (wp-admin only).
  *
  * Usage: node bin/build-front.mjs [--watch]
  */
@@ -19,7 +18,6 @@ const options = {
 		'assets/src/front/loader.js',
 		'assets/src/front/convocept.js',
 		'assets/src/front/convocept.css',
-		{ in: 'assets/src/admin/import.js', out: 'admin-import' },
 	],
 	outdir: 'assets/dist',
 	entryNames: '[name]',

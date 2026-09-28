@@ -67,6 +67,8 @@ class Controller {
 		$reactions  = new ReactionsEndpoint( $this->plugin );
 		$moderation = new ModerationEndpoint( $this->plugin );
 		$subscribe  = new SubscriptionsEndpoint( $this->plugin );
+		$settings   = new SettingsEndpoint( $this->plugin->settings() );
+		$import     = new ImportEndpoint( $this->plugin );
 
 		register_rest_route(
 			self::NAMESPACE,
@@ -219,6 +221,62 @@ class Controller {
 				'callback'            => array( $preview, 'create' ),
 				'permission_callback' => '__return_true',
 				'args'                => $preview->args(),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/settings',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $settings, 'get' ),
+					'permission_callback' => array( $settings, 'can_manage' ),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $settings, 'save' ),
+					'permission_callback' => array( $settings, 'can_manage' ),
+					'args'                => $settings->save_args(),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/import',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $import, 'status' ),
+					'permission_callback' => array( $import, 'can_import' ),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $import, 'start' ),
+					'permission_callback' => array( $import, 'can_import' ),
+					'args'                => array(
+						'importer' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $import, 'cancel' ),
+					'permission_callback' => array( $import, 'can_import' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/import/batch',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $import, 'batch' ),
+				'permission_callback' => array( $import, 'can_import' ),
 			)
 		);
 	}

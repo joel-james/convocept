@@ -114,6 +114,20 @@ add_action(
 			)
 		);
 
+		// Puts every Convocept setting back to its default.
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/reset-settings',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $admin,
+				'callback'            => static function () {
+					delete_option( 'convocept_settings' );
+					return true;
+				},
+			)
+		);
+
 		// Cancels any import left over from an earlier (failed) test run.
 		register_rest_route(
 			'convocept-e2e/v1',

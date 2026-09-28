@@ -24,6 +24,7 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_unsubscribed` | 1.0.0 | `int $subscription_id, bool $all` | After a reader unsubscribes (one or all). |
 | `convocept_comment_imported` | 1.0.0 | `int $comment_id, string $source, array $item` | After an importer creates a comment (`$source` e.g. `disqus`). |
 | `convocept_import_completed` | 1.0.0 | `Job $job` | When an import finishes (counters in `$job->counts`). |
+| `convocept_settings_saved` | 1.0.0 | `array $new, array $old` | After the settings screen saves. Page caches may still hold older pages; purge here. |
 
 ## Filters
 
@@ -59,6 +60,8 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_import_batch_size` | 1.0.0 | `int $limit, string $importer` | Items per import batch (default 500 in wp-admin, `--batch-size` in WP-CLI). |
 | `convocept_disqus_thread_post_id` | 1.0.0 | `int $post_id, array $thread` | Post a Disqus thread's comments go into; 0 skips the thread. |
 | `convocept_disqus_comment_data` | 1.0.0 | `array $commentdata, array $post` | Comment data before a Disqus comment is inserted; `[]` skips it (e.g. set `user_id`). |
+| `convocept_settings_schema` | 1.0.0 | `array $schema` | JSON schema per setting key (type, minimum, maximum, enum, pattern); validates the settings route and sets the screen's limits. |
+| `convocept_admin_boot_data` | 1.0.0 | `array $data` | Data the settings app starts with (`window.convoceptAdminBoot`). |
 
 ## REST routes (`/wp-json/convocept/v1`)
 
@@ -78,6 +81,20 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `/comments/{id}/pin` | POST | `moderate_comments` + `edit_comment` | `pinned` true/false; top-level approved comments only. |
 | `/posts/{id}/pending` | GET | `moderate_comments` + `edit_post` | Comments awaiting moderation, rendered. |
 | `/comments/{id}/context` | GET | public (approved) | URL of the page showing the comment; returns `url`. |
+| `/settings` | GET | `manage_options` | Every setting. |
+| `/settings` | POST | `manage_options` | `settings`: changed keys only. 400 with `data.fields` (message per key) and nothing saved when any value is invalid; else the complete new settings. |
+| `/import` | GET | `import` + `moderate_comments` | Current import job (or null), importers, upload limit. |
+| `/import` | POST | `import` + `moderate_comments` | Multipart `file` + `importer`: store the export privately and run the dry run. |
+| `/import/batch` | POST | `import` + `moderate_comments` | Import the next batch; returns the job. |
+| `/import` | DELETE | `import` + `moderate_comments` | Cancel the import, or clear a finished one. |
+
+## Settings screen (JavaScript)
+
+- `window.convoceptAdmin.registerPanel( { id, group, title, icon, keys, render } )` — add a page
+  to Settings → Convocept. `group` is `settings`, `manage` or `more`; `keys` are the settings the
+  page edits (used to flag errors in the sidebar); `render` is a component receiving
+  `{ draft, saved, update, errors, boot }`. Enqueue the script with `convocept-admin` as a
+  dependency; pages are read when the DOM is ready.
 
 ## WP-CLI
 

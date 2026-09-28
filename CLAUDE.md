@@ -13,15 +13,22 @@ after M8.
 
 - **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
   lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
-  and the Disqus part of M8 (Tools → Import + `wp convocept import`; StCR/wpDiscuz are 1.1). Milestones are
+  the Disqus part of M8 (`wp convocept import`; StCR/wpDiscuz are 1.1) and the 1.0 part of M9
+  (Settings → Convocept, React on the Foxe Plugin Admin UI design system). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** M9 lite settings UI, then M11, M12. There is **no admin settings screen yet** (M9); settings live in the
-  `convocept_settings` option.
+- **Next:** M11, then M12. Settings live in the `convocept_settings` option, edited on
+  Settings → Convocept through `POST /convocept/v1/settings`.
+- **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
+  https://claude.ai/artifact/DMUyGbeBUS6J38hLcS8dZF). Its components live in
+  `assets/src/admin/ui/` (prefix `convocept-`, tokens `--convocept-*`), kept free of Convocept
+  logic so they can move to a shared Foxe package later. Add missing components to the design
+  system first. No upsells until add-ons exist.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M8 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
+- **Open items to raise with the owner:** merge M1–M9 to `main`; rewrite `readme.txt` (still the prototype's text; M12);
   Twenty Twenty-One shows its own dark submit button instead of our accent colour (not
-  investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md).
+  investigated); confirm the plan to ship basic AI checks free in 1.2 (decisions.md); a real
+  Convocept logo for the admin sidebar (placeholder speech bubble now).
 
 **Working environment notes**
 - Docker Desktop must be running for `npm run env:start` (wp-env: dev :8888, tests :8889).

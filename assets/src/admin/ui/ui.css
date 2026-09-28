@@ -1,0 +1,832 @@
+/**
+ * Foxe Plugin Admin UI, compiled for Convocept.
+ *
+ * Tokens and component styles from the Foxe Plugin Admin UI design system,
+ * with the `convocept-` prefix so two Foxe plugins on one site never
+ * collide. Everything is scoped under `.convocept-admin`. WordPress
+ * components inside pick up the ink through `--wp-admin-theme-color`.
+ */
+
+.convocept-admin {
+	--convocept-ink: #111;
+	--convocept-ink-raised: #1e1e1e;
+	--convocept-ink-hover: #000;
+	--convocept-ink-tile: #2c2c2c;
+	--convocept-on-ink: #fff;
+	--convocept-on-ink-muted: #dcdcde;
+	--convocept-on-ink-subtle: #8c8f94;
+	--convocept-on-ink-stroke: #50575e;
+	--convocept-ground: #f6f6f4;
+	--convocept-surface: #fff;
+	--convocept-surface-weak: #f0f0f0;
+	--convocept-surface-selected: #f8f8f6;
+	--convocept-stroke-header: #e8e8e4;
+	--convocept-stroke-weak: #f0f0f0;
+	--convocept-stroke-tile: #dcdcde;
+	--convocept-stroke-control: #949494;
+	--convocept-fg: #1e1e1e;
+	--convocept-fg-muted: #50575e;
+	--convocept-fg-subtle: #757575;
+	--convocept-fg-disabled: #c3c4c7;
+	--convocept-success-bg: #eff9f1;
+	--convocept-success-fg: #1e4620;
+	--convocept-success-dot: #4ab866;
+	--convocept-warning-bg: #fef8ee;
+	--convocept-warning-stroke: #f0b849;
+	--convocept-warning-fg: #6b4d00;
+	--convocept-info-bg: #f6f7f7;
+	--convocept-info-stroke: #1e1e1e;
+	--convocept-danger: #cc1818;
+	--convocept-font-mono: ui-monospace, sfmono-regular, menlo, consolas, monospace;
+	--convocept-space-1: 4px;
+	--convocept-space-2: 8px;
+	--convocept-space-3: 12px;
+	--convocept-space-4: 16px;
+	--convocept-space-5: 20px;
+	--convocept-space-6: 24px;
+	--convocept-space-7: 28px;
+	--convocept-space-8: 40px;
+	--convocept-radius-control: 2px;
+	--convocept-radius-nav: 8px;
+	--convocept-radius-tile: 12px;
+	--convocept-radius-card: 14px;
+	--convocept-radius-pill: 999px;
+	--convocept-shadow-float: 0 10px 30px rgba(0, 0, 0, 0.25);
+	--convocept-sidebar-width: 248px;
+	--convocept-nav-item-height: 40px;
+	--convocept-control-height: 40px;
+	--convocept-content-max: 880px;
+	--wp-admin-theme-color: #1e1e1e;
+	--wp-admin-theme-color-darker-10: #000;
+	--wp-admin-theme-color-darker-20: #000;
+
+	display: grid;
+	grid-template-columns: var(--convocept-sidebar-width) minmax(0, 1fr);
+	min-height: calc(100vh - 32px);
+	margin-inline-start: -20px;
+	background: var(--convocept-ground);
+	color: var(--convocept-fg);
+	font-size: 13px;
+	line-height: 20px;
+}
+
+.convocept-admin *,
+.convocept-admin *::before,
+.convocept-admin *::after {
+	box-sizing: border-box;
+}
+
+/* Sidebar */
+.convocept-sidebar {
+	display: flex;
+	flex-direction: column;
+	padding: 20px 14px;
+	background: var(--convocept-ink);
+	color: var(--convocept-on-ink);
+}
+
+.convocept-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 0 6px 6px;
+}
+
+.convocept-brand__name {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 22px;
+}
+
+.convocept-brand__meta {
+	font-size: 11px;
+	line-height: 16px;
+	color: var(--convocept-on-ink-subtle);
+}
+
+.convocept-nav-group {
+	margin: 0;
+	padding: 22px 14px 8px;
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 16px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--convocept-on-ink-subtle);
+}
+
+.convocept-nav-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.convocept-nav-list li {
+	margin: 0;
+}
+
+.convocept-admin .convocept-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	height: var(--convocept-nav-item-height);
+	padding: 0 14px;
+	border-radius: var(--convocept-radius-nav);
+	color: var(--convocept-on-ink-muted);
+	text-decoration: none;
+}
+
+.convocept-admin .convocept-nav-item:hover {
+	color: var(--convocept-on-ink);
+	background: var(--convocept-ink-tile);
+}
+
+.convocept-admin .convocept-nav-item:focus {
+	outline: 2px solid var(--convocept-on-ink);
+	outline-offset: -2px;
+	box-shadow: none;
+}
+
+.convocept-admin .convocept-nav-item[aria-current="page"] {
+	background: var(--convocept-on-ink);
+	color: var(--convocept-ink);
+	font-weight: 600;
+}
+
+.convocept-nav-item__label {
+	flex-grow: 1;
+}
+
+.convocept-nav-item svg {
+	flex-shrink: 0;
+}
+
+.convocept-dot {
+	display: inline-block;
+	flex-shrink: 0;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--convocept-success-dot);
+}
+
+.convocept-dot--warning {
+	background: var(--convocept-warning-stroke);
+}
+
+.convocept-nav-select {
+	display: none;
+}
+
+/* Main column */
+.convocept-main {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.convocept-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	padding: 22px var(--convocept-space-8);
+	background: var(--convocept-surface);
+	border-bottom: 1px solid var(--convocept-stroke-header);
+}
+
+.convocept-admin .convocept-header__title {
+	flex-grow: 1;
+	margin: 0;
+	padding: 0;
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 28px;
+	color: var(--convocept-fg);
+}
+
+/* Focus moves here when the page changes; the title isn't a control, so no ring. */
+.convocept-admin .convocept-header__title:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.convocept-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 28px;
+	padding: 0 10px;
+	border-radius: 14px;
+	background: var(--convocept-surface-weak);
+	font-size: 12px;
+}
+
+.convocept-chip--success {
+	background: var(--convocept-success-bg);
+	color: var(--convocept-success-fg);
+}
+
+.convocept-content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--convocept-space-5);
+	width: 100%;
+	max-width: calc(var(--convocept-content-max) + 2 * var(--convocept-space-8));
+	padding: var(--convocept-space-7) var(--convocept-space-8) 120px;
+}
+
+.convocept-content--wide {
+	max-width: none;
+}
+
+/* Card */
+.convocept-card {
+	padding: var(--convocept-space-6);
+	border-radius: var(--convocept-radius-card);
+	background: var(--convocept-surface);
+}
+
+.convocept-admin .convocept-card__title {
+	margin: 0 0 4px;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 20px;
+	color: var(--convocept-fg);
+}
+
+.convocept-admin .convocept-card__desc {
+	margin: 0;
+	color: var(--convocept-fg-muted);
+	font-size: 13px;
+}
+
+.convocept-card__body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--convocept-space-5);
+	margin-top: var(--convocept-space-5);
+}
+
+.convocept-card__body > * {
+	max-width: 100%;
+}
+
+.convocept-card__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--convocept-space-2);
+}
+
+/* Help and errors */
+.convocept-admin .convocept-help {
+	margin: 8px 0 0;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-fg-subtle);
+}
+
+.convocept-admin .convocept-error {
+	margin: 8px 0 0;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-danger);
+}
+
+.convocept-help--warning {
+	color: var(--convocept-warning-fg);
+}
+
+/* WordPress controls, restyled */
+.convocept-admin .components-base-control__label,
+.convocept-admin .components-input-control__label,
+.convocept-admin .convocept-label {
+	display: block;
+	margin: 0 0 8px;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 16px;
+	text-transform: uppercase;
+	color: var(--convocept-fg);
+}
+
+.convocept-admin .components-base-control__help {
+	margin-top: 8px;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-fg-subtle);
+}
+
+.convocept-admin .components-text-control__input,
+.convocept-admin .components-textarea-control__input,
+.convocept-admin .components-select-control__input,
+.convocept-admin .components-input-control__container .components-input-control__input {
+	font-size: 13px;
+}
+
+.convocept-admin .components-input-control__backdrop,
+.convocept-admin .components-text-control__input,
+.convocept-admin .components-textarea-control__input {
+	border-color: var(--convocept-stroke-control);
+	border-radius: var(--convocept-radius-control);
+}
+
+.convocept-field--invalid .components-input-control__backdrop,
+.convocept-field--invalid .components-text-control__input,
+.convocept-field--invalid .components-textarea-control__input,
+.convocept-admin .convocept-field--invalid .components-input-control__backdrop {
+	border-color: var(--convocept-danger);
+}
+
+/* NumberField: value, then two steppers */
+.convocept-number {
+	display: inline-flex;
+	align-items: stretch;
+	height: var(--convocept-control-height);
+	border: 1px solid var(--convocept-stroke-control);
+	border-radius: var(--convocept-radius-control);
+	background: var(--convocept-surface);
+}
+
+.convocept-field--invalid .convocept-number {
+	border-color: var(--convocept-danger);
+}
+
+.convocept-number:focus-within {
+	outline: 2px solid var(--convocept-ink-raised);
+	outline-offset: -1px;
+}
+
+.convocept-admin .convocept-number__input {
+	width: 72px;
+	min-height: 0;
+	margin: 0;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+	font-size: 18px;
+	font-weight: 600;
+	-moz-appearance: textfield;
+}
+
+.convocept-admin .convocept-number__input:focus {
+	border: 0;
+	box-shadow: none;
+	outline: none;
+}
+
+.convocept-number__input::-webkit-inner-spin-button,
+.convocept-number__input::-webkit-outer-spin-button {
+	margin: 0;
+	-webkit-appearance: none;
+}
+
+.convocept-number__step {
+	width: 36px;
+	border: 0;
+	border-inline-start: 1px solid var(--convocept-stroke-tile);
+	background: var(--convocept-surface);
+	color: var(--convocept-fg);
+	font: inherit;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.convocept-number__step:disabled {
+	color: var(--convocept-fg-disabled);
+	cursor: default;
+}
+
+.convocept-number__step:focus-visible {
+	outline: 2px solid var(--convocept-ink-raised);
+	outline-offset: -2px;
+}
+
+.convocept-field--select {
+	min-width: 220px;
+}
+
+.convocept-field--wide {
+	width: 100%;
+	max-width: 480px;
+}
+
+.convocept-field--code textarea {
+	font-family: var(--convocept-font-mono);
+	font-size: 12px;
+	line-height: 18px;
+}
+
+/* Toggle: bold label, help under it */
+.convocept-toggle .components-toggle-control__label,
+.convocept-toggle .components-toggle-control .components-base-control__field label {
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: none;
+}
+
+
+/* CheckboxList */
+.convocept-checks {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.convocept-checks__items {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 24px;
+}
+
+.convocept-checks .components-base-control__field {
+	margin: 0;
+}
+
+/* ChoiceTiles */
+.convocept-tiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.convocept-tiles--pairs {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.convocept-tile {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px;
+	border: 1px solid var(--convocept-stroke-control);
+	border-radius: var(--convocept-radius-tile);
+	background: var(--convocept-surface);
+	cursor: pointer;
+}
+
+.convocept-tile--on {
+	padding: 15px;
+	border: 2px solid var(--convocept-ink);
+}
+
+.convocept-tile:focus-within {
+	outline: 2px solid var(--convocept-ink-raised);
+	outline-offset: 2px;
+}
+
+.convocept-tile__head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 600;
+}
+
+.convocept-admin .convocept-tile input[type="radio"] {
+	margin: 0;
+	border-color: var(--convocept-ink-raised);
+}
+
+.convocept-admin .convocept-tile input[type="radio"]:checked::before {
+	background: var(--convocept-ink-raised);
+}
+
+.convocept-admin .convocept-tile input[type="radio"]:focus {
+	box-shadow: none;
+}
+
+.convocept-tile__desc {
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-fg-muted);
+}
+
+/* ColorField */
+.convocept-color {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.convocept-admin .convocept-color__swatch {
+	width: 40px;
+	height: var(--convocept-control-height);
+	padding: 0;
+	border: 1px solid var(--convocept-stroke-control);
+	border-radius: var(--convocept-radius-control);
+	cursor: pointer;
+}
+
+.convocept-color .components-text-control__input {
+	width: 120px;
+	font-family: var(--convocept-font-mono);
+	font-size: 12px;
+}
+
+/* FileField */
+.convocept-file {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 16px;
+	border: 1px dashed var(--convocept-stroke-control);
+	border-radius: var(--convocept-radius-tile);
+	background: var(--convocept-surface);
+}
+
+.convocept-file--over {
+	border-style: solid;
+	border-color: var(--convocept-ink);
+}
+
+.convocept-file__name {
+	flex-grow: 1;
+	color: var(--convocept-fg-muted);
+	overflow-wrap: anywhere;
+}
+
+/* Notice */
+.convocept-notice {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 12px 16px;
+	border-inline-start: 4px solid var(--convocept-info-stroke);
+	border-radius: 0 var(--convocept-radius-nav) var(--convocept-radius-nav) 0;
+	background: var(--convocept-info-bg);
+}
+
+.convocept-notice--warning {
+	border-color: var(--convocept-warning-stroke);
+	background: var(--convocept-warning-bg);
+}
+
+.convocept-notice--error {
+	border-color: var(--convocept-danger);
+	background: var(--convocept-surface);
+}
+
+.convocept-notice svg {
+	flex-shrink: 0;
+}
+
+.convocept-notice__body {
+	flex-grow: 1;
+}
+
+.convocept-notice__actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+/* ProgressBar */
+.convocept-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+}
+
+.convocept-progress__track {
+	height: 8px;
+	overflow: hidden;
+	border-radius: var(--convocept-radius-pill);
+	background: var(--convocept-surface-weak);
+	box-shadow: inset 0 0 0 1px var(--convocept-stroke-control);
+}
+
+.convocept-progress__fill {
+	height: 100%;
+	border-radius: var(--convocept-radius-pill);
+	background: var(--convocept-ink-raised);
+	transition: width 0.2s ease-out;
+}
+
+.convocept-progress__text {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--convocept-fg-muted);
+}
+
+/* SummaryList */
+.convocept-summary {
+	width: 100%;
+	margin: 0;
+}
+
+.convocept-summary__row {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--convocept-stroke-weak);
+}
+
+.convocept-summary__row:last-child {
+	border-bottom: 0;
+}
+
+.convocept-summary dt {
+	color: var(--convocept-fg-muted);
+}
+
+.convocept-summary dd {
+	margin: 0;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	text-align: end;
+}
+
+/* Table (import sample) */
+.convocept-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.convocept-table th {
+	height: 40px;
+	padding: 0 12px;
+	border-top: 1px solid var(--convocept-stroke-weak);
+	border-bottom: 1px solid var(--convocept-stroke-weak);
+	font-size: 11px;
+	font-weight: 500;
+	text-align: start;
+	text-transform: uppercase;
+}
+
+.convocept-table td {
+	padding: 12px;
+	border-bottom: 1px solid var(--convocept-stroke-weak);
+	vertical-align: top;
+}
+
+/* Buttons */
+.convocept-admin .components-button {
+	border-radius: var(--convocept-radius-control);
+}
+
+.convocept-admin .components-button.is-secondary {
+	box-shadow: inset 0 0 0 1px var(--convocept-ink-raised);
+	color: var(--convocept-fg);
+}
+
+.convocept-admin .components-button.is-tertiary,
+.convocept-admin .components-button.is-link {
+	color: var(--convocept-fg);
+}
+
+/* FloatingBar and Snackbar */
+.convocept-floatbar {
+	position: fixed;
+	bottom: var(--convocept-space-7);
+	left: calc(50% + (160px + var(--convocept-sidebar-width)) / 2);
+	z-index: 100;
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 8px 8px 20px;
+	transform: translateX(-50%);
+	border-radius: var(--convocept-radius-pill);
+	background: var(--convocept-ink);
+	color: var(--convocept-on-ink);
+	box-shadow: var(--convocept-shadow-float);
+	white-space: nowrap;
+}
+
+.convocept-admin .convocept-floatbar .components-button {
+	height: 36px;
+	border-radius: var(--convocept-radius-pill);
+	color: var(--convocept-on-ink);
+}
+
+.convocept-admin .convocept-floatbar .components-button.is-primary {
+	background: var(--convocept-on-ink);
+	color: var(--convocept-ink);
+}
+
+.convocept-admin .convocept-floatbar .components-button.is-primary:disabled,
+.convocept-admin .convocept-floatbar .components-button.is-primary[aria-disabled="true"] {
+	opacity: 0.6;
+}
+
+.convocept-admin .convocept-floatbar .components-button:focus-visible {
+	box-shadow: 0 0 0 2px var(--convocept-on-ink);
+}
+
+.convocept-snackbars {
+	position: fixed;
+	bottom: var(--convocept-space-7);
+	left: calc(160px + var(--convocept-sidebar-width) + var(--convocept-space-8));
+	z-index: 100;
+}
+
+.convocept-admin .components-snackbar {
+	border-radius: var(--convocept-radius-nav);
+	background: var(--convocept-ink-raised);
+	box-shadow: var(--convocept-shadow-float);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+	.convocept-floatbar {
+		animation: convocept-rise 0.18s ease-out;
+	}
+}
+
+@keyframes convocept-rise {
+
+	from {
+		opacity: 0;
+		transform: translate(-50%, 12px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+
+/* WordPress admin menu folded */
+.folded .convocept-floatbar {
+	left: calc(50% + (36px + var(--convocept-sidebar-width)) / 2);
+}
+
+.folded .convocept-snackbars {
+	left: calc(36px + var(--convocept-sidebar-width) + var(--convocept-space-8));
+}
+
+/* Narrow screens: the sidebar becomes a section dropdown. */
+@media (max-width: 960px) {
+
+	.convocept-floatbar {
+		left: calc(50% + (36px + var(--convocept-sidebar-width)) / 2);
+	}
+
+	.convocept-snackbars {
+		left: calc(36px + var(--convocept-sidebar-width) + var(--convocept-space-8));
+	}
+}
+
+@media (max-width: 782px) {
+
+	.convocept-admin {
+		display: block;
+		min-height: 0;
+		margin-inline-start: -10px;
+	}
+
+	.convocept-sidebar {
+		position: static;
+		min-height: 0;
+		padding: 14px;
+	}
+
+	.convocept-nav {
+		display: none;
+	}
+
+	.convocept-nav-select {
+		display: block;
+		margin-top: 12px;
+	}
+
+	.convocept-nav-select select {
+		width: 100%;
+		max-width: none;
+	}
+
+	.convocept-tiles,
+	.convocept-tiles--pairs {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.convocept-header,
+	.convocept-content {
+		padding-inline: var(--convocept-space-4);
+	}
+
+	.convocept-floatbar,
+	.convocept-snackbars {
+		left: 50%;
+	}
+
+	.convocept-snackbars {
+		transform: translateX(-50%);
+	}
+}

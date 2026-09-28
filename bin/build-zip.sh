@@ -124,8 +124,8 @@ else
 	rm -f "${build_log}"
 fi
 
-# The front end and the import screen cannot work without these, so never ship a zip missing them.
-for asset in assets/dist/loader.js assets/dist/convocept.js assets/dist/convocept.css assets/dist/admin-import.js; do
+# The front end and the settings screen cannot work without these, so never ship a zip missing them.
+for asset in assets/dist/loader.js assets/dist/convocept.js assets/dist/convocept.css assets/dist/admin/index.js; do
 	[[ -f "${asset}" ]] || fail "${asset} is missing. Run without SKIP_BUILD."
 done
 

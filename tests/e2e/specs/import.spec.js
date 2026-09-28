@@ -1,8 +1,8 @@
 /**
- * End-to-end tests for the Disqus importer (M8).
+ * End-to-end tests for importing from Disqus (M8, on the M9 screen).
  *
- * Covers the Tools → Import screen with and without JavaScript, and checks
- * that importer code never loads on front-end requests.
+ * Covers Manage → Import on the settings screen, the Tools → Import entry
+ * that leads there, and that importer code never loads on front-end pages.
  */
 
 /**
@@ -88,11 +88,24 @@ test.describe( 'Disqus importer', () => {
 				( name ) =>
 					name.startsWith( 'Convocept\\Import\\' ) ||
 					name.startsWith( 'Convocept\\Cli\\' ) ||
-					name === 'Convocept\\Admin\\ImportScreen'
+					name.startsWith( 'Convocept\\Admin\\' )
 			)
 		).toEqual( [] );
 
 		await context.close();
+	} );
+
+	test( 'Tools → Import leads to the Import page', async ( {
+		admin,
+		page,
+	} ) => {
+		await admin.visitAdminPage( 'import.php' );
+		await page.getByRole( 'link', { name: 'Disqus (Convocept)' } ).click();
+
+		await expect(
+			page.getByRole( 'heading', { level: 1, name: 'Import' } )
+		).toBeVisible();
+		expect( new URL( page.url() ).hash ).toBe( '#import' );
 	} );
 
 	test( 'dry run, then import with progress, then report', async ( {
@@ -100,32 +113,39 @@ test.describe( 'Disqus importer', () => {
 		page,
 		requestUtils,
 	} ) => {
-		const tag = `js-${ Date.now() }`;
+		const tag = `run-${ Date.now() }`;
 		const post = await requestUtils.createPost( {
 			title: `Convocept import ${ tag }`,
 			status: 'publish',
 		} );
 
-		await admin.visitAdminPage( 'admin.php', 'import=convocept-disqus' );
+		await admin.visitAdminPage( 'options-general.php', 'page=convocept' );
+		await page
+			.getByRole( 'navigation', { name: 'Convocept sections' } )
+			.getByRole( 'link', { name: 'Import' } )
+			.click();
+
+		const upload = page.getByRole( 'button', {
+			name: 'Upload and analyse',
+		} );
+		await expect( upload ).toBeDisabled();
 
 		await page.getByLabel( 'Export file' ).setInputFiles( {
 			name: 'export.xml',
 			mimeType: 'text/xml',
 			buffer: disqusExport( post.id, tag ),
 		} );
-		await page
-			.getByRole( 'button', { name: 'Upload and analyse' } )
-			.click();
+		await expect( page.locator( '.convocept-file__name' ) ).toHaveText(
+			'export.xml'
+		);
+		await upload.click();
 
 		await expect(
 			page.getByRole( 'heading', { name: 'Dry run' } )
 		).toBeVisible();
-		await expect(
-			page.locator( '[data-convocept-count="found"] td' )
-		).toHaveText( '2' );
-		await expect(
-			page.locator( '[data-convocept-count="spam"] td' )
-		).toHaveText( '1' );
+		const summary = page.locator( '.convocept-summary' );
+		await expect( summary ).toContainText( 'Comments to import2' );
+		await expect( summary ).toContainText( 'Spam (skipped)1' );
 		await expect(
 			page.getByRole( 'cell', { name: `Imported top ${ tag }` } )
 		).toBeVisible();
@@ -135,9 +155,14 @@ test.describe( 'Disqus importer', () => {
 		await expect(
 			page.getByRole( 'heading', { name: 'Import complete' } )
 		).toBeVisible();
-		await expect(
-			page.locator( '[data-convocept-count="imported"] td' )
-		).toHaveText( '2' );
+		await expect( page.locator( '.convocept-summary' ) ).toContainText(
+			'Imported2'
+		);
+
+		await page
+			.getByRole( 'button', { name: 'Start another import' } )
+			.click();
+		await expect( upload ).toBeVisible();
 
 		await page.goto( post.link );
 		const thread = page.locator( 'section.convocept' );
@@ -146,58 +171,32 @@ test.describe( 'Disqus importer', () => {
 			thread.locator( '.convocept-comment .convocept-comment' )
 		).toContainText( `Imported reply ${ tag }` );
 		await expect( thread ).not.toContainText( `Imported spam ${ tag }` );
-
-		await admin.visitAdminPage( 'admin.php', 'import=convocept-disqus' );
-		await page
-			.getByRole( 'button', { name: 'Start another import' } )
-			.click();
-		await expect(
-			page.getByRole( 'button', { name: 'Upload and analyse' } )
-		).toBeVisible();
 	} );
 
-	test( 'works without JavaScript, one batch per click', async ( {
-		browser,
-		requestUtils,
+	test( 'a bad file is explained and nothing starts', async ( {
+		admin,
+		page,
 	} ) => {
-		const tag = `nojs-${ Date.now() }`;
-		const post = await requestUtils.createPost( {
-			title: `Convocept import ${ tag }`,
-			status: 'publish',
-		} );
-		const context = await browser.newContext( {
-			javaScriptEnabled: false,
-			storageState: process.env.STORAGE_STATE_PATH,
-		} );
-		const page = await context.newPage();
-		const importUrl = new URL(
-			'/wp-admin/admin.php?import=convocept-disqus',
-			post.link
+		await admin.visitAdminPage(
+			'options-general.php',
+			'page=convocept#import'
 		);
-
-		await page.goto( importUrl.href );
-
 		await page.getByLabel( 'Export file' ).setInputFiles( {
 			name: 'export.xml',
 			mimeType: 'text/xml',
-			buffer: disqusExport( post.id, tag ),
+			buffer: Buffer.from( '<?xml version="1.0"?><rss/>' ),
 		} );
 		await page
 			.getByRole( 'button', { name: 'Upload and analyse' } )
 			.click();
-		await page.getByRole( 'button', { name: 'Start import' } ).click();
 
-		// Two comments fit in the one batch the Start click runs.
 		await expect(
-			page.getByRole( 'heading', { name: 'Import complete' } )
+			page
+				.getByRole( 'alert' )
+				.getByText( 'This file is not a valid Disqus XML export.' )
 		).toBeVisible();
 		await expect(
-			page.locator( '[data-convocept-count="imported"] td' )
-		).toHaveText( '2' );
-
-		await page
-			.getByRole( 'button', { name: 'Start another import' } )
-			.click();
-		await context.close();
+			page.getByRole( 'heading', { name: 'Import from Disqus' } )
+		).toBeVisible();
 	} );
 } );

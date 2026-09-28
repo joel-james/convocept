@@ -2,6 +2,40 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-28 — M9 settings screen
+- **Built on the Foxe Plugin Admin UI design system** (claude.ai artifact "Foxe Plugin Admin UI").
+  The owner chose to build the components inside Convocept first (`assets/src/admin/ui/`, no
+  Convocept logic in it) and move them to a shared package later. Tokens are `--convocept-*`
+  custom properties and classes use `convocept-`, scoped under `.convocept-admin`;
+  `--wp-admin-theme-color` is set to ink so WordPress controls match.
+- **Components added to the design system first** (version 3): TextField, SelectField,
+  TextareaField, CheckboxList, ColorField, FileField, ProgressBar, SummaryList, Snackbar. Control
+  edges moved to `stroke-control` (3:1): choice tiles and the table search field used
+  `stroke-tile` (1.3:1).
+- **Pages instead of tabs**: Settings (General, Appearance, Composer, Moderation & spam,
+  Subscriptions, Advanced), Manage (Import), More (Help). Routing is the URL hash. Below 782px
+  the sidebar is a section dropdown. No add-ons exist, so there are no upsells anywhere.
+- **Saving**: one draft across pages; the save bar appears only while it differs from what is
+  saved, counts the changes, and blocks saving while a value is invalid. Messages come from
+  `Settings::validate()` on the server and the same rules in `app/validate.js` for instant
+  feedback. The route saves only the changed keys and nothing at all when one is invalid.
+  `convocept_settings_saved` fires afterwards; rendered comment lists are keyed by the settings,
+  full-page caches refresh on their own schedule.
+- **Settings → Convocept**, not a top-level menu, with a Settings link on the Plugins screen.
+  The bundle (37 KB JS, 13 KB CSS, WordPress packages external) loads on that screen only.
+- **Import moved into the app** (Manage → Import) on new REST routes, and the old server-rendered
+  Tools → Import screen was removed. Tools → Import still lists "Disqus (Convocept)" and redirects
+  to the Import page. The screen needs JavaScript now; the no-JS fallback is WP-CLI.
+- **Moderation & spam and Composer show facts, not new settings**: the spam checks in place, the
+  review queue, and WordPress's own Discussion rules with a link. New settings wait for real needs.
+- **NumberField is our own stepper** around a native number input: the design system maps it
+  to `__experimentalNumberControl`, which the WordPress lint rules forbid.
+- **Fixed a WordPress 6.5 break**: `@wordpress/scripts` compiles JSX for React's automatic runtime,
+  whose `react-jsx-runtime` script handle only exists from WordPress 6.6. The subscribe block
+  (M6) already depended on it, so it could not load on 6.5. A `babel.config.js` compiles JSX to
+  `createElement` from `@wordpress/element` for both the block and the app.
+- **Logo**: a placeholder mark (speech bubble on a white tile) until Convocept has one.
+
 ## 2026-09-26 — Prototype removed
 - Deleted `includes/`, `build/` and the React prototype in `src/` (App.jsx, components, hooks, …).
   Nothing loaded them, but `bin/build-zip.sh` ships all of `src/`, so they would have been in the
