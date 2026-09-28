@@ -311,12 +311,28 @@ export default function App( { boot, pages, groups } ) {
 							href: boot.urls.docs,
 						},
 						{
-							label: __( 'Website', 'convocept' ),
+							label: __( 'Homepage', 'convocept' ),
 							href: boot.urls.website,
 						},
 						{
-							label: __( 'Plugin directory', 'convocept' ),
-							href: boot.urls.wporg,
+							// The stars are decorative; screen readers hear "five-star" instead.
+							label: createInterpolateElement(
+								__(
+									/* translators: <stars> holds five star symbols, hidden from screen readers; <sr> is read to screen readers only. */
+									'Leave a <stars>★★★★★</stars><sr>five-star</sr> review',
+									'convocept'
+								),
+								{
+									stars: (
+										<span
+											className="convocept-footer__stars"
+											aria-hidden="true"
+										/>
+									),
+									sr: <span className="screen-reader-text" />,
+								}
+							),
+							href: boot.urls.review,
 						},
 					] }
 				/>

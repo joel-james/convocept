@@ -10,7 +10,7 @@ and versions follow [Semantic Versioning](https://semver.org/).
   `#appearance`: a reload or shared link opens the same section, sidebar links can open in a new
   tab, and Back and Forward move between sections.
 - The Convocept screen has its own footer (version; maker linked to foxelabs.com; links to the
-  Documentation, the Website (convocept.com) and the WordPress.org Plugin directory) in place of WordPress's admin footer, on that screen only.
+  Documentation, the Homepage (convocept.com) and a "Leave a ★★★★★ review" link to WordPress.org) in place of WordPress's admin footer, on that screen only.
 - The settings screen moved from Settings to **Comments → Convocept**, next to the screens it
   works with.
 - Comments → Convocept → Help links to the documentation (docs.foxelabs.com). Sidebar items

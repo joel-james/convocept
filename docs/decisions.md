@@ -16,9 +16,11 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   maker on the start side; Documentation, convocept.com and WordPress.org on the end side. On the
   Convocept screen only, `admin_footer_text` and `update_footer` return '' (hooked on the page's
   `load-` action) and the app stylesheet, which loads nowhere else, hides `#wpfooter`.
-- Footer links are labelled by what they lead to, never by bare domain: Documentation, Website
-  (convocept.com), Plugin directory (WordPress.org). "Foxe Labs" links to foxelabs.com. Design
-  system version 12.
+- Footer links are labelled by what they lead to, never by bare domain: Documentation, Homepage
+  (convocept.com), and "Leave a ★★★★★ review" to the WordPress.org reviews form. "Foxe Labs" links
+  to foxelabs.com. The review link is the plugin's only review ask (no notices or nags), which
+  WordPress.org guidelines allow. Stars are aria-hidden; screen readers hear "five-star".
+  Design system version 13.
 - Content keeps `space-8` below the last card instead of 120px; the footer gets 96px of bottom
   padding only while the FloatingBar shows, so short pages end with the footer at the window's
   bottom and the bar never covers its links.

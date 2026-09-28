@@ -249,6 +249,12 @@
 	text-decoration: underline;
 }
 
+/* Rating stars in a review link, in WordPress.org's star colour. */
+.convocept-footer__stars {
+	color: #dba617;
+	letter-spacing: 1px;
+}
+
 /* While the FloatingBar shows, keep the footer's links clear of it. */
 .convocept-main--has-bar .convocept-footer {
 	padding-bottom: 96px;

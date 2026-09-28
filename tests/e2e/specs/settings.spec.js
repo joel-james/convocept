@@ -175,11 +175,14 @@ test.describe( 'Settings screen', () => {
 			'https://docs.foxelabs.com/software/convocept/getting-started'
 		);
 		await expect(
-			footer.getByRole( 'link', { name: /Website/ } )
+			footer.getByRole( 'link', { name: /Homepage/ } )
 		).toHaveAttribute( 'href', 'https://convocept.com/' );
 		await expect(
-			footer.getByRole( 'link', { name: /Plugin directory/ } )
-		).toHaveAttribute( 'href', 'https://wordpress.org/plugins/convocept/' );
+			footer.getByRole( 'link', { name: /Leave a five-star review/ } )
+		).toHaveAttribute(
+			'href',
+			'https://wordpress.org/support/plugin/convocept/reviews/#new-post'
+		);
 		await expect(
 			page
 				.locator( '.convocept-footer' )

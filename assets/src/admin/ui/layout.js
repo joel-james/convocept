@@ -192,10 +192,10 @@ export function ExternalLink( { href, children } ) {
  * Replaces WordPress's own admin footer, which the plugin hides on its
  * screen. Links open in a new tab and say so to screen readers.
  *
- * @param {Object}                                 props       Props.
- * @param {string|Element}                         props.meta  Plugin, version and maker, e.g. "Convocept 1.0.0 · by Foxe Labs"; the maker may be an ExternalLink.
- * @param {string}                                 props.label Name of the link list for screen readers.
- * @param {Array<{ label: string, href: string }>} props.links Links, labelled with what they lead to (Documentation, Website).
+ * @param {Object}                                         props       Props.
+ * @param {string|Element}                                 props.meta  Plugin, version and maker, e.g. "Convocept 1.0.0 · by Foxe Labs"; the maker may be an ExternalLink.
+ * @param {string}                                         props.label Name of the link list for screen readers.
+ * @param {Array<{ label: string|Element, href: string }>} props.links Links, labelled with what they lead to (Documentation, Homepage).
  * @return {Element} Footer.
  */
 export function PageFooter( { meta, label, links } ) {
