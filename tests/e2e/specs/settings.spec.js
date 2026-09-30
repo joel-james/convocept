@@ -373,4 +373,23 @@ test.describe( 'Settings screen', () => {
 		await admin.visitAdminPage( 'index.php' );
 		await expect( page.locator( '#wpfooter' ) ).toBeVisible();
 	} );
+
+	test( 'Settings → Discussion says which options Convocept replaces', async ( {
+		admin,
+		page,
+	} ) => {
+		await admin.visitAdminPage( 'options-discussion.php' );
+
+		const notice = page.locator( '.convocept-discussion-notice' );
+		await expect( notice ).toContainText(
+			'Convocept shows the comments on Posts and Pages.'
+		);
+
+		await notice
+			.getByRole( 'link', { name: 'Open Convocept settings' } )
+			.click();
+		await expect(
+			page.getByRole( 'heading', { level: 1, name: 'General' } )
+		).toBeVisible();
+	} );
 } );

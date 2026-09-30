@@ -2,6 +2,23 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-01 — Settings → Discussion: explain, don't remove
+- Checked every Discussion option. Followed as before: name/email required, registration,
+  closing old posts, the cookies checkbox, manual approval, previously approved author, link
+  limit, moderation and disallowed lists (new comments go through
+  `wp_handle_comment_submission()`, edits are checked again), both notification emails (links
+  filtered to our pages), avatars (part of the fragment cache key) and the per-post defaults.
+- Replaced on posts Convocept handles: threaded comments and depth (`max_depth`), paging, comments
+  per page and first page shown (`per_page`, Load more; `/comment-page-N/` works with core paging
+  off), comment order (`default_sort`). Pingbacks and trackbacks are stored but not shown.
+- Core options are not hidden or disabled: they still apply to other post types and when
+  Convocept is off, and hiding core settings is close to admin hijacking for WordPress.org.
+  Instead an info notice on that screen only (`Admin\DiscussionNotice`), shown while Convocept
+  is on for at least one registered post type, links to the General page.
+- Convocept's own behaviour is set only in Convocept's settings. It does not read
+  `thread_comments` (turning threading off in WordPress does not flatten Convocept's thread) or
+  the other replaced options.
+
 ## 2026-10-01 — Admin screen review: robustness across WordPress versions
 - Checked on WordPress 6.5 (the minimum), 7.1 and trunk (7.2-alpha) with the settings, import
   and accessibility e2e specs, plus a new "layout holds" spec (no sideways scroll, Save in view

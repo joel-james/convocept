@@ -6,6 +6,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- Settings → Discussion shows a notice naming the post types Convocept handles and the options
+  it replaces there (threading, comment pages and comment order; pingbacks and trackbacks are
+  not shown), with a link to Convocept's settings. Every other Discussion option still applies,
+  and none are hidden: they still apply to other post types and when Convocept is off.
 - Comments → Convocept is rebuilt on the new Foxe Plugin Admin Kit and looks like core
   WordPress: your admin colour scheme instead of black, WordPress's grey background, bordered
   cards in one left-aligned column. Save sits in the sticky page header with the count of unsaved

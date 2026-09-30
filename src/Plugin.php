@@ -9,6 +9,7 @@
 namespace Convocept;
 
 use Convocept\Admin\CommentsColumn;
+use Convocept\Admin\DiscussionNotice;
 use Convocept\Admin\ImportEntry;
 use Convocept\Admin\SettingsPage;
 use Convocept\Cli\ImportCommand;
@@ -155,6 +156,7 @@ final class Plugin {
 		if ( is_admin() ) {
 			( new CommentsColumn( $this->votes() ) )->register();
 			( new SettingsPage( $this->settings() ) )->register();
+			( new DiscussionNotice( $this->settings() ) )->register();
 			// Importers exist only in wp-admin, WP-CLI and the import REST routes; front-end pages never load them.
 			( new ImportEntry( $this->import_runner() ) )->register();
 		}
