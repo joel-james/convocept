@@ -28,14 +28,30 @@ class BlockTheme {
 	/**
 	 * Core blocks replaced by the thread.
 	 *
-	 * - core/comments:           the comments block in block themes.
-	 * - core/post-comments:      deprecated legacy block, still in older content.
-	 * - core/post-comments-form: the form, when placed outside core/comments.
+	 * - core/comments:             the comments block in block themes.
+	 * - core/comments-query-loop:  its name before WordPress 6.1. Some themes
+	 *                              (Raft) still use it; PHP doesn't register the
+	 *                              old name, so core renders its inner blocks
+	 *                              as if it were core/comments.
+	 * - core/post-comments:        deprecated legacy block, still in older content.
+	 * - core/post-comments-form:   the form, when placed outside core/comments.
 	 *
 	 * @since 1.0.0
 	 * @var string[]
 	 */
-	const BLOCKS = array( 'core/comments', 'core/post-comments', 'core/post-comments-form' );
+	const BLOCKS = array( 'core/comments', 'core/comments-query-loop', 'core/post-comments', 'core/post-comments-form' );
+
+	/**
+	 * Core comment parts removed on posts Convocept handles.
+	 *
+	 * They normally sit inside one of BLOCKS and go with it. A theme that
+	 * places them in some other wrapper would otherwise show core's list
+	 * next to the thread.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const PARTS = array( 'core/comments-title', 'core/comment-template', 'core/comments-pagination' );
 
 	/**
 	 * Thread renderer.
@@ -78,7 +94,9 @@ class BlockTheme {
 	 * @return string|null
 	 */
 	public function pre_render( $pre_render, $parsed_block, $parent_block = null ) {
-		if ( null !== $pre_render || ! in_array( $parsed_block['blockName'] ?? '', self::BLOCKS, true ) ) {
+		$name = $parsed_block['blockName'] ?? '';
+
+		if ( null !== $pre_render || ! in_array( $name, array_merge( self::BLOCKS, self::PARTS ), true ) ) {
 			return $pre_render;
 		}
 
@@ -86,6 +104,10 @@ class BlockTheme {
 
 		if ( ! $post_id || ! $this->renderer->is_enabled_for( $post_id ) ) {
 			return $pre_render;
+		}
+
+		if ( in_array( $name, self::PARTS, true ) ) {
+			return '';
 		}
 
 		if ( $this->renderer->has_rendered( $post_id ) ) {

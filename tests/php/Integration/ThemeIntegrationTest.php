@@ -85,6 +85,35 @@ class ThemeIntegrationTest extends TestCase {
 		$this->assertSame( '', $second );
 	}
 
+	public function test_pre_6_1_comments_block_is_replaced(): void {
+		$post_id = self::factory()->post->create();
+		$this->view_post( $post_id );
+
+		$html = ( new BlockTheme( $this->renderer() ) )->pre_render( null, array( 'blockName' => 'core/comments-query-loop' ) );
+
+		$this->assertStringContainsString( 'class="convocept', (string) $html );
+	}
+
+	public function test_stray_core_comment_parts_are_removed(): void {
+		$post_id = self::factory()->post->create();
+		$this->view_post( $post_id );
+
+		$blocks = new BlockTheme( $this->renderer() );
+
+		foreach ( BlockTheme::PARTS as $name ) {
+			$this->assertSame( '', $blocks->pre_render( null, array( 'blockName' => $name ) ), $name );
+		}
+	}
+
+	public function test_core_comment_parts_stay_where_convocept_is_off(): void {
+		$page_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$this->view_post( $page_id );
+
+		$blocks = new BlockTheme( $this->renderer( array( 'post_types' => array( 'post' ) ) ) );
+
+		$this->assertNull( $blocks->pre_render( null, array( 'blockName' => 'core/comment-template' ) ) );
+	}
+
 	public function test_unrelated_blocks_untouched(): void {
 		$blocks = new BlockTheme( $this->renderer() );
 
