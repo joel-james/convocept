@@ -810,13 +810,26 @@ class ThreadRenderer {
 			);
 		}
 
-		return $this->templates->render(
-			'thread-header',
-			array(
-				'thread'     => $thread,
-				'sort_links' => $thread->total() > 1 ? $links : array(),
-			)
+		$args = array(
+			'thread'     => $thread,
+			'sort_links' => $thread->total() > 1 ? $links : array(),
+			'follow'     => false,
 		);
+
+		/**
+		 * Filters the data passed to the thread header template.
+		 *
+		 * Subscriptions set `follow` to show the Follow link when the
+		 * in-thread subscribe form is on the page.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array<string, mixed> $args   Template arguments: 'thread', 'sort_links' and 'follow'.
+		 * @param Thread               $thread The thread being rendered.
+		 */
+		$args = (array) apply_filters( 'convocept_thread_header_args', $args, $thread );
+
+		return $this->templates->render( 'thread-header', $args );
 	}
 
 	/**

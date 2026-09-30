@@ -73,7 +73,7 @@ test.describe( 'Subscriptions', () => {
 
 		// 1. Subscribe without commenting.
 		await page.goto( `${ post.link }#comments` );
-		await page.locator( '.convocept-subscribe summary' ).click();
+		await page.getByRole( 'button', { name: 'Follow' } ).click();
 		await page
 			.locator( '.convocept-subscribe input[type="email"]' )
 			.fill( address );
@@ -159,7 +159,7 @@ test.describe( 'Subscriptions', () => {
 			params: { context: 'edit' },
 		} );
 		await page.goto( `${ post.link }#comments` );
-		await page.locator( '.convocept-subscribe summary' ).click();
+		await page.getByRole( 'button', { name: 'Follow' } ).click();
 		await page
 			.locator( '.convocept-subscribe input[type="email"]' )
 			.fill( admin.email );

@@ -61,7 +61,7 @@ test.describe( 'Settings screen', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'Appearance' } )
 		).toBeFocused();
-		await page.getByLabel( 'Always dark' ).check();
+		await page.getByRole( 'radio', { name: /^Dark\b/ } ).check();
 		await page.locator( '.convocept-color' ).click();
 		await page
 			.locator( '.convocept-color-panel' )
@@ -89,7 +89,9 @@ test.describe( 'Settings screen', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'Appearance' } )
 		).toBeVisible();
-		await expect( page.getByLabel( 'Always dark' ) ).toBeChecked();
+		await expect(
+			page.getByRole( 'radio', { name: /^Dark\b/ } )
+		).toBeChecked();
 
 		// Back returns to the previous page without a reload.
 		await page.goBack();

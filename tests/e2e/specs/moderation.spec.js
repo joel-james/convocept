@@ -134,13 +134,19 @@ test.describe( 'Votes and moderation', () => {
 
 		const pending = page.locator( `#comment-${ held.id }` );
 		await expect( pending ).toContainText( /awaiting moderation/i );
+		await pending
+			.getByRole( 'button', { name: 'Moderate' } )
+			.first()
+			.click();
 		await pending.getByRole( 'button', { name: 'Approve' } ).click();
 		await expect( pending ).not.toHaveClass( /convocept-comment--pending/ );
 
 		const target = page.locator( `#comment-${ second.id }` );
 		await target
-			.getByRole( 'button', { name: 'Pin', exact: true } )
+			.getByRole( 'button', { name: 'Moderate' } )
+			.first()
 			.click();
+		await target.getByRole( 'button', { name: 'Pin to top' } ).click();
 		await expect(
 			target.locator( '.convocept-badge--pinned' )
 		).toBeVisible();
@@ -150,10 +156,21 @@ test.describe( 'Votes and moderation', () => {
 			page.locator( '.convocept-list > .convocept-comment' ).first()
 		).toHaveId( `comment-${ second.id }` );
 
-		await page
-			.locator( `#comment-${ first.id }` )
-			.getByRole( 'button', { name: 'Spam' } )
+		const spammed = page.locator( `#comment-${ first.id }` );
+		await spammed
+			.getByRole( 'button', { name: 'Moderate' } )
+			.first()
 			.click();
+		// Escape closes the menu and returns focus to its toggle.
+		await page.keyboard.press( 'Escape' );
+		await expect(
+			spammed.getByRole( 'button', { name: 'Moderate' } ).first()
+		).toBeFocused();
+		await expect(
+			spammed.getByRole( 'button', { name: 'Mark as spam' } )
+		).toBeHidden();
+		await page.keyboard.press( 'Enter' );
+		await spammed.getByRole( 'button', { name: 'Mark as spam' } ).click();
 		await expect( page.locator( `#comment-${ first.id }` ) ).toHaveCount(
 			0
 		);

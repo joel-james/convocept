@@ -33,7 +33,7 @@ It is a lightweight **Disqus alternative** with no ads, no tracking and no outsi
 * **Edit after posting** for a few minutes, with a countdown.
 * **Load more comments** and **show more replies**, so long discussions stay quick.
 * **Comment links** open the right page and highlight the comment.
-* **Light, dark or your theme's colours**, with your own accent colour.
+* **A clean design that fits any theme**: light or dark, your theme's font and your own accent colour.
 
 = 📬 Comment subscriptions built in =
 
@@ -127,7 +127,7 @@ In the standard WordPress comment tables, exactly as WordPress stores them. Conv
 
 = Does it work with my theme? =
 
-Convocept works with classic themes and block themes. By default it takes your theme's text and background colours; you can also choose a light or dark palette and an accent colour. Themes can restyle it with CSS custom properties or override its templates.
+Convocept works with classic themes and block themes. It draws its own simple design, so it looks the same in every theme, and takes only your theme's font. Choose light, dark or the reader's device setting, and an accent colour. Themes can restyle it with CSS custom properties or override its templates.
 
 = Does it work with Akismet? =
 
@@ -155,7 +155,7 @@ No, never. Your comments are WordPress data. Settings, subscriptions and votes a
 
 == Screenshots ==
 
-1. Threaded comments with upvotes and a pinned comment, in your theme's colours.
+1. Threaded comments with upvotes and a pinned comment.
 2. The dark comment theme, with nested replies.
 3. Replying inline, with the formatting toolbar and live preview.
 4. Comments → Convocept: all options in one place.

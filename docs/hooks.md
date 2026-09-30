@@ -37,6 +37,7 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 | `convocept_thread_query_args` | 1.0.0 | `array $args, int $post_id, string $sort, int $page` | WP_Comment_Query args for a thread page. |
 | `convocept_excluded_comment_types` | 1.0.0 | `string[] $types` | Comment types never shown (default pingback, trackback). |
 | `convocept_thread_template_args` | 1.0.0 | `array $args, Thread $thread` | Data passed to `thread.php`. |
+| `convocept_thread_header_args` | 1.0.0 | `array $args, Thread $thread` | Data passed to `thread-header.php` (`thread`, `sort_links`, `follow`). |
 | `convocept_thread_classes` | 1.0.0 | `string[] $classes, int $post_id` | CSS classes on the thread wrapper. |
 | `convocept_comment_view` | 1.0.0 | `array $view, WP_Comment $comment` | View data passed to `comment.php`. |
 | `convocept_comment_badges` | 1.0.0 | `array $badges, WP_Comment $comment` | Badges next to the author name (`label`, `type`). |

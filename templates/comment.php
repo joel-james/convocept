@@ -90,19 +90,19 @@ $convocept_comment = $args['comment'];
 				<?php if ( $args['is_edited'] ) : ?>
 					<span class="convocept-comment__edited"><?php esc_html_e( '(edited)', 'convocept' ); ?></span>
 				<?php endif; ?>
+
+				<?php if ( $args['reply_to'] ) : ?>
+					<span class="convocept-comment__reply-to">
+						<?php
+						/* translators: %s: Name of the person being replied to. */
+						echo esc_html( sprintf( __( 'Replying to %s', 'convocept' ), $args['reply_to'] ) );
+						?>
+					</span>
+				<?php endif; ?>
 			</header>
 
 			<?php if ( $args['is_pending'] ) : ?>
 				<p class="convocept-comment__pending"><?php esc_html_e( 'Awaiting moderation.', 'convocept' ); ?></p>
-			<?php endif; ?>
-
-			<?php if ( $args['reply_to'] ) : ?>
-				<p class="convocept-comment__reply-to">
-					<?php
-					/* translators: %s: Name of the person being replied to. */
-					echo esc_html( sprintf( __( 'Replying to %s', 'convocept' ), $args['reply_to'] ) );
-					?>
-				</p>
 			<?php endif; ?>
 
 			<div class="convocept-comment__content" data-convocept-content>
@@ -120,7 +120,7 @@ $convocept_comment = $args['comment'];
 						data-convocept-vote
 						aria-pressed="false"
 					>
-						<svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+						<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
 						<span class="screen-reader-text"><?php esc_html_e( 'Upvote', 'convocept' ); ?> </span>
 						<span data-convocept-vote-count="<?php echo esc_attr( (string) (int) $args['votes'] ); ?>"><?php echo esc_html( number_format_i18n( $args['votes'] ) ); ?></span>
 					</button>

@@ -15,13 +15,14 @@
  *     @type int                        $post_id       Post ID.
  *     @type string[]                   $classes       Wrapper CSS classes (sanitized).
  *     @type bool                       $is_open       Whether new comments are accepted.
- *     @type string                     $color_scheme  'auto', 'system', 'light' or 'dark'.
+ *     @type string                     $color_scheme  'light', 'dark' or 'system'.
  *     @type string                     $accent_color  Sanitized hex accent color.
  *     @type string                     $header_html   Count and sort navigation.
  *     @type string                     $composer_html Comment form, empty when closed.
  *     @type string                     $list_html     Comment list items.
  *     @type string                     $pagination    Pagination, empty for a single page.
- *     @type string                     $subscribe_html "Subscribe without commenting" form, or empty.
+ *     @type string                     $subscribe_html "Subscribe without commenting" form, opened by the
+ *                                                     header's Follow link, or empty.
  * }
  */
 
@@ -53,8 +54,8 @@ $convocept_thread = $args['thread'];
 	do_action( 'convocept_render_thread_header', $convocept_thread );
 
 	echo $args['header_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in thread-header.php.
-	echo $args['composer_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in composer.php.
 	echo $args['subscribe_html'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in subscribe-form.php.
+	echo $args['composer_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in composer.php.
 	?>
 
 	<?php if ( ! $args['is_open'] ) : ?>
@@ -99,12 +100,18 @@ $convocept_thread = $args['thread'];
 	</template>
 	<template data-convocept-template="moderate">
 		<span class="convocept-mod" data-convocept-mod-menu>
-			<button type="button" class="convocept-action" data-convocept-mod="approve"><?php esc_html_e( 'Approve', 'convocept' ); ?></button>
-			<button type="button" class="convocept-action" data-convocept-mod="pin"><?php esc_html_e( 'Pin', 'convocept' ); ?></button>
-			<button type="button" class="convocept-action" data-convocept-mod="unpin"><?php esc_html_e( 'Unpin', 'convocept' ); ?></button>
-			<button type="button" class="convocept-action" data-convocept-mod="spam"><?php esc_html_e( 'Spam', 'convocept' ); ?></button>
-			<button type="button" class="convocept-action" data-convocept-mod="trash"><?php esc_html_e( 'Trash', 'convocept' ); ?></button>
-			<a class="convocept-action" data-convocept-mod-edit href="#"><?php esc_html_e( 'Edit in dashboard', 'convocept' ); ?></a>
+			<button type="button" class="convocept-action convocept-mod__toggle" aria-expanded="false" data-convocept-mod-toggle>
+				<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round"><path d="M5 12h.01M12 12h.01M19 12h.01"/></svg>
+				<span class="screen-reader-text"><?php esc_html_e( 'Moderate', 'convocept' ); ?></span>
+			</button>
+			<span class="convocept-mod__menu" data-convocept-mod-list hidden>
+				<button type="button" class="convocept-action" data-convocept-mod="approve"><?php esc_html_e( 'Approve', 'convocept' ); ?></button>
+				<button type="button" class="convocept-action" data-convocept-mod="pin"><?php esc_html_e( 'Pin to top', 'convocept' ); ?></button>
+				<button type="button" class="convocept-action" data-convocept-mod="unpin"><?php esc_html_e( 'Unpin', 'convocept' ); ?></button>
+				<a class="convocept-action" data-convocept-mod-edit href="#"><?php esc_html_e( 'Edit in dashboard', 'convocept' ); ?></a>
+				<button type="button" class="convocept-action" data-convocept-mod="spam"><?php esc_html_e( 'Mark as spam', 'convocept' ); ?></button>
+				<button type="button" class="convocept-action" data-convocept-mod="trash"><?php esc_html_e( 'Move to trash', 'convocept' ); ?></button>
+			</span>
 		</span>
 	</template>
 	<template data-convocept-template="editor">

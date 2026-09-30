@@ -121,9 +121,13 @@ class ThemeIntegrationTest extends TestCase {
 		$this->assertSame( 'x', $blocks->pre_render( 'x', array( 'blockName' => 'core/comments' ) ) );
 	}
 
-	public function test_classic_wrapper_classes_include_comments_area(): void {
-		$classes = ( new ClassicTheme( $this->renderer() ) )->wrapper_classes( array( 'convocept' ) );
+	public function test_wrapper_has_no_theme_classes(): void {
+		$post_id = self::factory()->post->create();
+		$this->view_post( $post_id );
+		( new ClassicTheme( $this->renderer() ) )->register();
 
-		$this->assertContains( 'comments-area', $classes );
+		$html = $this->renderer()->render( $post_id );
+
+		$this->assertMatchesRegularExpression( '/<section\s+id="comments"\s+class="convocept"/', $html, 'Theme styles for .comments-area must not reach the thread.' );
 	}
 }

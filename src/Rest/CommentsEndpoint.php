@@ -378,10 +378,12 @@ class CommentsEndpoint {
 	}
 
 	/**
-	 * Make sure an error carries an HTTP status.
+	 * Make sure an error carries an HTTP status and a plain-text message.
 	 *
 	 * Core's comment errors (duplicate, flood, missing fields) sometimes
-	 * carry a status and sometimes do not.
+	 * carry a status and sometimes do not, and their messages contain HTML
+	 * ("<strong>Error:</strong> …") meant for wp_die(). The composer shows
+	 * the message as text, so the tags are stripped here.
 	 *
 	 * @since 1.0.0
 	 *
@@ -389,15 +391,14 @@ class CommentsEndpoint {
 	 * @return WP_Error
 	 */
 	private function with_status( WP_Error $error ): WP_Error {
+		$code   = $error->get_error_code();
 		$data   = $error->get_error_data();
 		$status = is_array( $data ) && isset( $data['status'] ) ? (int) $data['status'] : ( is_int( $data ) ? $data : 400 );
 
 		if ( $status < 400 ) {
-			$status = 'comment_flood' === $error->get_error_code() ? 429 : 400;
+			$status = 'comment_flood' === $code ? 429 : 400;
 		}
 
-		$error->add_data( array( 'status' => $status ) );
-
-		return $error;
+		return new WP_Error( $code, wp_strip_all_tags( $error->get_error_message() ), array( 'status' => $status ) );
 	}
 }

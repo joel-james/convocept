@@ -115,6 +115,9 @@ class CommentsEndpointTest extends RestTestCase {
 
 		$this->assertSame( 'require_name_email', $response->get_data()['code'] );
 		$this->assertSame( 400, $response->get_status() );
+		// Core's message has <strong> tags for wp_die(); the composer shows plain text.
+		$this->assertStringNotContainsString( '<', $response->get_data()['message'] );
+		$this->assertStringContainsString( 'required fields', $response->get_data()['message'] );
 	}
 
 	public function test_disabled_post_is_not_available(): void {

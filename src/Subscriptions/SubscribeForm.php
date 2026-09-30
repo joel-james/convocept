@@ -8,6 +8,7 @@
 
 namespace Convocept\Subscriptions;
 
+use Convocept\Comments\Thread;
 use Convocept\Moderation\Context;
 use Convocept\Render\TemplateLoader;
 use Convocept\Render\ThreadRenderer;
@@ -128,6 +129,7 @@ class SubscribeForm {
 		add_action( 'admin_post_' . self::ACTION, array( $this, 'handle_post' ) );
 		add_action( 'convocept_comment_created', array( $this, 'on_comment_created' ), 10, 3 );
 		add_filter( 'convocept_thread_template_args', array( $this, 'thread_args' ) );
+		add_filter( 'convocept_thread_header_args', array( $this, 'header_args' ), 10, 2 );
 		add_filter( 'query_vars', array( $this, 'query_vars' ) );
 		add_action( 'init', array( $this, 'register_block' ) );
 		add_shortcode( 'convocept_subscribe', array( $this, 'shortcode' ) );
@@ -286,6 +288,22 @@ class SubscribeForm {
 				'is_error'    => 'error' === $done,
 			)
 		);
+	}
+
+	/**
+	 * Show the header's Follow link when the in-thread form will render.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string, mixed> $args   Header template arguments.
+	 * @param Thread               $thread The thread being rendered.
+	 * @return array<string, mixed>
+	 */
+	public function header_args( $args, $thread ) {
+		$args           = (array) $args;
+		$args['follow'] = $this->subscriptions->enabled() && $this->can_follow( $thread->post_id() );
+
+		return $args;
 	}
 
 	/**

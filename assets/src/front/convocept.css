@@ -1,141 +1,177 @@
 /**
  * Convocept front-end styles.
  *
- * Everything is scoped under .convocept and driven by custom properties, so
- * themes restyle the thread by overriding tokens, not selectors:
+ * The thread draws its own design and takes only the font family from the
+ * theme. Themes style comments through selectors such as `#respond input`,
+ * `.entry-content button` or `ol li`, which also reach our markup, so the
+ * thread first reverts every element inside it to the browser defaults and
+ * then applies these rules:
+ *
+ * - `#comments.convocept :where(…)` { all: revert } drops theme styles
+ *   (the ID beats class- and element-level theme rules, and `#respond` /
+ *   `#commentform` ones on equal terms).
+ * - Every rule below starts with `#comments.convocept`, so it outranks the
+ *   reset and typical theme selectors.
+ * - SVG icons are left out of the reset: `revert` would drop their
+ *   presentation attributes.
+ *
+ * Themes and site owners restyle the thread through the tokens, not
+ * selectors. Defaults sit in :where() blocks, so any rule on .convocept
+ * wins:
  *
  *     .convocept { --convocept-radius: 4px; --convocept-font: Georgia, serif; }
  *
- * Default tokens sit in :where() blocks, which have no specificity. This
- * stylesheet is printed inside the page body, after the theme's styles, so
- * with a normal selector our defaults would win on source order; with
- * :where() any theme rule on .convocept wins. The accent colour is the
- * exception: the setting is applied inline on the wrapper.
+ * The accent colour comes from the settings, inline on the wrapper.
  *
- * Color schemes (data-convocept-theme on the wrapper):
- * - auto:   inherit the theme's text and background; tints are mixed from
- *           currentColor, so the thread matches light and dark themes alike.
- * - system: follow the visitor's OS light/dark preference.
- * - light / dark: force a palette.
+ * Colour schemes (data-convocept-theme on the wrapper): light (default),
+ * dark, and system (the reader's light or dark preference).
+ *
+ * Sizes are in px, not rem: some themes change the root font size.
  */
 
-/* Tokens and base
+/* Tokens
    ------------------------------------------------------------------ */
 
 :where(.convocept) {
 	--convocept-accent: #2563eb;
 	--convocept-on-accent: #fff;
-
-	/* Accent as text: pulled toward the text colour, so links stay readable (4.5:1) on dark
-	   backgrounds and tinted theme backgrounds, where the plain accent can fall short. */
-	--convocept-link: color-mix(in srgb, var(--convocept-accent) 65%, var(--convocept-text));
-	--convocept-danger: color-mix(in srgb, #dc2626 70%, var(--convocept-text));
-	--convocept-text: currentcolor;
-	--convocept-bg: transparent;
-
-	/* 75% keeps muted text at 4.5:1 or more on themes with softer contrast (Twenty Twenty-One: 5.1:1). */
-	--convocept-muted: color-mix(in srgb, currentcolor 75%, transparent);
-	--convocept-border: color-mix(in srgb, currentcolor 16%, transparent);
-	--convocept-surface: color-mix(in srgb, currentcolor 4%, transparent);
-	--convocept-field-bg: color-mix(in srgb, currentcolor 2%, transparent);
-	--convocept-radius: 10px;
-	--convocept-gap: 2rem;
-	--convocept-avatar: 40px;
-	--convocept-font: inherit;
-	--convocept-font-size: 0.9375rem;
-}
-
-.convocept {
-	box-sizing: border-box;
-	margin-block: 2.5rem;
-	color: var(--convocept-text);
-	background: var(--convocept-bg);
-	font-family: var(--convocept-font);
-	font-size: var(--convocept-font-size);
-	line-height: 1.6;
-}
-
-:where(.convocept[data-convocept-theme="light"]) {
-	--convocept-text: #1f2937;
+	--convocept-text: #18181b;
+	--convocept-muted: #63636e;
 	--convocept-bg: #fff;
-	--convocept-muted: #6b7280;
-	--convocept-border: #e5e7eb;
-	--convocept-surface: #f9fafb;
+	--convocept-surface: #f4f4f5;
+	--convocept-border: #e4e4e7;
+	--convocept-border-strong: #d4d4d8;
 	--convocept-field-bg: #fff;
+	--convocept-danger: #b91c1c;
+	--convocept-warning: #92400e;
+	--convocept-warning-line: #d97706;
+	--convocept-link: color-mix(in srgb, var(--convocept-accent) 85%, var(--convocept-text));
+	--convocept-scheme: light;
+	--convocept-radius: 12px;
+	--convocept-font: inherit;
+	--convocept-font-size: 15px;
+	--convocept-max-width: 720px;
+	--convocept-avatar: 36px;
+	--convocept-gap: 28px;
 }
 
 :where(.convocept[data-convocept-theme="dark"]) {
-	--convocept-text: #e5e7eb;
-	--convocept-bg: #111827;
-	--convocept-muted: #9ca3af;
-	--convocept-border: #374151;
-	--convocept-surface: #1f2937;
-	--convocept-field-bg: #0b1220;
-}
-
-:where(.convocept[data-convocept-theme="system"]) {
-	--convocept-text: #1f2937;
-	--convocept-bg: #fff;
-	--convocept-muted: #6b7280;
-	--convocept-border: #e5e7eb;
-	--convocept-surface: #f9fafb;
-	--convocept-field-bg: #fff;
+	--convocept-text: #f4f4f5;
+	--convocept-muted: #a1a1aa;
+	--convocept-bg: #1b1b1e;
+	--convocept-surface: #27272a;
+	--convocept-border: #2e2e33;
+	--convocept-border-strong: #44444c;
+	--convocept-field-bg: #141416;
+	--convocept-danger: #fca5a5;
+	--convocept-warning: #fcd34d;
+	--convocept-warning-line: #b45309;
+	--convocept-link: color-mix(in srgb, var(--convocept-accent) 45%, var(--convocept-text));
+	--convocept-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
 
 	:where(.convocept[data-convocept-theme="system"]) {
-		--convocept-text: #e5e7eb;
-		--convocept-bg: #111827;
-		--convocept-muted: #9ca3af;
-		--convocept-border: #374151;
-		--convocept-surface: #1f2937;
-		--convocept-field-bg: #0b1220;
+		--convocept-text: #f4f4f5;
+		--convocept-muted: #a1a1aa;
+		--convocept-bg: #1b1b1e;
+		--convocept-surface: #27272a;
+		--convocept-border: #2e2e33;
+		--convocept-border-strong: #44444c;
+		--convocept-field-bg: #141416;
+		--convocept-danger: #fca5a5;
+		--convocept-warning: #fcd34d;
+		--convocept-warning-line: #b45309;
+		--convocept-link: color-mix(in srgb, var(--convocept-accent) 45%, var(--convocept-text));
+		--convocept-scheme: dark;
 	}
 }
 
-/* Browsers without color-mix() (before 2023) get plain fallbacks. */
+/* Browsers without color-mix() (before 2023) use the plain accent. */
 @supports not (color: color-mix(in srgb, red 50%, transparent)) {
 
 	:where(.convocept) {
 		--convocept-link: var(--convocept-accent);
-		--convocept-danger: #b91c1c;
-	}
-
-	:where(.convocept[data-convocept-theme="auto"]) {
-		--convocept-muted: currentcolor;
-		--convocept-border: rgba(127, 127, 127, 0.3);
-		--convocept-surface: rgba(127, 127, 127, 0.06);
-		--convocept-field-bg: transparent;
 	}
 }
 
-/* Layout
+/* Standalone subscribe form (block and shortcode), outside the thread
    ------------------------------------------------------------------ */
 
-.convocept[data-convocept-theme="light"],
-.convocept[data-convocept-theme="dark"],
-.convocept[data-convocept-theme="system"] {
-	padding: var(--convocept-gap);
+.convocept-subscribe--standalone .convocept-subscribe__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.convocept-subscribe--standalone input[type="email"] {
+	flex: 1 1 14rem;
+}
+
+.convocept-subscribe--standalone .convocept-subscribe__message:empty {
+	display: none;
+}
+
+/* Reset: theme styles stop at the thread
+   ------------------------------------------------------------------ */
+
+#comments.convocept :where(:not(svg, svg *)),
+#comments.convocept :where(:not(svg, svg *))::before,
+#comments.convocept :where(:not(svg, svg *))::after {
+	all: revert;
+	box-sizing: border-box;
+}
+
+#comments.convocept {
+	all: revert;
+	display: block;
+	box-sizing: border-box;
+	width: auto;
+
+	/* Never wider than a block theme's content column, and a 16px gutter on
+	   phones when the theme gives comments the full screen width. */
+	max-width: min(var(--convocept-max-width), var(--wp--style--global--content-size, 100%), calc(100vw - 32px));
+	margin: 48px auto;
+	padding: 32px;
+	border: 1px solid var(--convocept-border);
 	border-radius: var(--convocept-radius);
+	background: var(--convocept-bg);
+	color: var(--convocept-text);
+	color-scheme: var(--convocept-scheme);
+	font-family: var(--convocept-font);
+	font-size: var(--convocept-font-size);
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1.6;
+	letter-spacing: normal;
+	text-align: start;
+	text-transform: none;
+	overflow-wrap: break-word;
+
+	/* Keep the thread clear of sticky site headers when linked to. */
+	scroll-margin-top: 80px;
 }
 
-.convocept *,
-.convocept *::before,
-.convocept *::after {
-	box-sizing: inherit;
+#comments.convocept svg {
+	flex: none;
+	width: 15px;
+	height: 15px;
+	fill: none;
+	stroke: currentcolor;
+	vertical-align: middle;
 }
 
-.convocept a {
-	color: var(--convocept-link);
+#comments.convocept [hidden] {
+	display: none !important;
 }
 
-.convocept :focus-visible {
+#comments.convocept :focus-visible {
 	outline: 2px solid var(--convocept-accent);
 	outline-offset: 2px;
 }
 
-.convocept .screen-reader-text {
+#comments.convocept .screen-reader-text {
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -144,379 +180,7 @@
 	white-space: nowrap;
 }
 
-.convocept-header {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.75rem 1rem;
-	align-items: center;
-	justify-content: space-between;
-	margin-block-end: 1.5rem;
-}
-
-.convocept-title {
-	margin: 0;
-	font-size: 1.25em;
-	font-weight: 600;
-	line-height: 1.3;
-}
-
-/* Sort tabs */
-
-.convocept-sort {
-	display: inline-flex;
-	gap: 2px;
-	padding: 3px;
-	border: 1px solid var(--convocept-border);
-	border-radius: 999px;
-	font-size: 0.875em;
-}
-
-.convocept .convocept-sort__link {
-	padding: 0.25em 0.85em;
-	border-radius: 999px;
-	color: var(--convocept-muted);
-	text-decoration: none;
-}
-
-.convocept .convocept-sort__link:hover {
-	color: var(--convocept-text);
-}
-
-.convocept .convocept-sort__link[aria-current] {
-	background: var(--convocept-surface);
-	color: var(--convocept-text);
-	font-weight: 600;
-}
-
-/* Composer */
-
-.convocept-composer {
-	margin-block-end: 2.5rem;
-}
-
-.convocept-form {
-	display: grid;
-	gap: 0.75rem;
-}
-
-.convocept-form p {
-	margin: 0;
-}
-
-.convocept .convocept-form__textarea,
-.convocept .convocept-form input[type="text"],
-.convocept .convocept-form input[type="email"],
-.convocept .convocept-form input[type="url"] {
-	display: block;
-	width: 100%;
-	max-width: 100%;
-	margin: 0;
-	padding: 0.65em 0.8em;
-	border: 1px solid var(--convocept-border);
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-field-bg);
-	color: inherit;
-	font: inherit;
-	line-height: 1.5;
-}
-
-.convocept .convocept-form__textarea {
-	min-height: 6.5em;
-	resize: vertical;
-}
-
-.convocept .convocept-form__textarea:focus,
-.convocept .convocept-form input:focus {
-	border-color: var(--convocept-accent);
-	outline: none;
-	box-shadow: 0 0 0 3px
-		color-mix(in srgb, var(--convocept-accent) 20%, transparent);
-}
-
-.convocept-form__identity {
-	display: grid;
-	gap: 0.75rem;
-}
-
-@media (min-width: 640px) {
-
-	.convocept-form__identity {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	.convocept-form__note,
-	.convocept-form__field--checkbox {
-		grid-column: 1 / -1;
-	}
-}
-
-.convocept-form label {
-	display: block;
-	margin-block-end: 0.25em;
-	font-size: 0.875em;
-	font-weight: 500;
-}
-
-.convocept-form__field--checkbox {
-	display: flex;
-	gap: 0.5em;
-	align-items: flex-start;
-}
-
-.convocept-form__field--checkbox label {
-	margin: 0;
-	font-weight: 400;
-}
-
-.convocept-form__note,
-.convocept-form__replying {
-	color: var(--convocept-muted);
-	font-size: 0.875em;
-}
-
-.convocept-form__required {
-	color: var(--convocept-link);
-}
-
-.convocept-form__cancel {
-	margin-inline-start: 0.5em;
-}
-
-.convocept-form__submit {
-	display: flex;
-	justify-content: flex-end;
-}
-
-.convocept .convocept-button {
-	padding: 0.6em 1.25em;
-	border: 0;
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-accent);
-	color: var(--convocept-on-accent);
-	font: inherit;
-	font-weight: 600;
-	cursor: pointer;
-}
-
-.convocept .convocept-button:hover {
-	filter: brightness(1.08);
-}
-
-/* Comments */
-
-.convocept-list,
-.convocept-replies,
-.convocept-pagination__pages {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.convocept-comment {
-	margin: 0;
-	padding: 0;
-
-	/* Keep deep-linked comments clear of sticky site headers. */
-	scroll-margin-block-start: 5rem;
-}
-
-.convocept-list > .convocept-comment + .convocept-comment {
-	margin-block-start: var(--convocept-gap);
-	padding-block-start: var(--convocept-gap);
-	border-block-start: 1px solid var(--convocept-border);
-}
-
-.convocept-comment__body {
-	display: grid;
-	grid-template-columns: var(--convocept-avatar) minmax(0, 1fr);
-	gap: 1rem;
-}
-
-.convocept-avatar {
-	display: block;
-	width: var(--convocept-avatar);
-	height: var(--convocept-avatar);
-	border-radius: 50%;
-	object-fit: cover;
-}
-
-.convocept-avatar--initials {
-	display: grid;
-	place-items: center;
-	background: hsl(var(--convocept-avatar-hue, 220) 55% 88%);
-	color: hsl(var(--convocept-avatar-hue, 220) 45% 28%);
-	font-size: 0.9em;
-	font-weight: 600;
-	line-height: 1;
-}
-
-.convocept-comment__meta {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.25rem 0.5rem;
-	align-items: center;
-	line-height: 1.4;
-}
-
-.convocept-comment__author {
-	font-weight: 600;
-}
-
-.convocept .convocept-comment__author {
-	color: inherit;
-	text-decoration: none;
-}
-
-.convocept a.convocept-comment__author:hover {
-	text-decoration: underline;
-}
-
-.convocept-badge {
-	padding: 0.1em 0.55em;
-	border-radius: 999px;
-	background: color-mix(in srgb, var(--convocept-accent) 14%, transparent);
-	color: var(--convocept-link);
-	font-size: 0.75em;
-	font-weight: 600;
-}
-
-.convocept .convocept-comment__date {
-	color: var(--convocept-muted);
-	font-size: 0.875em;
-	text-decoration: none;
-}
-
-.convocept .convocept-comment__date:hover {
-	text-decoration: underline;
-}
-
-.convocept-comment__reply-to {
-	margin: 0.125rem 0 0.25rem;
-	color: var(--convocept-muted);
-	font-size: 0.8125em;
-}
-
-.convocept-comment__content {
-	margin-block-start: 0.25rem;
-	overflow-wrap: anywhere;
-}
-
-.convocept-comment__content > :first-child {
-	margin-block-start: 0;
-}
-
-.convocept-comment__content > :last-child {
-	margin-block-end: 0;
-}
-
-.convocept-comment__content p {
-	margin-block: 0 0.75em;
-}
-
-.convocept-comment__actions {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 1rem;
-	margin-block-start: 0.75rem;
-	font-size: 0.875em;
-}
-
-.convocept .convocept-action {
-	color: var(--convocept-muted);
-	font-weight: 500;
-	text-decoration: none;
-}
-
-.convocept .convocept-action:hover {
-	color: var(--convocept-link);
-}
-
-/* Replies: indented under the parent's text, with a thread line. */
-
-.convocept-replies {
-	margin-block-start: 1.75rem;
-	margin-inline-start: calc(var(--convocept-avatar) / 2);
-	padding-inline-start: calc(var(--convocept-avatar) / 2 + 1rem - 2px);
-	border-inline-start: 2px solid var(--convocept-border);
-}
-
-.convocept-replies > .convocept-comment + .convocept-comment {
-	margin-block-start: 1.75rem;
-}
-
-@media (max-width: 480px) {
-
-	:where(.convocept) {
-		--convocept-avatar: 32px;
-	}
-
-	.convocept-replies {
-		margin-inline-start: 0;
-		padding-inline-start: 1rem;
-	}
-}
-
-/* States and pagination */
-
-.convocept-notice,
-.convocept-empty {
-	margin: 0 0 1.5rem;
-	padding: 0.85rem 1rem;
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-surface);
-	color: var(--convocept-muted);
-}
-
-.convocept-pagination {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-	align-items: center;
-	justify-content: center;
-	margin-block-start: 2rem;
-	font-size: 0.875em;
-}
-
-.convocept-pagination__pages {
-	display: flex;
-	gap: 0.25rem;
-}
-
-.convocept-pagination__page,
-.convocept-pagination__gap,
-.convocept .convocept-pagination__prev,
-.convocept .convocept-pagination__next {
-	display: inline-block;
-	min-width: 2.25em;
-	padding: 0.35em 0.7em;
-	border-radius: var(--convocept-radius);
-	text-align: center;
-	text-decoration: none;
-}
-
-.convocept .convocept-pagination__prev,
-.convocept .convocept-pagination__next,
-.convocept a.convocept-pagination__page {
-	border: 1px solid var(--convocept-border);
-	color: inherit;
-}
-
-.convocept-pagination__page[aria-current] {
-	background: var(--convocept-accent);
-	color: var(--convocept-on-accent);
-	font-weight: 600;
-}
-
-/* Composer enhancements (revealed by the script)
-   ------------------------------------------------------------------ */
-
-/* Our display rules must never override the hidden attribute. */
-.convocept [hidden] {
-	display: none !important;
-}
-
-.convocept-hp {
+#comments.convocept .convocept-hp {
 	position: absolute;
 	left: -9999px;
 	width: 1px;
@@ -524,236 +188,629 @@
 	overflow: hidden;
 }
 
-.convocept-editor {
-	border: 1px solid var(--convocept-border);
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-field-bg);
+#comments.convocept a {
+	color: var(--convocept-link);
+	text-decoration: underline;
+	text-underline-offset: 2px;
 }
 
-.convocept-editor:focus-within {
-	border-color: var(--convocept-accent);
-	box-shadow: 0 0 0 3px color-mix(in srgb, var(--convocept-accent) 20%, transparent);
-}
+/* Controls
+   ------------------------------------------------------------------ */
 
-.convocept .convocept-editor .convocept-form__textarea {
-	border: 0;
-	border-radius: 0 0 var(--convocept-radius) var(--convocept-radius);
-	background: transparent;
-	box-shadow: none;
-}
-
-.convocept-toolbar {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.25rem;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0.25rem 0.5rem;
-	border-block-end: 1px solid var(--convocept-border);
-}
-
-.convocept-tabs,
-.convocept-format {
-	display: flex;
-	gap: 0.125rem;
-}
-
-.convocept .convocept-tab,
-.convocept .convocept-format__button {
-	min-width: 2rem;
+#comments.convocept :is(button, input, textarea) {
 	margin: 0;
-	padding: 0.3em 0.6em;
-	border: 0;
-	border-radius: calc(var(--convocept-radius) - 4px);
-	background: transparent;
-	color: var(--convocept-muted);
 	font: inherit;
-	font-size: 0.875em;
-	line-height: 1.4;
+	color: inherit;
+}
+
+#comments.convocept :is(button, .convocept-button, .convocept-action, .convocept-vote, .convocept-follow) {
 	cursor: pointer;
 }
 
-.convocept .convocept-tab:hover,
-.convocept .convocept-format__button:hover {
-	background: var(--convocept-surface);
-	color: var(--convocept-text);
-}
-
-.convocept .convocept-tab[aria-selected="true"] {
-	background: var(--convocept-surface);
-	color: var(--convocept-text);
-	font-weight: 600;
-}
-
-.convocept-preview {
-	min-height: 6.5em;
-	padding: 0.65em 0.8em;
-}
-
-.convocept-form__counter {
-	margin: 0;
-	padding: 0 0.8em 0.5em;
-	color: var(--convocept-muted);
-	font-size: 0.8125em;
-	text-align: end;
-}
-
-.convocept-form__user {
-	color: var(--convocept-muted);
-	font-size: 0.875em;
-}
-
-.convocept-form__footer {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.75rem;
+#comments.convocept :is(.convocept-button, .convocept-follow) {
+	display: inline-flex;
+	gap: 6px;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: center;
+	height: 40px;
+	padding: 0 18px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	background: var(--convocept-accent);
+	color: var(--convocept-on-accent);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	text-decoration: none;
 }
 
-.convocept-form__status {
-	flex: 1;
-	margin: 0;
-	color: var(--convocept-muted);
-	font-size: 0.875em;
+#comments.convocept .convocept-button:hover {
+	background: color-mix(in srgb, var(--convocept-accent) 88%, #000);
 }
 
-.convocept-form__status.is-error {
-	color: var(--convocept-danger);
+#comments.convocept :is(.convocept-button--secondary, .convocept-follow) {
+	border-color: var(--convocept-border-strong);
+	background: var(--convocept-bg);
+	color: var(--convocept-text);
 }
 
-.convocept .convocept-button:disabled {
+#comments.convocept :is(.convocept-button--secondary, .convocept-follow):hover,
+#comments.convocept .convocept-follow[aria-expanded="true"] {
+	background: var(--convocept-surface);
+}
+
+#comments.convocept .convocept-button:disabled {
 	opacity: 0.6;
 	cursor: progress;
 }
 
-/* Comment states */
+#comments.convocept :is(.convocept-action, .convocept-vote) {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	height: 30px;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--convocept-muted);
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	text-decoration: none;
+}
 
-.convocept-comment--sending {
+#comments.convocept :is(.convocept-action, .convocept-vote):hover {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+}
+
+#comments.convocept .convocept-vote[aria-pressed="true"] {
+	color: var(--convocept-link);
+}
+
+#comments.convocept :is(.convocept-vote, .convocept-more-replies a)[aria-busy] {
 	opacity: 0.6;
 }
 
-.convocept-comment--pending > .convocept-comment__body {
-	opacity: 0.75;
+#comments.convocept :is(input[type="text"], input[type="email"], input[type="url"], .convocept-form__textarea) {
+	display: block;
+	width: 100%;
+	height: 40px;
+	padding: 0 12px;
+	border: 1px solid var(--convocept-border-strong);
+	border-radius: 8px;
+	background: var(--convocept-field-bg);
+	font-size: 15px;
 }
 
-.convocept-comment__pending {
-	margin: 0.35rem 0 0;
-	padding: 0.35em 0.65em;
-	border-radius: calc(var(--convocept-radius) - 4px);
+#comments.convocept .convocept-form__textarea {
+	height: auto;
+	min-height: 104px;
+	padding: 12px 14px;
+	line-height: 1.6;
+	resize: vertical;
+}
+
+#comments.convocept :is(input, textarea):focus {
+	border-color: var(--convocept-accent);
+	outline: none;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--convocept-accent) 20%, transparent);
+}
+
+#comments.convocept ::placeholder {
+	color: var(--convocept-muted);
+	opacity: 1;
+}
+
+#comments.convocept input[type="checkbox"] {
+	flex: none;
+	width: 16px;
+	height: 16px;
+	margin: 3px 0 0;
+	accent-color: var(--convocept-accent);
+}
+
+/* Header, sort and follow
+   ------------------------------------------------------------------ */
+
+#comments.convocept .convocept-header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 16px;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0 0 20px;
+}
+
+#comments.convocept .convocept-title {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 650;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+}
+
+#comments.convocept .convocept-header__tools {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+#comments.convocept .convocept-follow {
+	height: 34px;
+	padding: 0 12px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+#comments.convocept .convocept-sort {
+	display: inline-flex;
+	gap: 2px;
+	padding: 3px;
+	border-radius: 9px;
 	background: var(--convocept-surface);
+}
+
+#comments.convocept .convocept-sort__link {
+	padding: 5px 12px;
+	border-radius: 7px;
 	color: var(--convocept-muted);
-	font-size: 0.8125em;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 18px;
+	text-decoration: none;
 }
 
-.convocept-comment__edited {
+#comments.convocept .convocept-sort__link:hover {
+	color: var(--convocept-text);
+}
+
+#comments.convocept .convocept-sort__link[aria-current] {
+	background: var(--convocept-bg);
+	box-shadow: 0 0 0 1px var(--convocept-border), 0 1px 2px rgb(0 0 0 / 6%);
+	color: var(--convocept-text);
+}
+
+#comments.convocept .convocept-subscribe {
+	margin: 0 0 16px;
+	padding: 16px;
+	border-radius: 10px;
+	background: var(--convocept-surface);
+}
+
+/* The in-thread follow form opens from the header's Follow link: by
+   :target without JavaScript, by .is-open with it or after a submit. */
+#comments.convocept .convocept-subscribe:not(:target, .is-open),
+#comments.convocept .convocept-subscribe.is-closed {
+	display: none;
+}
+
+#comments.convocept :is(.convocept-subscribe__title, .convocept-subscribe__message, .convocept-subscribe__note) {
+	margin: 0;
+	font-size: 13px;
+}
+
+#comments.convocept .convocept-subscribe__title {
+	font-weight: 600;
+}
+
+#comments.convocept .convocept-subscribe__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+#comments.convocept .convocept-subscribe__form input[type="email"] {
+	flex: 1 1 200px;
+	width: auto;
+}
+
+#comments.convocept :is(.convocept-subscribe__note, .convocept-subscribe__message) {
 	color: var(--convocept-muted);
-	font-size: 0.8125em;
 }
 
-.convocept .convocept-action--edit,
-.convocept .convocept-edit .convocept-action {
-	padding: 0;
-	border: 0;
-	background: none;
-	font: inherit;
-	cursor: pointer;
+#comments.convocept .convocept-subscribe__message:empty {
+	display: none;
 }
 
-.convocept-edit {
+#comments.convocept .convocept-subscribe__message.is-error {
+	color: var(--convocept-danger);
+}
+
+/* Composer
+   ------------------------------------------------------------------ */
+
+#comments.convocept :is(.convocept-form, .convocept-edit) {
 	display: grid;
-	gap: 0.5rem;
-	margin-block-start: 0.5rem;
+	gap: 14px;
 }
 
-.convocept-edit p {
+#comments.convocept :is(.convocept-form, .convocept-edit) p {
 	margin: 0;
 }
 
-.convocept-edit__buttons {
+#comments.convocept .convocept-editor {
+	border: 1px solid var(--convocept-border-strong);
+	border-radius: 10px;
+	background: var(--convocept-field-bg);
+}
+
+#comments.convocept .convocept-editor:focus-within {
+	border-color: var(--convocept-accent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--convocept-accent) 18%, transparent);
+}
+
+#comments.convocept .convocept-editor .convocept-form__textarea {
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	box-shadow: none;
+}
+
+#comments.convocept .convocept-toolbar {
 	display: flex;
-	gap: 1rem;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 8px;
+	border-block-end: 1px solid var(--convocept-border);
+}
+
+#comments.convocept :is(.convocept-tabs, .convocept-format) {
+	display: flex;
+	gap: 2px;
+}
+
+#comments.convocept :is(.convocept-tab, .convocept-format__button) {
+	min-width: 30px;
+	height: 28px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--convocept-muted);
+	font-size: 13px;
+	font-weight: 500;
+}
+
+#comments.convocept .convocept-format__button {
+	padding: 0 6px;
+}
+
+#comments.convocept :is(.convocept-tab, .convocept-format__button):hover,
+#comments.convocept .convocept-tab[aria-selected="true"] {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+}
+
+#comments.convocept .convocept-preview {
+	min-height: 104px;
+	padding: 12px 14px;
+}
+
+#comments.convocept .convocept-form__counter {
+	padding: 0 14px 8px;
+	color: var(--convocept-muted);
+	font-size: 13px;
+	text-align: end;
+}
+
+#comments.convocept .convocept-form__identity {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	gap: 12px;
+}
+
+#comments.convocept :is(.convocept-form__note, .convocept-form__identity .convocept-form__field--checkbox) {
+	grid-column: 1 / -1;
+}
+
+#comments.convocept .convocept-form label {
+	display: block;
+	margin: 0 0 6px;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+#comments.convocept :is(.convocept-form__note, .convocept-form__replying, .convocept-form__user) {
+	color: var(--convocept-muted);
+	font-size: 13px;
+}
+
+#comments.convocept :is(.convocept-form__replying, .convocept-form__user) {
+	font-size: 14px;
+}
+
+#comments.convocept .convocept-form__required {
+	color: var(--convocept-muted);
+}
+
+#comments.convocept .convocept-form__cancel {
+	margin-inline-start: 8px;
+}
+
+#comments.convocept .convocept-form__subscribe {
+	display: grid;
+	gap: 8px;
+}
+
+#comments.convocept .convocept-form__field--checkbox {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+#comments.convocept .convocept-form .convocept-form__field--checkbox label {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.45;
+}
+
+#comments.convocept :is(.convocept-form__footer, .convocept-edit__buttons) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
 	align-items: center;
 	justify-content: flex-end;
 }
 
-.convocept-preview pre,
-.convocept-comment__content pre {
+#comments.convocept .convocept-form__status {
+	flex: 1 1 200px;
+	color: var(--convocept-muted);
+	font-size: 14px;
+}
+
+#comments.convocept .convocept-form__status.is-error {
+	color: var(--convocept-danger);
+	font-weight: 500;
+}
+
+#comments.convocept .convocept-composer.is-replying {
+	margin-block-start: 16px;
+	margin-inline-start: calc(var(--convocept-avatar) + 12px);
+}
+
+/* Comments
+   ------------------------------------------------------------------ */
+
+#comments.convocept :is(.convocept-list, .convocept-replies) {
+	display: flex;
+	flex-direction: column;
+	gap: var(--convocept-gap);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#comments.convocept :is(.convocept-composer, .convocept-subscribe, .convocept-notice) ~ .convocept-list {
+	margin-top: 28px;
+	padding-top: 28px;
+	border-top: 1px solid var(--convocept-border);
+}
+
+#comments.convocept .convocept-comment {
+	scroll-margin-top: 80px;
+}
+
+#comments.convocept .convocept-comment__body {
+	display: grid;
+	grid-template-columns: var(--convocept-avatar) minmax(0, 1fr);
+	gap: 12px;
+}
+
+#comments.convocept .convocept-avatar {
+	display: grid;
+	place-items: center;
+	width: var(--convocept-avatar);
+	max-width: none;
+	height: var(--convocept-avatar);
+	margin: 0;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+#comments.convocept .convocept-avatar--initials {
+	background: hsl(var(--convocept-avatar-hue, 220) 60% 90%);
+	color: hsl(var(--convocept-avatar-hue, 220) 50% 28%);
+	font-size: 13px;
+	font-weight: 650;
+	line-height: 1;
+}
+
+#comments.convocept .convocept-comment__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px 8px;
+	align-items: center;
+	min-height: 24px;
+	line-height: 1.4;
+}
+
+#comments.convocept .convocept-comment__author {
+	color: inherit;
+	font-size: 14px;
+	font-weight: 650;
+	text-decoration: none;
+}
+
+#comments.convocept :is(a.convocept-comment__author, .convocept-comment__date):hover {
+	text-decoration: underline;
+}
+
+#comments.convocept :is(.convocept-comment__date, .convocept-comment__edited, .convocept-comment__reply-to) {
+	color: var(--convocept-muted);
+	font-size: 13px;
+	text-decoration: none;
+}
+
+#comments.convocept .convocept-badge {
+	display: inline-flex;
+	align-items: center;
+	height: 20px;
+	padding: 0 7px;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--convocept-accent) 12%, transparent);
+	color: var(--convocept-link);
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+#comments.convocept .convocept-badge--pinned {
+	background: var(--convocept-surface);
+	color: var(--convocept-text);
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) {
+	margin-top: 2px;
+	overflow-wrap: anywhere;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) :is(p, ul, ol, pre, blockquote) {
+	margin: 0 0 8px;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) > :last-child {
+	margin-bottom: 0;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) :is(ul, ol) {
+	padding-inline-start: 22px;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) :is(code, pre) {
+	border-radius: 5px;
+	background: var(--convocept-surface);
+	font-family: ui-monospace, sfmono-regular, menlo, consolas, monospace;
+	font-size: 13px;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) code {
+	padding: 1px 5px;
+}
+
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) pre {
 	overflow-x: auto;
-	padding: 0.75em 1em;
-	border-radius: calc(var(--convocept-radius) - 2px);
-	background: var(--convocept-surface);
-	font-size: 0.875em;
+	padding: 12px 14px;
+	border-radius: 8px;
+	line-height: 1.55;
 }
 
-.convocept-preview :not(pre) > code,
-.convocept-comment__content :not(pre) > code {
-	padding: 0.1em 0.35em;
-	border-radius: 4px;
-	background: var(--convocept-surface);
-	font-size: 0.875em;
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) pre code {
+	padding: 0;
+	background: none;
 }
 
-.convocept-preview blockquote,
-.convocept-comment__content blockquote {
-	margin: 0 0 0.75em;
-	padding-inline-start: 0.9em;
-	border-inline-start: 3px solid var(--convocept-border);
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) blockquote {
+	padding-inline-start: 12px;
+	border-inline-start: 3px solid var(--convocept-border-strong);
 	color: var(--convocept-muted);
 }
 
-/* Replies, load more and deep links
-   ------------------------------------------------------------------ */
+#comments.convocept :is(.convocept-comment__content, .convocept-preview) img {
+	max-width: 100%;
+	height: auto;
+}
+
+#comments.convocept .convocept-comment__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	align-items: center;
+	margin-block-start: 6px;
+	margin-inline-start: -8px;
+}
+
+/* Replies hang from the parent's avatar with a thread line and start
+   under its text. */
+#comments.convocept .convocept-replies {
+	--convocept-avatar: 28px;
+	--convocept-gap: 20px;
+
+	margin-block-start: 16px;
+	margin-inline-start: 18px;
+	padding-inline-start: 29px;
+	border-inline-start: 1px solid var(--convocept-border-strong);
+}
+
+#comments.convocept .convocept-replies .convocept-replies {
+	margin-inline-start: 14px;
+	padding-inline-start: 23px;
+}
+
+#comments.convocept .convocept-replies .convocept-comment__body {
+	gap: 10px;
+}
+
+#comments.convocept .convocept-replies .convocept-avatar--initials {
+	font-size: 11px;
+}
 
 /* At the maximum depth replies stay at the same level: no extra indent. */
-.convocept-replies--flat {
+#comments.convocept .convocept-replies.convocept-replies--flat {
 	margin-inline-start: 0;
 	padding-inline-start: 0;
-	border-inline-start: 0;
+	border: 0;
 }
 
-.convocept-more-replies {
-	margin: 1rem 0 0 calc(var(--convocept-avatar) + 1rem);
-	font-size: 0.875em;
+#comments.convocept .convocept-more-replies {
+	margin-block-start: 12px;
+	margin-inline-start: calc(var(--convocept-avatar) + 4px);
 }
 
-.convocept .convocept-more-replies a {
+#comments.convocept .convocept-more-replies a {
+	display: inline-flex;
+	align-items: center;
+	height: 30px;
+	padding: 0 8px;
+	border-radius: 6px;
+	font-size: 13px;
 	font-weight: 600;
 	text-decoration: none;
 }
 
-.convocept .convocept-more-replies a[aria-busy] {
+#comments.convocept .convocept-more-replies a:hover {
+	background: var(--convocept-surface);
+}
+
+/* States
+   ------------------------------------------------------------------ */
+
+#comments.convocept .convocept-comment--sending {
 	opacity: 0.6;
 }
 
-.convocept-load-more {
-	display: flex;
-	justify-content: center;
-	margin-block-start: 2rem;
+#comments.convocept .convocept-comment--pending > .convocept-comment__body {
+	margin: -12px;
+	padding: 12px;
+	border: 1px dashed var(--convocept-warning-line);
+	border-radius: 10px;
+	background: color-mix(in srgb, #f59e0b 8%, var(--convocept-bg));
 }
 
-.convocept .convocept-button--secondary {
-	border: 1px solid var(--convocept-border);
-	background: transparent;
-	color: inherit;
-}
-
-.convocept-composer.is-replying {
-	margin: 1rem 0 0 calc(var(--convocept-avatar) + 1rem);
+#comments.convocept .convocept-comment__pending {
+	margin: 2px 0 0;
+	color: var(--convocept-warning);
+	font-size: 13px;
+	font-weight: 500;
 }
 
 /* A comment reached through a #comment-{ID} link. */
-.convocept-comment:target > .convocept-comment__body {
-	margin: -0.5rem;
-	padding: 0.5rem;
-	border-radius: var(--convocept-radius);
+#comments.convocept .convocept-comment:target > .convocept-comment__body {
+	margin: -8px;
+	padding: 8px;
+	border-radius: 10px;
 	background: color-mix(in srgb, var(--convocept-accent) 10%, transparent);
 }
 
-
 @media (prefers-reduced-motion: no-preference) {
 
-	.convocept-comment:target > .convocept-comment__body {
+	#comments.convocept .convocept-comment:target > .convocept-comment__body {
 		animation: convocept-highlight 2.5s ease-out 1s both;
 	}
 
@@ -765,130 +822,138 @@
 	}
 }
 
-@media (max-width: 480px) {
-
-	.convocept-more-replies,
-	.convocept-composer.is-replying {
-		margin-inline-start: 0;
-	}
+#comments.convocept :is(.convocept-notice, .convocept-empty) {
+	margin: 0 0 20px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: var(--convocept-surface);
+	color: var(--convocept-muted);
+	font-size: 14px;
 }
 
-/* Votes, pins and moderation
-   ------------------------------------------------------------------ */
+#comments.convocept .convocept-empty {
+	margin: 28px 0 0;
+	text-align: center;
+}
 
-.convocept .convocept-vote {
+/* Moderator menu, added by the script for moderators. */
+#comments.convocept .convocept-mod {
+	position: relative;
 	display: inline-flex;
-	gap: 0.3em;
-	align-items: center;
-	margin: 0;
-	padding: 0.15em 0.6em;
+}
+
+#comments.convocept .convocept-mod__menu {
+	position: absolute;
+	z-index: 10;
+	top: calc(100% + 4px);
+	inset-inline-start: 0;
+	display: flex;
+	flex-direction: column;
+	min-width: 190px;
+	padding: 6px;
 	border: 1px solid var(--convocept-border);
-	border-radius: 999px;
-	background: transparent;
-	color: var(--convocept-muted);
-	font: inherit;
-	font-weight: 600;
-	line-height: 1.5;
-	cursor: pointer;
+	border-radius: 10px;
+	background: var(--convocept-bg);
+	box-shadow: 0 10px 30px rgb(0 0 0 / 12%), 0 2px 6px rgb(0 0 0 / 6%);
 }
 
-.convocept .convocept-vote:hover {
-	border-color: var(--convocept-accent);
-	color: var(--convocept-link);
+#comments.convocept .convocept-mod__menu .convocept-action {
+	width: 100%;
+	height: 34px;
+	padding: 0 10px;
+	color: var(--convocept-text);
+	font-size: 14px;
+	font-weight: 400;
 }
 
-.convocept .convocept-vote[aria-pressed="true"] {
-	border-color: var(--convocept-accent);
-	background: color-mix(in srgb, var(--convocept-accent) 12%, transparent);
-	color: var(--convocept-link);
-}
-
-.convocept .convocept-vote[aria-busy] {
-	opacity: 0.7;
-}
-
-.convocept-list > .convocept-comment--pinned {
-	padding: 1rem;
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-surface);
-}
-
-.convocept-badge--pinned {
-	background: var(--convocept-surface);
-	color: var(--convocept-muted);
-}
-
-.convocept-mod {
-	display: inline-flex;
-	flex-wrap: wrap;
-	gap: 0.75rem;
-	margin-inline-start: auto;
-	padding-inline-start: 0.75rem;
-	border-inline-start: 1px solid var(--convocept-border);
-}
-
-.convocept .convocept-mod .convocept-action {
-	padding: 0;
-	border: 0;
-	background: none;
-	font: inherit;
-	cursor: pointer;
-}
-
-.convocept .convocept-mod [data-convocept-mod="spam"],
-.convocept .convocept-mod [data-convocept-mod="trash"] {
+#comments.convocept .convocept-mod__menu :is([data-convocept-mod="spam"], [data-convocept-mod="trash"]) {
 	color: var(--convocept-danger);
 }
 
-/* Subscriptions
+/* Load more and pagination
    ------------------------------------------------------------------ */
 
-.convocept-form__subscribe {
-	display: grid;
-	gap: 0.35rem;
-	font-size: 0.875em;
+#comments.convocept .convocept-load-more {
+	margin: 32px 0 0;
 }
 
-.convocept-subscribe {
-	margin-block-end: 2.5rem;
-	font-size: 0.9375em;
+#comments.convocept .convocept-load-more .convocept-button {
+	width: 100%;
 }
 
-.convocept-subscribe summary {
-	color: var(--convocept-link);
-	font-weight: 500;
-	cursor: pointer;
-}
-
-.convocept-subscribe__form {
+#comments.convocept .convocept-pagination {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
-	margin-block-start: 0.75rem;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	margin: 32px 0 0;
+	font-size: 14px;
 }
 
-.convocept .convocept-subscribe__form input[type="email"] {
-	flex: 1 1 14rem;
+#comments.convocept .convocept-pagination__pages {
+	display: flex;
+	gap: 4px;
 	margin: 0;
-	padding: 0.55em 0.8em;
-	border: 1px solid var(--convocept-border);
-	border-radius: var(--convocept-radius);
-	background: var(--convocept-field-bg);
-	color: inherit;
-	font: inherit;
+	padding: 0;
+	list-style: none;
 }
 
-.convocept-subscribe__message,
-.convocept-subscribe__note {
-	margin: 0.5rem 0 0;
-	color: var(--convocept-muted);
-	font-size: 0.875em;
+#comments.convocept :is(.convocept-pagination__page, .convocept-pagination__gap, .convocept-pagination__prev, .convocept-pagination__next) {
+	display: inline-block;
+	min-width: 34px;
+	padding: 6px 10px;
+	border-radius: 8px;
+	color: var(--convocept-text);
+	line-height: 20px;
+	text-align: center;
+	text-decoration: none;
 }
 
-.convocept-subscribe__message:empty {
-	display: none;
+#comments.convocept :is(a.convocept-pagination__page, .convocept-pagination__prev, .convocept-pagination__next) {
+	border: 1px solid var(--convocept-border-strong);
 }
 
-.convocept-subscribe__message.is-error {
-	color: var(--convocept-danger);
+#comments.convocept .convocept-pagination__page[aria-current] {
+	background: var(--convocept-accent);
+	color: var(--convocept-on-accent);
+	font-weight: 600;
+}
+
+/* Phones
+   ------------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+
+	#comments.convocept {
+		--convocept-avatar: 32px;
+
+		padding: 20px;
+	}
+
+	#comments.convocept :is(input[type="text"], input[type="email"], input[type="url"], .convocept-button) {
+		height: 44px;
+	}
+
+	#comments.convocept :is(input, textarea) {
+		font-size: 16px;
+	}
+
+	#comments.convocept :is(.convocept-form__submit, .convocept-form__submit .convocept-button) {
+		width: 100%;
+	}
+
+	#comments.convocept .convocept-replies {
+		margin-inline-start: 16px;
+		padding-inline-start: 14px;
+	}
+
+	#comments.convocept .convocept-replies .convocept-replies {
+		margin-inline-start: 12px;
+		padding-inline-start: 12px;
+	}
+
+	#comments.convocept :is(.convocept-more-replies, .convocept-composer.is-replying) {
+		margin-inline-start: 0;
+	}
 }

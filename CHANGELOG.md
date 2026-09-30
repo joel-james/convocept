@@ -6,6 +6,18 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- The comment thread has its own design and no longer borrows the theme's colours or form
+  styles: a white card (or dark, or following the reader's device) with its own sizes, spacing,
+  fields and buttons; only the font family comes from the theme. Theme styles for comment
+  sections (`#respond input`, `.entry-content button`, uppercase buttons, hidden checkboxes) are
+  reset inside the thread, so it looks the same in every theme. Checked in Twenty Twenty-One,
+  Twenty Twenty-Five, Astra, Kadence, GeneratePress, OceanWP, Neve, Blocksy, Hello Elementor,
+  Sydney, Go and Raft. The thread is at most 720px wide (or the block theme's content width) and
+  centred. The colour scheme setting is now Light (default), Dark or Follow the reader's device;
+  "Match the theme" is gone. A **Follow** button next to the sort switch opens the "get new
+  comments by email" form (without JavaScript too). Moderators get Approve, Pin to top, Edit in
+  dashboard, Mark as spam and Move to trash in one **⋯** menu per comment. The thread no longer
+  gets the theme's `comments-area` classes.
 - Settings → Discussion shows a notice naming the post types Convocept handles and the options
   it replaces there (threading, comment pages and comment order; pingbacks and trackbacks are
   not shown), with a link to Convocept's settings. Every other Discussion option still applies,
@@ -151,6 +163,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   votes on comments of non-public posts are refused; the Disqus parser keeps libxml's limits.
 
 ### Fixed
+- The comment form showed WordPress's error messages with their HTML tags
+  ("<strong>Error:</strong> Please fill the required fields.").
 - Block themes that still use the comments block's pre-6.1 name (`core/comments-query-loop`,
   e.g. Raft) showed WordPress's comment list above Convocept's thread. That block is now replaced
   too, and core's comment title, list and pagination blocks are removed wherever they sit on posts

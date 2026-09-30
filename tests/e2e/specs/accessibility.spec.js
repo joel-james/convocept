@@ -20,7 +20,7 @@ const AxeBuilder = require( '@axe-core/playwright' ).default;
 const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
 
 const THEMES = [ 'twentytwentyone', 'twentytwentyfive' ];
-const SCHEMES = [ 'auto', 'light', 'dark' ];
+const SCHEMES = [ 'light', 'dark', 'system' ];
 
 /**
  * Run axe on part of a page.
@@ -157,7 +157,7 @@ test.describe( 'Accessibility', () => {
 				await saveSettings( requestUtils, { color_scheme: scheme } );
 
 				for ( const colorScheme of [ 'light', 'dark' ] ) {
-					// "auto" and "light" ignore the visitor's preference; check it anyway.
+					// "light" and "dark" ignore the visitor's preference; check it anyway.
 					const { page, context } = await openAsGuest(
 						browser,
 						post.link,
@@ -216,7 +216,7 @@ test.describe( 'Accessibility', () => {
 			).toEqual( [] );
 		}
 
-		await saveSettings( requestUtils, { color_scheme: 'auto' } );
+		await saveSettings( requestUtils, { color_scheme: 'light' } );
 	} );
 
 	test( 'subscription page', async ( { browser, requestUtils } ) => {
@@ -229,7 +229,7 @@ test.describe( 'Accessibility', () => {
 		const post = await createThread( requestUtils );
 		const { page, context } = await openAsGuest( browser, post.link );
 
-		await page.locator( '.convocept-subscribe summary' ).click();
+		await page.getByRole( 'button', { name: 'Follow' } ).click();
 		await page
 			.locator( '.convocept-subscribe input[type="email"]' )
 			.fill( address );
@@ -376,7 +376,7 @@ test.describe( 'Accessibility', () => {
 			};
 		} );
 
-		expect( sides ).toEqual( { right: '2px', left: '0px' } );
+		expect( sides ).toEqual( { right: '1px', left: '0px' } );
 
 		await context.close();
 	} );

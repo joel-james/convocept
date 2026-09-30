@@ -288,7 +288,7 @@ export function AppearancePage( { draft, update, errors, boot } ) {
 			<Card
 				title={ __( 'Colours', 'convocept' ) }
 				description={ __(
-					'How the thread looks next to your theme.',
+					'The thread has its own look and uses your theme’s font.',
 					'convocept'
 				) }
 			>
@@ -297,10 +297,18 @@ export function AppearancePage( { draft, update, errors, boot } ) {
 					value={ draft.color_scheme }
 					options={ [
 						{
-							value: 'auto',
-							label: __( 'Match the theme', 'convocept' ),
+							value: 'light',
+							label: __( 'Light', 'convocept' ),
 							description: __(
-								'Uses your theme’s text and background colours.',
+								'Dark text on a white card. Fits any theme.',
+								'convocept'
+							),
+						},
+						{
+							value: 'dark',
+							label: __( 'Dark', 'convocept' ),
+							description: __(
+								'Light text on a dark card, for dark themes.',
 								'convocept'
 							),
 						},
@@ -312,22 +320,6 @@ export function AppearancePage( { draft, update, errors, boot } ) {
 							),
 							description: __(
 								'Light or dark, from the reader’s system setting.',
-								'convocept'
-							),
-						},
-						{
-							value: 'light',
-							label: __( 'Always light', 'convocept' ),
-							description: __(
-								'Dark text on a light background.',
-								'convocept'
-							),
-						},
-						{
-							value: 'dark',
-							label: __( 'Always dark', 'convocept' ),
-							description: __(
-								'Light text on a dark background.',
 								'convocept'
 							),
 						},

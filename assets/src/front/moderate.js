@@ -36,14 +36,63 @@ export async function initModerate( root ) {
 	);
 
 	root.addEventListener( 'click', ( event ) => {
+		const toggle = event.target.closest( '[data-convocept-mod-toggle]' );
 		const button = event.target.closest( '[data-convocept-mod]' );
 
-		if ( button ) {
+		closeMenus( root, toggle );
+
+		if ( toggle ) {
+			setOpen(
+				toggle,
+				toggle.getAttribute( 'aria-expanded' ) !== 'true'
+			);
+		} else if ( button ) {
 			act( root, session, button );
 		}
 	} );
 
+	// Escape closes the open menu and returns focus to its toggle.
+	root.addEventListener( 'keydown', ( event ) => {
+		const menu = event.target.closest( '[data-convocept-mod-menu]' );
+
+		if ( event.key === 'Escape' && menu ) {
+			const toggle = menu.querySelector( '[data-convocept-mod-toggle]' );
+
+			setOpen( toggle, false );
+			toggle.focus();
+		}
+	} );
+
+	document.addEventListener( 'click', ( event ) => {
+		if ( ! root.contains( event.target ) ) {
+			closeMenus( root );
+		}
+	} );
+
 	loadPending( root, session );
+}
+
+/**
+ * Open or close one comment's moderator menu.
+ *
+ * @param {HTMLButtonElement} toggle The menu's toggle button.
+ * @param {boolean}           open   Whether to open it.
+ */
+function setOpen( toggle, open ) {
+	toggle.setAttribute( 'aria-expanded', String( open ) );
+	toggle.nextElementSibling.hidden = ! open;
+}
+
+/**
+ * Close every open moderator menu in the thread.
+ *
+ * @param {Element}      root   Thread root.
+ * @param {Element|null} [keep] Toggle whose menu stays as it is.
+ */
+function closeMenus( root, keep = null ) {
+	root.querySelectorAll(
+		'[data-convocept-mod-toggle][aria-expanded="true"]'
+	).forEach( ( toggle ) => toggle !== keep && setOpen( toggle, false ) );
 }
 
 /**

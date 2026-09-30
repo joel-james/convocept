@@ -46,7 +46,7 @@ class Settings {
 	 * @since 1.0.0
 	 * @var string[]
 	 */
-	const COLOR_SCHEMES = array( 'auto', 'system', 'light', 'dark' );
+	const COLOR_SCHEMES = array( 'light', 'dark', 'system' );
 
 	/**
 	 * Allowed values for the `proxy_header` setting.
@@ -90,9 +90,9 @@ class Settings {
 	 *     @type int      $replies_shown Replies shown per reply list before "Show more"
 	 *                                  (0–50; 0 shows all).
 	 *     @type string   $default_sort Initial sort order: 'oldest', 'newest' or 'top'.
-	 *     @type string   $color_scheme 'auto' inherits the theme's colors, 'system' follows the
-	 *                                  visitor's OS light/dark preference, 'light' and
-	 *                                  'dark' force a palette.
+	 *     @type string   $color_scheme The thread's own palette: 'light' (default), 'dark', or
+	 *                                  'system' to follow the visitor's light/dark preference.
+	 *                                  Only the font family comes from the theme.
 	 *     @type string   $accent_color Hex color used for links, buttons and focus rings.
 	 *     @type int      $edit_window  Minutes an author may edit a comment; 0 disables.
 	 *     @type string[] $trusted_proxies IPs or CIDR ranges of reverse proxies whose
@@ -124,7 +124,7 @@ class Settings {
 			'max_depth'       => 3,
 			'replies_shown'   => 5,
 			'default_sort'    => 'oldest',
-			'color_scheme'    => 'auto',
+			'color_scheme'    => 'light',
 			'accent_color'    => '#2563eb',
 			'edit_window'     => 5,
 			'trusted_proxies' => array(),

@@ -35,21 +35,6 @@ class ClassicTheme {
 	const SKIP_QUERY_VAR = 'convocept_skip';
 
 	/**
-	 * Extra wrapper classes needed by specific themes, keyed by template slug.
-	 *
-	 * Most classic themes (Twenty*, Underscores-based themes, Astra,
-	 * GeneratePress, Kadence) style a `comments-area` container; some also
-	 * need a width class from their own comments.php.
-	 *
-	 * @since 1.0.0
-	 * @var array<string, string[]>
-	 */
-	const THEME_CLASSES = array(
-		'twentytwentyone' => array( 'default-max-width' ),
-		'twentytwenty'    => array( 'section-inner' ),
-	);
-
-	/**
 	 * Thread renderer.
 	 *
 	 * @since 1.0.0
@@ -81,25 +66,6 @@ class ClassicTheme {
 
 		// Late, so we win over themes and plugins that also filter the path.
 		add_filter( 'comments_template', array( $this, 'template' ), 99 );
-
-		if ( ! wp_is_block_theme() ) {
-			add_filter( 'convocept_thread_classes', array( $this, 'wrapper_classes' ) );
-		}
-	}
-
-	/**
-	 * Add the container classes classic themes style their comments with.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string[] $classes Wrapper classes.
-	 * @return string[]
-	 */
-	public function wrapper_classes( $classes ) {
-		$classes   = (array) $classes;
-		$classes[] = 'comments-area';
-
-		return array_merge( $classes, self::THEME_CLASSES[ get_template() ] ?? array() );
 	}
 
 	/**

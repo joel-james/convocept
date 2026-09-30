@@ -2,6 +2,31 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-01 — Thread: own design
+- Matching each theme failed in practice (screenshots of 12 themes): uppercase or dark theme
+  buttons, hidden checkboxes, full-width or grey-band threads, small text. Like ReplyBox, the
+  thread now draws its own simple design (Design canvas "Convocept thread design",
+  https://claude.ai/artifact/EvgK9Yq6bfWEppMrkasjnv) and takes only the font family.
+- Isolation without Shadow DOM or an iframe (the thread must stay server-rendered HTML for SEO,
+  no-JS and page caches): `#comments.convocept :where(:not(svg, svg *)) { all: revert }` drops
+  theme styles inside the thread, then every rule is `#comments.convocept …`, which outranks
+  class- and element-level theme rules and ties `#respond` / `#commentform` ones. SVGs are
+  excluded because `revert` drops presentation attributes. Tokens stay in `:where()` so themes
+  can still override them. Sizes in px (themes change the root font size).
+- Colour schemes: `light` (default), `dark`, `system`. `auto` (inherit the theme's colours)
+  was removed; unreleased, so saved `auto` values simply fall back to the default.
+- Width: `min(720px, --wp--style--global--content-size, 100vw - 32px)`, centred.
+- The Follow link in the header opens the in-thread subscribe form via `:target` without
+  JavaScript and toggles it with (`.is-open` / `.is-closed`); a new
+  `convocept_thread_header_args` filter lets SubscribeForm set `follow`.
+- Moderator actions moved into a disclosure menu (not an ARIA menu: plain buttons, Escape and
+  outside click close it).
+- `comments-area` and per-theme width classes are no longer added to the wrapper: they pulled
+  theme styles (backgrounds, padding) back onto the thread.
+- Screenshot matrix: `npm run screenshots:themes` (bin/theme-screenshots.mjs) shoots the thread
+  in 12 themes on the dev site, desktop and phone, into `artifacts/themes/`. Run it after
+  changing the thread's CSS or markup.
+
 ## 2026-10-01 — Settings → Discussion: explain, don't remove
 - Checked every Discussion option. Followed as before: name/email required, registration,
   closing old posts, the cookies checkbox, manual approval, previously approved author, link
@@ -501,6 +526,7 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   `comment_form_field_comment` filter so Akismet and Antispam Bee work unchanged.
 - **Classic themes:** the wrapper gets `comments-area` plus known per-theme width classes
   (`Integration\ClassicTheme::THEME_CLASSES`), filterable via `convocept_thread_classes`.
+  *(Removed 2026-10-01: the thread styles itself; see "Thread: own design".)*
 - **Guest fields** are not `required` in HTML: a logged-in reader without JavaScript still sees
   them, and core validates server-side. The M2 script hides them for logged-in readers.
 

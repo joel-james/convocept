@@ -11,7 +11,8 @@
  *
  * @var array $args {
  *     @type int    $post_id     Post to follow, or 0 for the whole site.
- *     @type bool   $compact     Whether to render collapsed (in the thread).
+ *     @type bool   $compact     Whether to render the in-thread variant: closed until the
+ *                                header's Follow link opens it (or a message shows).
  *     @type string $action_url  admin-post.php URL.
  *     @type string $action      admin-post action name.
  *     @type string $redirect_to Where to return after a no-JS submit.
@@ -27,8 +28,8 @@ $convocept_label = $args['post_id']
 	: __( 'Get new comments on this site by email', 'convocept' );
 ?>
 <?php if ( $args['compact'] ) : ?>
-<details id="convocept-subscribe" class="convocept-subscribe" <?php echo $args['message'] ? 'open' : ''; ?>>
-	<summary><?php echo esc_html( $convocept_label ); ?></summary>
+<div id="convocept-subscribe" class="convocept-subscribe<?php echo $args['message'] ? ' is-open' : ''; ?>" data-convocept-subscribe>
+	<p class="convocept-subscribe__title"><?php echo esc_html( $convocept_label ); ?></p>
 <?php else : ?>
 <div id="convocept-subscribe" class="convocept-subscribe convocept-subscribe--standalone">
 	<p class="convocept-subscribe__title"><strong><?php echo esc_html( $convocept_label ); ?></strong></p>
@@ -46,8 +47,4 @@ $convocept_label = $args['post_id']
 	<p class="convocept-subscribe__message<?php echo $args['is_error'] ? ' is-error' : ''; ?>" data-convocept-subscribe-message role="status"><?php echo esc_html( $args['message'] ); ?></p>
 	<p class="convocept-subscribe__note"><?php esc_html_e( 'One email per new comment. Unsubscribe with one click at any time.', 'convocept' ); ?></p>
 
-<?php if ( $args['compact'] ) : ?>
-</details>
-<?php else : ?>
 </div>
-<?php endif; ?>
