@@ -294,10 +294,19 @@ test.describe( 'Settings screen', () => {
 			const active = document.querySelector(
 				'.convocept-nav-item[aria-current="page"]'
 			);
+			const other = document.querySelector(
+				'.convocept-nav-item:not([aria-current])'
+			);
 
-			return { theme, active: window.getComputedStyle( active ).color };
+			return {
+				theme,
+				active: window.getComputedStyle( active ).color,
+				other: window.getComputedStyle( other ).color,
+			};
 		} );
+		// Only the current page is in the theme colour; the rest are text colour.
 		expect( colours.active ).toBe( colours.theme );
+		expect( colours.other ).toBe( 'rgb(30, 30, 30)' );
 
 		// A checked tile shows its dot, whatever core does to radios.
 		await page

@@ -19,7 +19,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   dropdown and Save share one sticky row. Checked on WordPress 6.5, 7.1 and the development
   version: notices from WordPress and other plugins now sit above the cards instead of in the
   corner, the colour picker opens under its field, the browser tab names the open page, and
-  Windows high contrast mode keeps the status marks.
+  Windows high contrast mode keeps the status marks. Sidebar links other than the open page are
+  in the text colour, and the Help cards have icons.
 - The comment thread has more breathing space and slightly smaller text (15px instead of 16px
   at the default root size, set by `--convocept-font-size`). More space between threads (2rem, `--convocept-gap`),
   between replies and before a comment's first reply (1.75rem), between the avatar and the text

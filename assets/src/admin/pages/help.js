@@ -68,6 +68,7 @@ export function HelpPage( { boot } ) {
 		<>
 			<Card
 				title={ __( 'Documentation', 'convocept' ) }
+				icon="book"
 				description={ __(
 					'Setting up, moving from Disqus, theming and the hooks reference.',
 					'convocept'
@@ -87,6 +88,7 @@ export function HelpPage( { boot } ) {
 			/>
 			<Card
 				title={ __( 'Get help', 'convocept' ) }
+				icon="support"
 				description={ __(
 					'Ask in the support forum on WordPress.org. Paste the versions below into your post.',
 					'convocept'
@@ -106,6 +108,7 @@ export function HelpPage( { boot } ) {
 			/>
 			<Card
 				title={ __( 'Versions', 'convocept' ) }
+				icon="versions"
 				description={ __(
 					'What’s running on this site.',
 					'convocept'

@@ -89,11 +89,15 @@ html {
 	box-sizing: border-box;
 }
 
-.convocept-admin a:not(.components-button) {
+/*
+ * Plain links in the theme colour. :where() keeps this at the weight of one
+ * class, so parts that colour their own links (sidebar items, footer) win.
+ */
+.convocept-admin :where(a:not(.components-button)) {
 	color: var(--convocept-theme);
 }
 
-.convocept-admin a:not(.components-button):hover {
+.convocept-admin :where(a:not(.components-button)):hover {
 	color: var(--convocept-theme-hover);
 }
 
@@ -410,8 +414,23 @@ html {
 	gap: var(--convocept-space-4);
 }
 
-.convocept-card__head > :first-child {
+.convocept-card__head > .convocept-card__text {
 	flex-grow: 1;
+	min-width: 0;
+}
+
+/* An optional icon before the title, on a light tile. */
+.convocept-card__icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	align-self: flex-start;
+	width: 40px;
+	height: 40px;
+	border-radius: var(--convocept-radius-surface);
+	background: var(--convocept-surface-weak);
+	color: var(--convocept-fg);
 }
 
 .convocept-admin .convocept-card__title {

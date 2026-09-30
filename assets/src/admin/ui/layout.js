@@ -307,14 +307,15 @@ export function PageFooter( { meta, label, links } ) {
  * @param {Object}  props               Props.
  * @param {string}  props.title         Card title.
  * @param {string}  [props.description] One sentence under the title.
+ * @param {string}  [props.icon]        Icon name, shown on a tile before the title.
  * @param {Element} [props.action]      One button at the end of the title row.
  * @param {Element} [props.footer]      Closing row: a help line and buttons, under a divider.
  * @param {Element} [props.children]    Controls.
  * @return {Element} Card.
  */
-export function Card( { title, description, action, footer, children } ) {
+export function Card( { title, description, icon, action, footer, children } ) {
 	const head = (
-		<div>
+		<div className="convocept-card__text">
 			<h2 className="convocept-card__title">{ title }</h2>
 			{ description && (
 				<p className="convocept-card__desc">{ description }</p>
@@ -324,8 +325,13 @@ export function Card( { title, description, action, footer, children } ) {
 
 	return (
 		<section className="convocept-card">
-			{ action ? (
+			{ icon || action ? (
 				<div className="convocept-card__head">
+					{ icon && (
+						<span className="convocept-card__icon">
+							<Icon name={ icon } size={ 20 } />
+						</span>
+					) }
 					{ head }
 					{ action }
 				</div>
