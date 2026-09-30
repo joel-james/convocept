@@ -134,11 +134,14 @@ test.describe( 'Disqus importer', () => {
 		} );
 		await expect( upload ).toBeDisabled();
 
-		await page.getByLabel( 'Export file' ).setInputFiles( {
-			name: 'export.xml',
-			mimeType: 'text/xml',
-			buffer: disqusExport( post.id, tag ),
-		} );
+		await page
+			.getByRole( 'group', { name: 'Export file' } )
+			.locator( 'input[type="file"]' )
+			.setInputFiles( {
+				name: 'export.xml',
+				mimeType: 'text/xml',
+				buffer: disqusExport( post.id, tag ),
+			} );
 		await expect( page.locator( '.convocept-drop__title' ) ).toHaveText(
 			'export.xml'
 		);
@@ -191,11 +194,14 @@ test.describe( 'Disqus importer', () => {
 			'edit-comments.php',
 			'page=convocept&tab=import'
 		);
-		await page.getByLabel( 'Export file' ).setInputFiles( {
-			name: 'export.xml',
-			mimeType: 'text/xml',
-			buffer: Buffer.from( '<?xml version="1.0"?><rss/>' ),
-		} );
+		await page
+			.getByRole( 'group', { name: 'Export file' } )
+			.locator( 'input[type="file"]' )
+			.setInputFiles( {
+				name: 'export.xml',
+				mimeType: 'text/xml',
+				buffer: Buffer.from( '<?xml version="1.0"?><rss/>' ),
+			} );
 		await page.getByRole( 'button', { name: 'Upload and review' } ).click();
 
 		await expect(

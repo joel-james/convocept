@@ -193,3 +193,19 @@ add_action(
 	},
 	PHP_INT_MAX
 );
+
+/*
+ * ?convocept_e2e_notice=1 prints an admin notice the way other plugins do,
+ * so tests can check the settings screen moves it into its content column.
+ */
+add_action(
+	'admin_notices',
+	static function () {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test-only switch.
+		if ( ! isset( $_GET['convocept_e2e_notice'] ) ) {
+			return;
+		}
+
+		echo '<div class="notice notice-info is-dismissible"><p>Convocept e2e notice</p></div>';
+	}
+);

@@ -2,6 +2,31 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-01 — Admin screen review: robustness across WordPress versions
+- Checked on WordPress 6.5 (the minimum), 7.1 and trunk (7.2-alpha) with the settings, import
+  and accessibility e2e specs, plus a new "layout holds" spec (no sideways scroll, Save in view
+  while scrolling, the unit inside its field, card borders, active item in the admin theme
+  colour, the checked tile's dot, phone width). Run it on other versions with
+  `.wp-env.override.json` (`{ "core": "WordPress/WordPress#6.5" }` or `#master`); the thread
+  specs need their themes, which those cores don't install.
+- Rules now in the Admin Kit README: leave core controls alone apart from label/help text;
+  draw a control fully (`appearance: none`) when our look differs, never restyle half of one
+  (the tile radios were relying on forms.css `::before`); read `--wp-admin-theme-color` and
+  `--wp-admin--admin-bar--height`; no screen background of our own; stable props only.
+- `accessibleWhenDisabled` is not in WordPress 6.5, so Save and Upload use `aria-disabled` and
+  ignore clicks while they can't act: focusable on every version, no unknown-prop warning.
+- The colour picker opens in a panel under its row instead of a `Dropdown` popover, which on
+  6.5 flipped above the row and ran under the admin bar.
+- Notices printed by WordPress or other plugins (`.notice`, `.update-nag`) are moved into the
+  content column on mount, as core's common.js does with `.wp-header-end`; they used to hang in
+  the top-left corner above the screen.
+- Accessibility: sidebar group captions are no longer `h2` (they came before the page's h1); the
+  save status is an always-present live region; nav links read "General Needs fixing" with a
+  space; the section dropdown shows flags and counts; the browser tab title names the page;
+  `scroll-padding-top` keeps focused fields out from under the sticky header; the hidden file
+  input is out of the tab order; units are part of the number field's description; Windows high
+  contrast mode keeps dots and progress and outlines the active page and selected tile.
+
 ## 2026-09-30 — Admin screen on the new Foxe Plugin Admin Kit
 - After a review and a mockup (claude.ai canvas "Convocept admin — core WP look"), the owner chose
   a look closer to core WordPress and a new design system, **Foxe Plugin Admin Kit**

@@ -7,7 +7,7 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -83,12 +83,13 @@ export function Sidebar( {
 			<nav className="convocept-nav" aria-label={ label }>
 				{ groups.map( ( group ) => (
 					<div key={ group.id }>
-						<h2
+						{ /* Not a heading: the page's h1 comes after the sidebar, and WordPress's own menu has none. */ }
+						<div
 							className="convocept-nav-group"
 							id={ `convocept-nav-${ group.id }` }
 						>
 							{ group.label }
-						</h2>
+						</div>
 						<ul
 							className="convocept-nav-list"
 							aria-labelledby={ `convocept-nav-${ group.id }` }
@@ -111,6 +112,7 @@ export function Sidebar( {
 										<span className="convocept-nav-item__label">
 											{ page.title }
 										</span>
+										{ /* A space, so the link's name reads "General Needs fixing", not "GeneralNeeds fixing". */ }{ ' ' }
 										{ page.flag ? (
 											<span
 												className="convocept-dot convocept-dot--error"
@@ -170,7 +172,7 @@ export function SectionSelect( { groups, current, onNavigate } ) {
 					<optgroup key={ group.id } label={ group.label }>
 						{ group.pages.map( ( page ) => (
 							<option key={ page.id } value={ page.id }>
-								{ page.title }
+								{ optionLabel( page ) }
 							</option>
 						) ) }
 					</optgroup>
@@ -179,6 +181,26 @@ export function SectionSelect( { groups, current, onNavigate } ) {
 			<Icon name="chevron" />
 		</div>
 	);
+}
+
+/**
+ * The text of a page in the section dropdown, with what its sidebar item
+ * shows as a dot or badge, since an option can hold only text.
+ *
+ * @param {Object} page Page: { title, flag, badge }.
+ * @return {string} Option text.
+ */
+function optionLabel( page ) {
+	const extra = page.flag || page.badge?.count;
+
+	return extra
+		? sprintf(
+				/* translators: 1: Page title, 2: "Needs fixing", or a count such as comments waiting for review. */
+				__( '%1$s (%2$s)', 'convocept' ),
+				page.title,
+				extra
+			)
+		: page.title;
 }
 
 /**
@@ -200,18 +222,25 @@ export function PageHeader( { title, nav, status, actions } ) {
 					{ title }
 				</h1>
 				{ nav }
-				{ status && (
-					<span
-						className={ `convocept-header__status convocept-header__status--${ status.tone }` }
-						aria-live="polite"
-					>
-						<span
-							className={ `convocept-dot convocept-dot--${ status.tone }` }
-							aria-hidden="true"
-						/>
-						{ status.text }
-					</span>
-				) }
+				{ /* Always in the page, so screen readers hear the text when it arrives. */ }
+				<span
+					className={ `convocept-header__status${
+						status
+							? ` convocept-header__status--${ status.tone }`
+							: ''
+					}` }
+					aria-live="polite"
+				>
+					{ status && (
+						<>
+							<span
+								className={ `convocept-dot convocept-dot--${ status.tone }` }
+								aria-hidden="true"
+							/>
+							{ status.text }
+						</>
+					) }
+				</span>
 				{ actions && (
 					<div className="convocept-header__actions">{ actions }</div>
 				) }

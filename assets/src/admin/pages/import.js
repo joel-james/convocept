@@ -217,7 +217,11 @@ export function ImportPage( { boot } ) {
 	const errorNotice = error && (
 		<Notice
 			tone="error"
-			title={ __( 'The import could not go on', 'convocept' ) }
+			title={
+				job
+					? __( 'The import stopped', 'convocept' )
+					: __( 'This file can’t be imported', 'convocept' )
+			}
 		>
 			{ error }
 		</Notice>
@@ -270,10 +274,10 @@ export function ImportPage( { boot } ) {
 						<Button
 							variant="primary"
 							__next40pxDefaultSize
-							onClick={ upload }
-							disabled={ ! file || busy }
+							// Stays focusable while there is no file yet, so it can be found.
+							onClick={ file && ! busy ? upload : undefined }
+							aria-disabled={ ! file || busy }
 							isBusy={ busy }
-							accessibleWhenDisabled
 						>
 							{ __( 'Upload and review', 'convocept' ) }
 						</Button>

@@ -52,6 +52,10 @@ after M8.
 - The tests site uses plain permalinks (`?p=123`): build URLs with `URL`/`URLSearchParams`.
 - `npm run test:php` reinstalls the tests site, which also deactivates Convocept there; run
   `npx wp-env run tests-cli wp plugin activate convocept` before WP-CLI checks on it.
+- Admin UI on other WordPress versions: put `{ "core": "WordPress/WordPress#6.5" }` (or `#master`)
+  in `.wp-env.override.json`, `npx wp-env start --update`, reset the tests admin password
+  (`wp user update admin --user_pass=password`), then run the settings/import specs; delete the
+  file and update again afterwards.
 - The in-app browser pane reports `visibilityState: hidden`, so IntersectionObserver never fires
   there and the lazy script doesn't load; verify front-end behaviour in Playwright.
 

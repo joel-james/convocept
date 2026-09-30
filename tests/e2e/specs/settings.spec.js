@@ -64,7 +64,7 @@ test.describe( 'Settings screen', () => {
 		await page.getByLabel( 'Always dark' ).check();
 		await page.locator( '.convocept-color' ).click();
 		await page
-			.locator( '.convocept-color-popover' )
+			.locator( '.convocept-color-panel' )
 			.getByRole( 'option', { name: /Teal/ } )
 			.click();
 		await expect( page.locator( '.convocept-color__hex' ) ).toHaveText(
@@ -173,6 +173,7 @@ test.describe( 'Settings screen', () => {
 		const nav = page.getByRole( 'navigation', {
 			name: 'Convocept sections',
 		} );
+		await expect( nav ).toBeVisible();
 		const links = await nav
 			.locator( '.convocept-nav-item__label' )
 			.allTextContents();
@@ -216,6 +217,117 @@ test.describe( 'Settings screen', () => {
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'Advanced' } )
 		).toBeVisible();
+	} );
+
+	// These check the layout against WordPress itself, so a change to core's
+	// admin or component styles that breaks the screen fails here. Run it on
+	// the oldest supported WordPress and on trunk (.wp-env.override.json).
+	test( 'layout holds on this WordPress version', async ( {
+		admin,
+		page,
+	} ) => {
+		await admin.visitAdminPage(
+			SCREEN,
+			`${ QUERY }&tab=general&convocept_e2e_notice=1`
+		);
+
+		const header = page.locator( '.convocept-header' );
+		const content = page.locator( '.convocept-content' );
+
+		// Notices from other plugins sit in the content column, above the cards.
+		await expect(
+			content
+				.locator( '.convocept-wp-notices' )
+				.getByText( 'Convocept e2e notice' )
+		).toBeVisible();
+
+		// Nothing is wider than the window.
+		const overflow = await page.evaluate(
+			() =>
+				document.documentElement.scrollWidth -
+				document.documentElement.clientWidth
+		);
+		expect( overflow ).toBeLessThanOrEqual( 0 );
+
+		// The unit sits inside the number field's frame, after the input.
+		const frame = await page
+			.locator( '.convocept-affix' )
+			.first()
+			.boundingBox();
+		const unit = await page
+			.locator( '.convocept-affix__unit' )
+			.first()
+			.boundingBox();
+		expect( unit.x ).toBeGreaterThan( frame.x );
+		expect( unit.x + unit.width ).toBeLessThanOrEqual(
+			frame.x + frame.width
+		);
+		expect( frame.height ).toBeGreaterThanOrEqual( 36 );
+
+		// Save stays in view while scrolling a long page.
+		await page.locator( '.convocept-footer' ).scrollIntoViewIfNeeded();
+		await expect(
+			header.getByRole( 'button', { name: 'Save' } )
+		).toBeInViewport();
+
+		// Cards keep their frame; the accent is the admin theme colour.
+		const card = await page
+			.locator( '.convocept-card' )
+			.first()
+			.evaluate( ( element ) => {
+				const style = window.getComputedStyle( element );
+
+				return {
+					border: style.borderTopWidth,
+					radius: style.borderTopLeftRadius,
+				};
+			} );
+		expect( card ).toEqual( { border: '1px', radius: '8px' } );
+
+		const colours = await page.evaluate( () => {
+			const probe = document.createElement( 'span' );
+			probe.style.color = 'var(--wp-admin-theme-color, #3858e9)';
+			document.body.appendChild( probe );
+			const theme = window.getComputedStyle( probe ).color;
+			probe.remove();
+
+			const active = document.querySelector(
+				'.convocept-nav-item[aria-current="page"]'
+			);
+
+			return { theme, active: window.getComputedStyle( active ).color };
+		} );
+		expect( colours.active ).toBe( colours.theme );
+
+		// A checked tile shows its dot, whatever core does to radios.
+		await page
+			.getByRole( 'navigation', { name: 'Convocept sections' } )
+			.getByRole( 'link', { name: 'Appearance' } )
+			.click();
+		const dot = await page
+			.locator( '.convocept-tile--on input[type="radio"]' )
+			.evaluate( ( element ) => {
+				const style = window.getComputedStyle( element, '::after' );
+
+				return { width: style.width, content: style.content };
+			} );
+		expect( dot ).toEqual( { width: '6px', content: '""' } );
+
+		// Phones: no sideways scroll, and Save beside the section dropdown.
+		await page.setViewportSize( { width: 375, height: 800 } );
+		await expect(
+			page.getByLabel( 'Section', { exact: true } )
+		).toBeVisible();
+		await expect(
+			header.getByRole( 'button', { name: 'Save' } )
+		).toBeInViewport();
+		expect(
+			await page.evaluate(
+				() =>
+					document.documentElement.scrollWidth -
+					document.documentElement.clientWidth
+			)
+		).toBeLessThanOrEqual( 0 );
 	} );
 
 	test( 'our footer replaces the WordPress footer on this screen only', async ( {

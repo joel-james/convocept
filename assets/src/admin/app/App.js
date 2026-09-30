@@ -92,6 +92,7 @@ export default function App( { boot, pages, groups } ) {
 	const [ justSaved, setJustSaved ] = useState( false );
 	const [ route, setRoute ] = useState( tabFromUrl );
 	const navigated = useRef( false );
+	const wpNotices = useRef();
 	const { createSuccessNotice } = useDispatch( noticesStore );
 
 	const page = pages.find( ( item ) => item.id === route ) || pages[ 0 ];
@@ -155,6 +156,38 @@ export default function App( { boot, pages, groups } ) {
 		setRoute( id );
 	};
 
+	/*
+	 * WordPress prints admin notices (updates, other plugins) before the
+	 * app, where they would sit outside the layout. Move them into the
+	 * content column, as core's common.js does for `.wp-header-end` on
+	 * classic screens. React renders no children in that box, so it
+	 * never touches them.
+	 */
+	useEffect( () => {
+		const box = wpNotices.current;
+		const body = document.getElementById( 'wpbody-content' );
+
+		if ( ! box || ! body ) {
+			return;
+		}
+
+		body.querySelectorAll(
+			':scope > .notice, :scope > .updated, :scope > .error, :scope > .update-nag'
+		).forEach( ( notice ) => box.appendChild( notice ) );
+	}, [] );
+
+	// The browser tab names the page, as a full page load would.
+	const baseTitle = useRef( document.title );
+
+	useEffect( () => {
+		document.title = sprintf(
+			/* translators: 1: Page title, e.g. "Appearance", 2: The screen's own title from WordPress. */
+			__( '%1$s ‹ %2$s', 'convocept' ),
+			page.title,
+			baseTitle.current
+		);
+	}, [ page.title ] );
+
 	// Move focus to the new page's title, so keyboard and screen reader users land on it.
 	useEffect( () => {
 		if ( navigated.current ) {
@@ -194,7 +227,14 @@ export default function App( { boot, pages, groups } ) {
 		setSaveError( '' );
 	};
 
+	const canSave = ! saving && dirty.length > 0 && 0 === errorCount;
+
 	const save = async () => {
+		// Save stays focusable while it can't act (aria-disabled), so guard the click here.
+		if ( ! canSave ) {
+			return;
+		}
+
 		const changes = {};
 
 		dirty.forEach( ( key ) => {
@@ -299,8 +339,7 @@ export default function App( { boot, pages, groups } ) {
 				size="compact"
 				onClick={ save }
 				isBusy={ saving }
-				disabled={ saving || ! dirty.length || errorCount > 0 }
-				accessibleWhenDisabled
+				aria-disabled={ ! canSave }
 			>
 				{ justSaved && ! dirty.length
 					? __( 'Saved', 'convocept' )
@@ -354,6 +393,7 @@ export default function App( { boot, pages, groups } ) {
 				<main
 					className={ `convocept-content${ page.wide ? ' convocept-content--wide' : '' }` }
 				>
+					<div className="convocept-wp-notices" ref={ wpNotices } />
 					{ saveError && (
 						<Notice
 							tone="error"
@@ -366,7 +406,7 @@ export default function App( { boot, pages, groups } ) {
 									variant="primary"
 									size="compact"
 									onClick={ save }
-									disabled={ saving || errorCount > 0 }
+									aria-disabled={ ! canSave }
 								>
 									{ __( 'Try again', 'convocept' ) }
 								</Button>

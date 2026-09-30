@@ -263,6 +263,7 @@ test.describe( 'Accessibility', () => {
 		const nav = page.getByRole( 'navigation', {
 			name: 'Convocept sections',
 		} );
+		await expect( nav ).toBeVisible();
 		const names = (
 			await nav.locator( '.convocept-nav-item__label' ).allTextContents()
 		).map( ( name ) => name.trim() );

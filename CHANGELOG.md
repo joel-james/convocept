@@ -16,7 +16,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
   (25 comments, 30 seconds). The accent colour opens a picker with your theme's colours and a few
   suggested ones, and Appearance shows a preview comment. Import shows its four steps and the dry
   run as headline numbers. Help can copy the versions for a support post. On phones the section
-  dropdown and Save share one sticky row.
+  dropdown and Save share one sticky row. Checked on WordPress 6.5, 7.1 and the development
+  version: notices from WordPress and other plugins now sit above the cards instead of in the
+  corner, the colour picker opens under its field, the browser tab names the open page, and
+  Windows high contrast mode keeps the status marks.
 - The comment thread has more breathing space and slightly smaller text (15px instead of 16px
   at the default root size, set by `--convocept-font-size`). More space between threads (2rem, `--convocept-gap`),
   between replies and before a comment's first reply (1.75rem), between the avatar and the text

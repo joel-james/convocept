@@ -15,7 +15,6 @@ import {
 	CheckboxControl,
 	ColorPalette,
 	ColorPicker,
-	Dropdown,
 	SelectControl,
 	TextControl,
 	TextareaControl,
@@ -147,7 +146,11 @@ export function NumberField( {
 						max={ max }
 						step={ 1 }
 						aria-invalid={ !! error }
-						aria-describedby={ `${ id }-describe` }
+						aria-describedby={
+							unit
+								? `${ id }-unit ${ id }-describe`
+								: `${ id }-describe`
+						}
 						onChange={ ( event ) =>
 							onChange(
 								'' === event.target.value
@@ -159,36 +162,15 @@ export function NumberField( {
 					{ unit && (
 						<span
 							className="convocept-affix__unit"
-							aria-hidden="true"
+							id={ `${ id }-unit` }
 						>
 							{ unit }
 						</span>
 					) }
 				</div>
 			</BaseControl>
-			<Describe
-				id={ `${ id }-describe` }
-				help={ unit && ! error ? joinUnit( unit, help ) : help }
-				error={ error }
-			/>
+			<Describe id={ `${ id }-describe` } help={ help } error={ error } />
 		</div>
-	);
-}
-
-/**
- * Keep the unit in the description for screen readers, which skip the
- * visual unit inside the field.
- *
- * @param {string} unit Unit.
- * @param {string} help Help text.
- * @return {Element} Help with a hidden unit prefix.
- */
-function joinUnit( unit, help ) {
-	return (
-		<>
-			<span className="screen-reader-text">{ `${ unit }. ` }</span>
-			{ help }
-		</>
 	);
 }
 
@@ -254,6 +236,7 @@ export function SelectField( {
 				label={ label }
 				value={ value }
 				options={ options }
+				aria-invalid={ !! error }
 				aria-describedby={ `${ id }-describe` }
 				onChange={ onChange }
 			/>
@@ -450,6 +433,10 @@ export function ChoiceTiles( { label, value, options, onChange } ) {
  * A colour as a row (swatch, name, hex) that opens WordPress's colour
  * picker with the theme's palette and a few suggested colours.
  *
+ * The picker opens in a panel under the row, in the page flow, not in a
+ * floating popover: it is tall, and a popover near the admin bar either
+ * flips over it or scrolls inside itself.
+ *
  * @param {Object}                  props              Props.
  * @param {string}                  props.label        Label.
  * @param {string}                  props.name         Short name shown in the row, e.g. "Accent".
@@ -474,6 +461,8 @@ export function ColorField( {
 	onChange,
 } ) {
 	const id = useInstanceId( ColorField, 'convocept-color' );
+	const [ open, setOpen ] = useState( false );
+	const toggle = useRef();
 	const valid = /^#[0-9a-f]{6}$/i.test( value || '' );
 	const shown = valid ? value : defaultValue;
 	const groups = palettes.filter( ( group ) => group.colors.length );
@@ -488,54 +477,23 @@ export function ColorField( {
 				{ label }
 			</span>
 			<div className="convocept-color-row">
-				<Dropdown
-					className="convocept-color-dropdown"
-					contentClassName="convocept-color-popover"
-					popoverProps={ { placement: 'bottom-start', offset: 8 } }
-					renderToggle={ ( { isOpen, onToggle } ) => (
-						<button
-							type="button"
-							className="convocept-color"
-							aria-expanded={ isOpen }
-							aria-describedby={ `${ id }-describe` }
-							onClick={ onToggle }
-						>
-							<span
-								className="convocept-color__chip"
-								style={ { background: shown } }
-							/>
-							<span className="convocept-color__name">
-								{ name }
-							</span>
-							<span className="convocept-color__hex">
-								{ value }
-							</span>
-						</button>
-					) }
-					renderContent={ () => (
-						<div className="convocept-popover">
-							<ColorPicker
-								color={ shown }
-								enableAlpha={ false }
-								onChange={ ( next ) =>
-									onChange( next.toLowerCase() )
-								}
-							/>
-							{ groups.length > 0 && (
-								<ColorPalette
-									colors={ groups }
-									value={ shown }
-									disableCustomColors
-									clearable={ false }
-									headingLevel={ 3 }
-									onChange={ ( next ) =>
-										next && onChange( next.toLowerCase() )
-									}
-								/>
-							) }
-						</div>
-					) }
-				/>
+				<button
+					ref={ toggle }
+					type="button"
+					className="convocept-color"
+					aria-expanded={ open }
+					aria-controls={ `${ id }-panel` }
+					aria-describedby={ `${ id }-describe` }
+					onClick={ () => setOpen( ! open ) }
+				>
+					<span
+						className="convocept-color__chip"
+						style={ { background: shown } }
+					/>
+					<span className="convocept-color__name">{ name }</span>
+					<span className="convocept-color__hex">{ value }</span>
+					<Icon name="chevron" />
+				</button>
 				{ value !== defaultValue && (
 					<Button
 						variant="tertiary"
@@ -546,6 +504,39 @@ export function ColorField( {
 					</Button>
 				) }
 			</div>
+			{ open && (
+				// Escape closes the panel and returns to the row, as a popover would.
+				// eslint-disable-next-line jsx-a11y/no-static-element-interactions -- Only listens for Escape bubbling up from the controls inside.
+				<div
+					id={ `${ id }-panel` }
+					className="convocept-color-panel"
+					onKeyDown={ ( event ) => {
+						if ( 'Escape' === event.key ) {
+							event.stopPropagation();
+							setOpen( false );
+							toggle.current?.focus();
+						}
+					} }
+				>
+					<ColorPicker
+						color={ shown }
+						enableAlpha={ false }
+						onChange={ ( next ) => onChange( next.toLowerCase() ) }
+					/>
+					{ groups.length > 0 && (
+						<ColorPalette
+							colors={ groups }
+							value={ shown }
+							disableCustomColors
+							clearable={ false }
+							headingLevel={ 3 }
+							onChange={ ( next ) =>
+								next && onChange( next.toLowerCase() )
+							}
+						/>
+					) }
+				</div>
+			) }
 			{ ! error && warning ? (
 				<p
 					className="convocept-help convocept-help--warning"
@@ -583,10 +574,16 @@ export function FileField( { label, prompt, help, accept, file, onChange } ) {
 
 	return (
 		<div className="convocept-field convocept-field--file">
-			<label className="convocept-label" htmlFor={ id }>
+			<label
+				className="convocept-label"
+				htmlFor={ id }
+				id={ `${ id }-label` }
+			>
 				{ label }
 			</label>
 			<div
+				role="group"
+				aria-labelledby={ `${ id }-label` }
 				className={ `convocept-drop${ over ? ' convocept-drop--over' : '' }` }
 				onDragOver={ ( event ) => {
 					event.preventDefault();
@@ -608,7 +605,8 @@ export function FileField( { label, prompt, help, accept, file, onChange } ) {
 					type="file"
 					accept={ accept }
 					className="screen-reader-text"
-					aria-describedby={ `${ id }-describe` }
+					// The button is the keyboard path; a second, invisible tab stop would hide focus.
+					tabIndex={ -1 }
 					onChange={ ( event ) =>
 						event.target.files[ 0 ] &&
 						onChange( event.target.files[ 0 ] )
@@ -626,6 +624,7 @@ export function FileField( { label, prompt, help, accept, file, onChange } ) {
 				<Button
 					variant="secondary"
 					size="compact"
+					aria-describedby={ `${ id }-describe` }
 					onClick={ () => input.current.click() }
 				>
 					{ file

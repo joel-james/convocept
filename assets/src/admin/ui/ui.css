@@ -12,8 +12,7 @@
 
 /* stylelint-disable no-descending-specificity -- Icons and help lines take their colour and spacing from the part they sit in (nav item, notice, step, card footer); those parts never nest, so the order of these rules never decides a conflict. */
 
-.convocept-admin,
-.convocept-color-popover {
+.convocept-admin {
 	--convocept-theme: var(--wp-admin-theme-color, #3858e9);
 	--convocept-theme-hover: var(--wp-admin-theme-color-darker-10, #2145e6);
 	--convocept-on-theme: #fff;
@@ -61,18 +60,27 @@
 	--convocept-control-height: 40px;
 	--convocept-number-width: 180px;
 	--convocept-content-max: 720px;
-	--convocept-admin-bar: 32px;
-}
 
-.convocept-admin {
+	/* WordPress's own admin bar height (46px below 782px), so a change there moves us too. */
+	--convocept-admin-bar: var(--wp-admin--admin-bar--height, 32px);
+
 	display: grid;
 	grid-template-columns: var(--convocept-sidebar-width) minmax(0, 1fr);
 	min-height: calc(100vh - var(--convocept-admin-bar));
 	margin-inline-start: -20px;
-	background: var(--convocept-ground);
+
+	/* No background of our own: WordPress's admin background shows through, so the screen matches the rest of wp-admin. */
 	color: var(--convocept-fg);
 	font-size: 13px;
 	line-height: 20px;
+}
+
+/*
+ * This stylesheet loads on the plugin screen only. Keyboard focus scrolled
+ * into view lands below the sticky admin bar and page header, not under them.
+ */
+html {
+	scroll-padding-top: calc(var(--wp-admin--admin-bar--height, 32px) + 88px);
 }
 
 .convocept-admin *,
@@ -81,11 +89,11 @@
 	box-sizing: border-box;
 }
 
-.convocept-admin a {
+.convocept-admin a:not(.components-button) {
 	color: var(--convocept-theme);
 }
 
-.convocept-admin a:hover {
+.convocept-admin a:not(.components-button):hover {
 	color: var(--convocept-theme-hover);
 }
 
@@ -322,6 +330,22 @@
 	padding: var(--convocept-space-7) var(--convocept-space-7) var(--convocept-space-8);
 }
 
+/* Notices from WordPress and other plugins, moved here from above the screen. */
+.convocept-wp-notices {
+	display: flex;
+	flex-direction: column;
+	gap: var(--convocept-space-4);
+}
+
+.convocept-wp-notices:empty {
+	display: none;
+}
+
+.convocept-admin .convocept-wp-notices > * {
+	display: block;
+	margin: 0;
+}
+
 .convocept-content--wide {
 	max-width: none;
 }
@@ -515,7 +539,7 @@
 
 .convocept-affix:focus-within {
 	border-color: var(--convocept-theme);
-	box-shadow: 0 0 0 0.5px var(--convocept-theme);
+	box-shadow: 0 0 0 1px var(--convocept-theme);
 }
 
 .convocept-affix--invalid,
@@ -632,9 +656,30 @@
 	font-weight: 500;
 }
 
+/*
+ * The radio is drawn here in full (appearance: none), not by restyling
+ * WordPress's forms.css radio, so a change to core's radio can't leave a
+ * checked tile with an invisible dot.
+ */
 .convocept-admin .convocept-tile input[type="radio"] {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	min-width: 16px;
+	height: 16px;
 	margin: 0;
-	border-color: var(--convocept-fg);
+	padding: 0;
+	border: 1px solid var(--convocept-fg);
+	border-radius: 50%;
+	background: var(--convocept-surface);
+	box-shadow: none;
+	appearance: none;
+}
+
+.convocept-admin .convocept-tile input[type="radio"]::before {
+	content: none;
 }
 
 .convocept-admin .convocept-tile input[type="radio"]:checked {
@@ -642,11 +687,17 @@
 	background: var(--convocept-theme);
 }
 
-.convocept-admin .convocept-tile input[type="radio"]:checked::before {
+.convocept-admin .convocept-tile input[type="radio"]:checked::after {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
 	background: var(--convocept-on-theme);
 }
 
+/* The tile draws the focus ring (focus-within), so the radio needs none. */
 .convocept-admin .convocept-tile input[type="radio"]:focus {
+	outline: 0;
 	box-shadow: none;
 }
 
@@ -664,15 +715,12 @@
 	gap: 8px;
 }
 
-.convocept-color-dropdown {
-	flex-grow: 1;
-}
-
 .convocept-admin .convocept-color {
 	display: flex;
+	flex-grow: 1;
 	align-items: center;
 	gap: 10px;
-	width: 100%;
+	min-width: 0;
 	height: var(--convocept-control-height);
 	margin: 0;
 	padding: 0 12px;
@@ -685,11 +733,20 @@
 	cursor: pointer;
 }
 
-.convocept-admin .convocept-color[aria-expanded="true"],
+.convocept-admin .convocept-color[aria-expanded="true"] {
+	border-color: var(--convocept-theme);
+}
+
 .convocept-admin .convocept-color:focus {
 	border-color: var(--convocept-theme);
-	box-shadow: 0 0 0 0.5px var(--convocept-theme);
+	box-shadow: 0 0 0 1px var(--convocept-theme);
+
+	/* Transparent, so Windows high contrast mode still draws a ring. */
 	outline: 2px solid transparent;
+}
+
+.convocept-color[aria-expanded="true"] .convocept-icon--chevron {
+	transform: rotate(180deg);
 }
 
 .convocept-color__chip {
@@ -711,22 +768,23 @@
 	text-transform: uppercase;
 }
 
-.convocept-color-popover .components-popover__content {
-	border-radius: var(--convocept-radius-surface);
-	box-shadow: var(--convocept-shadow-popover);
-	outline: 0;
-}
-
-.convocept-popover {
+/* The picker panel: in the page flow under the row, framed like a popover. */
+.convocept-color-panel {
 	display: flex;
-	flex-direction: column;
-	gap: 16px;
-	width: 280px;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 16px 24px;
+	margin-top: 8px;
 	padding: 16px;
+	border: 1px solid var(--convocept-stroke-card);
+	border-radius: var(--convocept-radius-surface);
+	background: var(--convocept-surface);
 }
 
-.convocept-popover .components-color-picker {
-	width: 100%;
+.convocept-color-panel > * {
+	flex: 1 1 216px;
+	min-width: 0;
+	max-width: 280px;
 }
 
 /* FileField: a drop area with the button inside. */
@@ -1120,7 +1178,6 @@
 @media (max-width: 782px) {
 
 	.convocept-admin {
-		--convocept-admin-bar: 46px;
 		--convocept-control-height: 44px;
 
 		display: block;
@@ -1192,6 +1249,15 @@
 		flex-basis: 100%;
 	}
 
+	/* The empty live region keeps its place in the page but takes no row. */
+	.convocept-header__status:empty {
+		margin-top: -8px;
+	}
+
+	html {
+		scroll-padding-top: calc(var(--wp-admin--admin-bar--height, 46px) + 110px);
+	}
+
 	.convocept-tiles,
 	.convocept-tiles--pairs {
 		grid-template-columns: minmax(0, 1fr);
@@ -1233,5 +1299,46 @@
 
 	.convocept-admin {
 		--convocept-admin-bar: 0px;
+	}
+
+	html {
+		scroll-padding-top: 110px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.convocept-progress__fill {
+		transition: none;
+	}
+}
+
+/*
+ * Windows high contrast mode drops background colours. Keep the marks that
+ * carry meaning (status dots, the checked radio, progress) and outline the
+ * active page, whose tint would otherwise vanish.
+ */
+@media (forced-colors: active) {
+
+	.convocept-dot,
+	.convocept-progress__fill {
+		forced-color-adjust: none;
+	}
+
+	.convocept-progress__fill {
+		background: Highlight;
+	}
+
+	.convocept-admin .convocept-tile input[type="radio"] {
+		appearance: auto;
+	}
+
+	.convocept-admin .convocept-nav-item[aria-current="page"] {
+		outline: 2px solid CanvasText;
+		outline-offset: -2px;
+	}
+
+	.convocept-tile--on {
+		outline: 2px solid Highlight;
 	}
 }
