@@ -1,8 +1,9 @@
 /**
  * End-to-end tests for the settings screen (M9).
  *
- * Comments → Convocept: sidebar navigation, the save bar, validation,
- * saving and the effect on the front end, and the narrow-screen dropdown.
+ * Comments → Convocept: sidebar navigation, Save in the page header,
+ * validation, saving and the effect on the front end, and the narrow-screen
+ * dropdown.
  */
 
 /**
@@ -42,15 +43,16 @@ test.describe( 'Settings screen', () => {
 	} ) => {
 		await admin.visitAdminPage( SCREEN, QUERY );
 
-		const bar = page.getByRole( 'region', { name: 'Unsaved changes' } );
+		const header = page.locator( '.convocept-header' );
+		const save = header.getByRole( 'button', { name: 'Save' } );
 		await expect(
 			page.getByRole( 'heading', { level: 1, name: 'General' } )
 		).toBeVisible();
-		await expect( bar ).toHaveCount( 0 );
+		await expect( save ).toHaveAttribute( 'aria-disabled', 'true' );
 
 		await page.getByLabel( 'Comments per page' ).fill( '12' );
 		await page.getByLabel( 'Readers can upvote comments' ).click();
-		await expect( bar ).toContainText( '2 unsaved changes' );
+		await expect( header ).toContainText( '2 unsaved changes' );
 
 		await page
 			.getByRole( 'navigation', { name: 'Convocept sections' } )
@@ -60,14 +62,24 @@ test.describe( 'Settings screen', () => {
 			page.getByRole( 'heading', { level: 1, name: 'Appearance' } )
 		).toBeFocused();
 		await page.getByLabel( 'Always dark' ).check();
-		await page.getByLabel( 'Hex value' ).fill( '#123456' );
-		await expect( bar ).toContainText( '4 unsaved changes' );
+		await page.locator( '.convocept-color' ).click();
+		await page
+			.locator( '.convocept-color-popover' )
+			.getByRole( 'option', { name: /Teal/ } )
+			.click();
+		await expect( page.locator( '.convocept-color__hex' ) ).toHaveText(
+			'#0f766e'
+		);
+		await expect( header ).toContainText( '4 unsaved changes' );
 
-		await bar.getByRole( 'button', { name: 'Save changes' } ).click();
+		await save.click();
 		await expect( page.locator( '.components-snackbar' ) ).toHaveText(
 			'Settings saved.'
 		);
-		await expect( bar ).toHaveCount( 0 );
+		await expect(
+			header.getByRole( 'button', { name: 'Saved' } )
+		).toHaveAttribute( 'aria-disabled', 'true' );
+		await expect( header ).not.toContainText( 'unsaved' );
 
 		// The page is in the address, so a reload stays on it.
 		expect( new URL( page.url() ).searchParams.get( 'tab' ) ).toBe(
@@ -101,7 +113,7 @@ test.describe( 'Settings screen', () => {
 			'data-convocept-theme',
 			'dark'
 		);
-		await expect( thread ).toHaveAttribute( 'style', /#123456/ );
+		await expect( thread ).toHaveAttribute( 'style', /#0f766e/ );
 	} );
 
 	test( 'invalid values are explained and block saving until fixed or discarded', async ( {
@@ -111,16 +123,16 @@ test.describe( 'Settings screen', () => {
 		await admin.visitAdminPage( SCREEN, QUERY );
 
 		const field = page.getByLabel( 'Comments per page' );
-		const bar = page.getByRole( 'region', { name: 'Unsaved changes' } );
+		const header = page.locator( '.convocept-header' );
 
 		await field.fill( '0' );
 		await expect(
 			page.getByText( 'Enter a number from 1 to 100.' )
 		).toBeVisible();
 		await expect( field ).toHaveAttribute( 'aria-invalid', 'true' );
-		await expect( bar ).toContainText( '1 setting needs fixing' );
+		await expect( header ).toContainText( '1 setting needs fixing' );
 		await expect(
-			bar.getByRole( 'button', { name: 'Save changes' } )
+			header.getByRole( 'button', { name: 'Save' } )
 		).toHaveAttribute( 'aria-disabled', 'true' );
 		await expect(
 			page
@@ -128,9 +140,12 @@ test.describe( 'Settings screen', () => {
 				.getByText( 'Needs fixing' )
 		).toBeAttached();
 
-		await bar.getByRole( 'button', { name: 'Discard' } ).click();
+		await header.getByRole( 'button', { name: 'Discard' } ).click();
 		await expect( field ).toHaveValue( '20' );
-		await expect( bar ).toHaveCount( 0 );
+		await expect( header ).not.toContainText( 'needs fixing' );
+		await expect(
+			header.getByRole( 'button', { name: 'Discard' } )
+		).toHaveCount( 0 );
 	} );
 
 	// WordPress warns in the console (SCRIPT_DEBUG is on in wp-env) before it
@@ -158,7 +173,9 @@ test.describe( 'Settings screen', () => {
 		const nav = page.getByRole( 'navigation', {
 			name: 'Convocept sections',
 		} );
-		const links = await nav.getByRole( 'link' ).allTextContents();
+		const links = await nav
+			.locator( '.convocept-nav-item__label' )
+			.allTextContents();
 
 		for ( const name of links ) {
 			await nav.getByRole( 'link', { name } ).click();
@@ -178,7 +195,7 @@ test.describe( 'Settings screen', () => {
 		await expect( page.locator( '#convocept-admin-js' ) ).toHaveCount( 1 );
 	} );
 
-	test( 'narrow screens get a section dropdown', async ( {
+	test( 'narrow screens get a section dropdown beside Save', async ( {
 		admin,
 		page,
 	} ) => {
@@ -188,6 +205,11 @@ test.describe( 'Settings screen', () => {
 		await expect(
 			page.getByRole( 'navigation', { name: 'Convocept sections' } )
 		).toBeHidden();
+		await expect(
+			page
+				.locator( '.convocept-header' )
+				.getByRole( 'button', { name: 'Save' } )
+		).toBeVisible();
 		await page
 			.getByLabel( 'Section', { exact: true } )
 			.selectOption( 'advanced' );

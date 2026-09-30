@@ -68,6 +68,57 @@ class SettingsPageTest extends TestCase {
 		$this->assertNotContains( 'attachment', wp_list_pluck( $data['postTypes'], 'value' ) );
 		$this->assertTrue( $data['canImport'] );
 		$this->assertArrayHasKey( 'requireNameEmail', $data['discussion'] );
+		$this->assertSame( admin_url( 'export-personal-data.php' ), $data['urls']['exportData'] );
+		$this->assertIsArray( $data['palette'] );
+	}
+
+	public function test_palette_keeps_six_digit_theme_colours_only(): void {
+		$filter = static function ( $theme_json ) {
+			return $theme_json->update_with(
+				array(
+					'version'  => 3,
+					'settings' => array(
+						'color' => array(
+							'palette' => array(
+								array(
+									'slug'  => 'ink',
+									'name'  => 'Ink',
+									'color' => '#1E1E1E',
+								),
+								array(
+									'slug'  => 'short',
+									'name'  => 'Short',
+									'color' => '#fff',
+								),
+								array(
+									'slug'  => 'rgb',
+									'name'  => 'RGB',
+									'color' => 'rgb(0, 0, 0)',
+								),
+							),
+						),
+					),
+				)
+			);
+		};
+
+		add_filter( 'wp_theme_json_data_theme', $filter );
+		wp_clean_theme_json_cache();
+
+		$palette = $this->page()->boot_data()['palette'];
+
+		remove_filter( 'wp_theme_json_data_theme', $filter );
+		wp_clean_theme_json_cache();
+
+		$this->assertSame(
+			array(
+				array(
+					'name'  => 'Ink',
+					'color' => '#1e1e1e',
+				),
+			),
+			$palette
+		);
 	}
 
 	public function test_mount_point_and_plugin_link(): void {

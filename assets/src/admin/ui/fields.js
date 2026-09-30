@@ -1,5 +1,5 @@
 /**
- * Form fields of the Foxe Plugin Admin UI.
+ * Form fields of the Foxe Plugin Admin Kit.
  *
  * Each wraps the WordPress component the design system names, so the look
  * can change in one place. Every field takes `label`, `help`, `value`,
@@ -10,8 +10,10 @@
  * WordPress dependencies
  */
 import {
+	BaseControl,
 	Button,
 	CheckboxControl,
+	ColorPalette,
 	ColorPicker,
 	Dropdown,
 	SelectControl,
@@ -24,19 +26,25 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Internal dependencies
+ */
+import { Icon } from './icons';
+
+/**
  * Render the help line, or the error in its place.
  *
- * @param {Object} props       Props.
- * @param {string} props.id    Element ID, for aria-describedby.
- * @param {string} props.help  Help text.
- * @param {string} props.error Error text.
+ * @param {Object}         props       Props.
+ * @param {string}         props.id    Element ID, for aria-describedby.
+ * @param {string|Element} props.help  Help text.
+ * @param {string}         props.error Error text.
  * @return {Element|null} Paragraph.
  */
 function Describe( { id, help, error } ) {
 	if ( error ) {
 		return (
 			<p className="convocept-error" id={ id }>
-				{ error }
+				<Icon name="error" size={ 16 } />
+				<span>{ error }</span>
 			</p>
 		);
 	}
@@ -92,16 +100,17 @@ export function Toggle( { label, help, checked, onChange } ) {
 }
 
 /**
- * A whole number.
+ * A whole number with its unit inside the field ("25 comments").
  *
- * WordPress's TextControl as a number input, so it looks and sizes like
- * every other field; the stepper control in @wordpress/components is
- * still experimental. The value passed to onChange is a number, or ''
- * while the field is empty, so validation can say what to enter.
+ * A native number input in the kit's affix frame, labelled by WordPress's
+ * BaseControl: the stable components have no suffix slot. The value passed
+ * to onChange is a number, or '' while the field is empty, so validation
+ * can say what to enter.
  *
  * @param {Object}                         props          Props.
  * @param {string}                         props.label    Label.
- * @param {string}                         [props.help]   Help with the unit.
+ * @param {string}                         [props.unit]   Plural noun shown after the number.
+ * @param {string}                         [props.help]   What the number does.
  * @param {number}                         props.value    Value.
  * @param {number}                         props.min      Minimum.
  * @param {number}                         props.max      Maximum.
@@ -111,6 +120,7 @@ export function Toggle( { label, help, checked, onChange } ) {
  */
 export function NumberField( {
 	label,
+	unit,
 	help,
 	value,
 	min,
@@ -122,25 +132,63 @@ export function NumberField( {
 
 	return (
 		<div className={ fieldClass( 'number', error ) }>
-			<TextControl
-				__next40pxDefaultSize
-				__nextHasNoMarginBottom
-				id={ id }
-				type="number"
-				inputMode="numeric"
-				label={ label }
-				value={ value }
-				min={ min }
-				max={ max }
-				step={ 1 }
-				aria-invalid={ !! error }
-				aria-describedby={ `${ id }-describe` }
-				onChange={ ( next ) =>
-					onChange( '' === next ? '' : Number( next ) )
-				}
+			<BaseControl __nextHasNoMarginBottom id={ id } label={ label }>
+				<div
+					className={ `convocept-affix${
+						error ? ' convocept-affix--invalid' : ''
+					}` }
+				>
+					<input
+						id={ id }
+						type="number"
+						inputMode="numeric"
+						value={ value }
+						min={ min }
+						max={ max }
+						step={ 1 }
+						aria-invalid={ !! error }
+						aria-describedby={ `${ id }-describe` }
+						onChange={ ( event ) =>
+							onChange(
+								'' === event.target.value
+									? ''
+									: Number( event.target.value )
+							)
+						}
+					/>
+					{ unit && (
+						<span
+							className="convocept-affix__unit"
+							aria-hidden="true"
+						>
+							{ unit }
+						</span>
+					) }
+				</div>
+			</BaseControl>
+			<Describe
+				id={ `${ id }-describe` }
+				help={ unit && ! error ? joinUnit( unit, help ) : help }
+				error={ error }
 			/>
-			<Describe id={ `${ id }-describe` } help={ help } error={ error } />
 		</div>
+	);
+}
+
+/**
+ * Keep the unit in the description for screen readers, which skip the
+ * visual unit inside the field.
+ *
+ * @param {string} unit Unit.
+ * @param {string} help Help text.
+ * @return {Element} Help with a hidden unit prefix.
+ */
+function joinUnit( unit, help ) {
+	return (
+		<>
+			<span className="screen-reader-text">{ `${ unit }. ` }</span>
+			{ help }
+		</>
 	);
 }
 
@@ -399,29 +447,36 @@ export function ChoiceTiles( { label, value, options, onChange } ) {
 }
 
 /**
- * A colour swatch with a picker and the hex value as text.
+ * A colour as a row (swatch, name, hex) that opens WordPress's colour
+ * picker with the theme's palette and a few suggested colours.
  *
  * @param {Object}                  props              Props.
  * @param {string}                  props.label        Label.
+ * @param {string}                  props.name         Short name shown in the row, e.g. "Accent".
  * @param {string}                  [props.help]       Where the colour is used.
  * @param {string}                  [props.warning]    Shown instead of the help, e.g. low contrast.
  * @param {string}                  props.value        Hex colour.
  * @param {string}                  props.defaultValue Default, for Reset.
+ * @param {Array}                   [props.palettes]   Swatch groups: [{ name, colors: [{ name, color }] }].
  * @param {string}                  [props.error]      Error text.
  * @param {(value: string) => void} props.onChange     Receives the new value.
  * @return {Element} Field.
  */
 export function ColorField( {
 	label,
+	name,
 	help,
 	warning,
 	value,
 	defaultValue,
+	palettes = [],
 	error,
 	onChange,
 } ) {
 	const id = useInstanceId( ColorField, 'convocept-color' );
 	const valid = /^#[0-9a-f]{6}$/i.test( value || '' );
+	const shown = valid ? value : defaultValue;
+	const groups = palettes.filter( ( group ) => group.colors.length );
 
 	return (
 		<div
@@ -432,43 +487,55 @@ export function ColorField( {
 			<span className="convocept-label" id={ `${ id }-label` }>
 				{ label }
 			</span>
-			<div className="convocept-color">
+			<div className="convocept-color-row">
 				<Dropdown
-					popoverProps={ { placement: 'bottom-start' } }
+					className="convocept-color-dropdown"
+					contentClassName="convocept-color-popover"
+					popoverProps={ { placement: 'bottom-start', offset: 8 } }
 					renderToggle={ ( { isOpen, onToggle } ) => (
 						<button
 							type="button"
-							className="convocept-color__swatch"
-							style={ {
-								background: valid ? value : defaultValue,
-							} }
+							className="convocept-color"
 							aria-expanded={ isOpen }
-							aria-label={ __( 'Pick a colour', 'convocept' ) }
+							aria-describedby={ `${ id }-describe` }
 							onClick={ onToggle }
-						/>
+						>
+							<span
+								className="convocept-color__chip"
+								style={ { background: shown } }
+							/>
+							<span className="convocept-color__name">
+								{ name }
+							</span>
+							<span className="convocept-color__hex">
+								{ value }
+							</span>
+						</button>
 					) }
 					renderContent={ () => (
-						<ColorPicker
-							color={ valid ? value : defaultValue }
-							enableAlpha={ false }
-							onChange={ onChange }
-						/>
+						<div className="convocept-popover">
+							<ColorPicker
+								color={ shown }
+								enableAlpha={ false }
+								onChange={ ( next ) =>
+									onChange( next.toLowerCase() )
+								}
+							/>
+							{ groups.length > 0 && (
+								<ColorPalette
+									colors={ groups }
+									value={ shown }
+									disableCustomColors
+									clearable={ false }
+									headingLevel={ 3 }
+									onChange={ ( next ) =>
+										next && onChange( next.toLowerCase() )
+									}
+								/>
+							) }
+						</div>
 					) }
 				/>
-				<div className="convocept-color__hex">
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						hideLabelFromVision
-						label={ __( 'Hex value', 'convocept' ) }
-						value={ value }
-						aria-invalid={ !! error }
-						aria-describedby={ `${ id }-describe` }
-						onChange={ ( next ) =>
-							onChange( next.trim().toLowerCase() )
-						}
-					/>
-				</div>
 				{ value !== defaultValue && (
 					<Button
 						variant="tertiary"
@@ -500,30 +567,27 @@ export function ColorField( {
 /**
  * Pick one file to upload, by button or by dropping it on the area.
  *
- * @param {Object}               props            Props.
- * @param {string}               props.label      Label.
- * @param {string}               [props.help]     Accepted types and size limit.
- * @param {string}               props.accept     The input's accept attribute.
- * @param {File}                 [props.file]     The chosen file.
- * @param {(file: File) => void} props.onChange   Receives the chosen File.
- * @param {Element}              [props.children] The next step's button.
+ * @param {Object}               props          Props.
+ * @param {string}               props.label    Label.
+ * @param {string}               props.prompt   Title of the drop area, e.g. "Drop your export file here".
+ * @param {string}               [props.help]   Accepted types and size limit.
+ * @param {string}               props.accept   The input's accept attribute.
+ * @param {File}                 [props.file]   The chosen file.
+ * @param {(file: File) => void} props.onChange Receives the chosen File.
  * @return {Element} Field.
  */
-export function FileField( { label, help, accept, file, onChange, children } ) {
+export function FileField( { label, prompt, help, accept, file, onChange } ) {
 	const id = useInstanceId( FileField, 'convocept-file' );
 	const input = useRef();
 	const [ over, setOver ] = useState( false );
 
 	return (
-		<div
-			className="convocept-field convocept-field--file"
-			style={ { width: '100%' } }
-		>
+		<div className="convocept-field convocept-field--file">
 			<label className="convocept-label" htmlFor={ id }>
 				{ label }
 			</label>
 			<div
-				className={ `convocept-file${ over ? ' convocept-file--over' : '' }` }
+				className={ `convocept-drop${ over ? ' convocept-drop--over' : '' }` }
 				onDragOver={ ( event ) => {
 					event.preventDefault();
 					setOver( true );
@@ -550,16 +614,24 @@ export function FileField( { label, help, accept, file, onChange, children } ) {
 						onChange( event.target.files[ 0 ] )
 					}
 				/>
+				<Icon name="upload" size={ 28 } />
+				<div className="convocept-drop__title" aria-live="polite">
+					{ file ? file.name : prompt }
+				</div>
+				{ ! file && (
+					<div className="convocept-drop__or">
+						{ __( 'or', 'convocept' ) }
+					</div>
+				) }
 				<Button
 					variant="secondary"
+					size="compact"
 					onClick={ () => input.current.click() }
 				>
-					{ __( 'Choose file', 'convocept' ) }
+					{ file
+						? __( 'Choose another file', 'convocept' )
+						: __( 'Choose file', 'convocept' ) }
 				</Button>
-				<span className="convocept-file__name">
-					{ file ? file.name : __( 'or drop it here', 'convocept' ) }
-				</span>
-				{ children }
 			</div>
 			<Describe id={ `${ id }-describe` } help={ help } />
 		</div>

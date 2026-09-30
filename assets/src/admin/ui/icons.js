@@ -1,7 +1,7 @@
 /**
  * Stroke icons for the admin UI.
  *
- * 24px grid, 1.5px stroke in currentColor, as the Foxe Plugin Admin UI asks
+ * 24px grid, 1.5px stroke in currentColor, as the Foxe Plugin Admin Kit asks
  * for. Drawn here rather than importing `@wordpress/icons`, which would be
  * bundled into the script.
  */
@@ -17,6 +17,7 @@
 export function Icon( { name, size = 18 } ) {
 	return (
 		<svg
+			className={ `convocept-icon convocept-icon--${ name }` }
 			width={ size }
 			height={ size }
 			viewBox="0 0 24 24"
@@ -37,9 +38,9 @@ const PATHS = {
 	general: (
 		<>
 			<path d="M5 6.5h14M5 12h14M5 17.5h14" />
-			<circle cx="9" cy="6.5" r="1.8" fill="#fff" />
-			<circle cx="15" cy="12" r="1.8" fill="#fff" />
-			<circle cx="8" cy="17.5" r="1.8" fill="#fff" />
+			<circle className="convocept-icon__knob" cx="9" cy="6.5" r="1.8" />
+			<circle className="convocept-icon__knob" cx="15" cy="12" r="1.8" />
+			<circle className="convocept-icon__knob" cx="8" cy="17.5" r="1.8" />
 		</>
 	),
 	appearance: (
@@ -60,12 +61,6 @@ const PATHS = {
 			<path d="m9 12 2 2 4-4" />
 		</>
 	),
-	subscriptions: (
-		<>
-			<rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-			<path d="m4 7 8 6 8-6" />
-		</>
-	),
 	advanced: (
 		<>
 			<circle cx="12" cy="12" r="3" />
@@ -78,10 +73,28 @@ const PATHS = {
 			<path d="M4.5 15.5v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3" />
 		</>
 	),
+	upload: (
+		<>
+			<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5" />
+			<path d="M4.5 15.5v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3" />
+		</>
+	),
 	help: (
 		<>
 			<circle cx="12" cy="12" r="8.5" />
 			<path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01" />
+		</>
+	),
+	success: (
+		<>
+			<circle cx="12" cy="12" r="8" />
+			<path d="m8.5 12.2 2.4 2.4 4.6-4.8" />
+		</>
+	),
+	error: (
+		<>
+			<circle cx="12" cy="12" r="8" />
+			<path d="M12 8v5M12 16h.01" />
 		</>
 	),
 	warning: (
@@ -96,6 +109,19 @@ const PATHS = {
 			<path d="M12 11v5M12 8h.01" />
 		</>
 	),
+	check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+	dash: <path d="M6 12h12" />,
+	close: <path d="M7 7l10 10M17 7 7 17" />,
+	chevron: <path d="M6 9l6 6 6-6" />,
+	external: (
+		<path d="M14 5h5v5M19 5l-8 8M17 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4" />
+	),
+	copy: (
+		<>
+			<rect x="9" y="9" width="11" height="11" rx="2" />
+			<path d="M5 15V6a1 1 0 0 1 1-1h9" />
+		</>
+	),
 	dot: <circle cx="12" cy="12" r="3" />,
 };
 
@@ -103,16 +129,15 @@ const PATHS = {
  * Render the Convocept mark: a black speech bubble with two white lines.
  *
  * The convocept.com mark (a rounded square with a square bottom-left corner),
- * drawn in black and white instead of the site's green, to sit with the
- * admin UI's ink accents.
+ * drawn in black and white instead of the site's green.
  *
  * @return {Element} SVG element.
  */
 export function Logo() {
 	return (
 		<svg
-			width="34"
-			height="34"
+			width="32"
+			height="32"
 			viewBox="0 0 32 32"
 			aria-hidden="true"
 			focusable="false"

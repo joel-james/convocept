@@ -1,10 +1,11 @@
 /**
- * The settings app: sidebar, page header, the current page and the save bar.
+ * The settings app: sidebar, page header with Save, the current page and the footer.
  *
  * Settings are edited as a draft shared by every page, so changes on two
- * pages save together. The save bar shows only while the draft differs
- * from what is saved. Pages are chosen by the `tab` query argument (`&tab=appearance`), so
- * a reload or a shared link opens the same page.
+ * pages save together. Settings pages show Save in the page header,
+ * disabled until the draft differs from what is saved. Pages are chosen by
+ * the `tab` query argument (`&tab=appearance`), so a reload or a shared
+ * link opens the same page.
  */
 
 /**
@@ -27,14 +28,14 @@ import { store as noticesStore } from '@wordpress/notices';
  * Internal dependencies
  */
 import {
-	FloatingBar,
-	Notice,
+	Button,
 	ExternalLink,
+	Notice,
 	PageFooter,
 	PageHeader,
+	SectionSelect,
 	Sidebar,
 	Snackbars,
-	StatusChip,
 } from '../ui';
 import { validateValue } from './validate';
 
@@ -88,6 +89,7 @@ export default function App( { boot, pages, groups } ) {
 	const [ serverErrors, setServerErrors ] = useState( {} );
 	const [ saveError, setSaveError ] = useState( '' );
 	const [ saving, setSaving ] = useState( false );
+	const [ justSaved, setJustSaved ] = useState( false );
 	const [ route, setRoute ] = useState( tabFromUrl );
 	const navigated = useRef( false );
 	const { createSuccessNotice } = useDispatch( noticesStore );
@@ -176,6 +178,7 @@ export default function App( { boot, pages, groups } ) {
 	}, [ dirty.length ] );
 
 	const update = useCallback( ( key, value ) => {
+		setJustSaved( false );
 		setDraft( ( current ) => ( { ...current, [ key ]: value } ) );
 		setServerErrors( ( current ) => {
 			const next = { ...current };
@@ -211,6 +214,7 @@ export default function App( { boot, pages, groups } ) {
 			setSaved( response.settings );
 			setDraft( response.settings );
 			setServerErrors( {} );
+			setJustSaved( true );
 			createSuccessNotice( __( 'Settings saved.', 'convocept' ), {
 				type: 'snackbar',
 			} );
@@ -220,10 +224,7 @@ export default function App( { boot, pages, groups } ) {
 			} else {
 				setSaveError(
 					failure.message ||
-						__(
-							'The settings could not be saved. Try again.',
-							'convocept'
-						)
+						__( 'The server didn’t answer.', 'convocept' )
 				);
 			}
 		}
@@ -246,16 +247,92 @@ export default function App( { boot, pages, groups } ) {
 		.filter( ( group ) => group.pages.length );
 
 	const Page = page.render;
+	const hasSettings = ( page.keys || [] ).length > 0;
+
+	let status;
+
+	if ( errorCount ) {
+		status = {
+			tone: 'error',
+			text: sprintf(
+				/* translators: %d: Number of settings with an error. */
+				_n(
+					'%d setting needs fixing',
+					'%d settings need fixing',
+					errorCount,
+					'convocept'
+				),
+				errorCount
+			),
+		};
+	} else if ( dirty.length ) {
+		status = {
+			tone: 'warning',
+			text: sprintf(
+				/* translators: %d: Number of changed settings. */
+				_n(
+					'%d unsaved change',
+					'%d unsaved changes',
+					dirty.length,
+					'convocept'
+				),
+				dirty.length
+			),
+		};
+	}
+
+	// Save shows on settings pages, and on any page while there is something to save.
+	const actions = ( hasSettings || dirty.length > 0 ) && (
+		<>
+			{ dirty.length > 0 && (
+				<Button
+					variant="tertiary"
+					size="compact"
+					onClick={ discard }
+					disabled={ saving }
+				>
+					{ __( 'Discard', 'convocept' ) }
+				</Button>
+			) }
+			<Button
+				variant="primary"
+				size="compact"
+				onClick={ save }
+				isBusy={ saving }
+				disabled={ saving || ! dirty.length || errorCount > 0 }
+				accessibleWhenDisabled
+			>
+				{ justSaved && ! dirty.length
+					? __( 'Saved', 'convocept' )
+					: __( 'Save', 'convocept' ) }
+			</Button>
+		</>
+	);
 
 	return (
 		<>
 			<Sidebar
 				name="Convocept"
-				meta={ sprintf(
-					/* translators: %s: Plugin version. */
-					__( 'Comments · %s', 'convocept' ),
-					boot.version
-				) }
+				label={ __( 'Convocept sections', 'convocept' ) }
+				status={
+					saved.enabled
+						? {
+								tone: 'on',
+								text: sprintf(
+									/* translators: %s: Plugin version. */
+									__( 'On · %s', 'convocept' ),
+									boot.version
+								),
+							}
+						: {
+								tone: 'off',
+								text: sprintf(
+									/* translators: %s: Plugin version. */
+									__( 'Off · %s', 'convocept' ),
+									boot.version
+								),
+							}
+				}
 				groups={ navGroups }
 				current={ page.id }
 				hrefFor={ tabUrl }
@@ -264,22 +341,47 @@ export default function App( { boot, pages, groups } ) {
 			<div className="convocept-main">
 				<PageHeader
 					title={ page.title }
-					chips={
-						saved.enabled ? (
-							<StatusChip tone="success" dot>
-								{ __( 'Comments replaced', 'convocept' ) }
-							</StatusChip>
-						) : (
-							<StatusChip>
-								{ __( 'Off', 'convocept' ) }
-							</StatusChip>
-						)
+					nav={
+						<SectionSelect
+							groups={ navGroups }
+							current={ page.id }
+							onNavigate={ navigate }
+						/>
 					}
+					status={ status }
+					actions={ actions }
 				/>
 				<main
 					className={ `convocept-content${ page.wide ? ' convocept-content--wide' : '' }` }
 				>
-					{ saveError && <Notice tone="error" title={ saveError } /> }
+					{ saveError && (
+						<Notice
+							tone="error"
+							title={ __(
+								'The settings could not be saved',
+								'convocept'
+							) }
+							actions={
+								<Button
+									variant="primary"
+									size="compact"
+									onClick={ save }
+									disabled={ saving || errorCount > 0 }
+								>
+									{ __( 'Try again', 'convocept' ) }
+								</Button>
+							}
+						>
+							{ sprintf(
+								/* translators: %s: Error message from the server. */
+								__(
+									'%s Your changes are still here, so nothing is lost.',
+									'convocept'
+								),
+								saveError
+							) }
+						</Notice>
+					) }
 					<Page
 						draft={ draft }
 						saved={ saved }
@@ -288,41 +390,6 @@ export default function App( { boot, pages, groups } ) {
 						boot={ boot }
 					/>
 				</main>
-				{ /* In the flow, before the footer: it sticks to the bottom of the window while
-				   there is more page below, and rests above the footer at the end. */ }
-				{ dirty.length > 0 && (
-					<FloatingBar
-						text={
-							errorCount
-								? sprintf(
-										/* translators: %d: Number of settings with an error. */
-										_n(
-											'%d setting needs fixing',
-											'%d settings need fixing',
-											errorCount,
-											'convocept'
-										),
-										errorCount
-									)
-								: sprintf(
-										/* translators: %d: Number of changed settings. */
-										_n(
-											'%d unsaved change',
-											'%d unsaved changes',
-											dirty.length,
-											'convocept'
-										),
-										dirty.length
-									)
-						}
-						undoLabel={ __( 'Discard', 'convocept' ) }
-						onUndo={ discard }
-						actionLabel={ __( 'Save changes', 'convocept' ) }
-						onAction={ save }
-						busy={ saving }
-						disabled={ errorCount > 0 }
-					/>
-				) }
 				<PageFooter
 					meta={ createInterpolateElement(
 						sprintf(

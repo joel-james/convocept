@@ -1,6 +1,6 @@
 /**
- * Feedback components of the Foxe Plugin Admin UI: ProgressBar,
- * SummaryList and Snackbars.
+ * Feedback and data components of the Foxe Plugin Admin Kit: ProgressBar,
+ * Steps, StatusList, StatTiles and Snackbars.
  */
 
 /**
@@ -8,7 +8,13 @@
  */
 import { SnackbarList } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
+
+/**
+ * Internal dependencies
+ */
+import { Icon } from './icons';
 
 /**
  * A determinate bar with the progress in words.
@@ -46,25 +52,120 @@ export function ProgressBar( { percent, text, label } ) {
 }
 
 /**
- * Label and value rows for a read-only report.
+ * Where the person is in a process of a few fixed steps.
  *
- * @param {Object} props      Props.
- * @param {Array}  props.rows [{ label, value }]; rows with a null value are left out.
+ * @param {Object}   props         Props.
+ * @param {string}   props.label   Accessible name of the list.
+ * @param {string[]} props.steps   Step names.
+ * @param {number}   props.current Index of the current step; steps before it are done.
+ * @return {Element} Ordered list.
+ */
+export function Steps( { label, steps, current } ) {
+	const items = [];
+
+	steps.forEach( ( step, index ) => {
+		const done = index < current;
+		const now = index === current;
+
+		if ( index > 0 ) {
+			items.push(
+				<li
+					key={ `line-${ index }` }
+					className={ `convocept-step__line${
+						index <= current ? ' convocept-step__line--done' : ''
+					}` }
+					aria-hidden="true"
+				/>
+			);
+		}
+
+		items.push(
+			<li
+				key={ step }
+				className={ `convocept-step${
+					done ? ' convocept-step--done' : ''
+				}${ now ? ' convocept-step--current' : '' }` }
+				aria-current={ now ? 'step' : undefined }
+			>
+				<span className="convocept-step__num" aria-hidden="true">
+					{ done ? <Icon name="check" size={ 14 } /> : index + 1 }
+				</span>
+				{ step }
+				{ done && (
+					<span className="screen-reader-text">
+						{ __( '(done)', 'convocept' ) }
+					</span>
+				) }
+			</li>
+		);
+	} );
+
+	return (
+		<ol className="convocept-steps" aria-label={ label }>
+			{ items }
+		</ol>
+	);
+}
+
+/**
+ * Read-only facts, each with a check or a dash beside its label.
+ *
+ * @param {Object}  props       Props.
+ * @param {Array}   props.rows  [{ label, on, value }]; rows with a null `on` and value are left out.
+ * @param {boolean} [props.end] Whether values sit at the end of the row (counts).
+ * @return {Element} List.
+ */
+export function StatusList( { rows, end = false } ) {
+	return (
+		<ul className="convocept-status-list">
+			{ rows
+				.filter( ( row ) => null !== row.value )
+				.map( ( row ) => (
+					<li className="convocept-status-item" key={ row.label }>
+						<span
+							className={ `convocept-status-item__icon convocept-status-item__icon--${
+								row.on ? 'yes' : 'no'
+							}` }
+						>
+							<Icon
+								name={ row.on ? 'check' : 'dash' }
+								size={ 20 }
+							/>
+						</span>
+						<span>{ row.label }</span>
+						{ undefined !== row.value && (
+							<span
+								className={ `convocept-status-item__value${
+									end
+										? ' convocept-status-item__value--end'
+										: ''
+								}` }
+							>
+								{ row.value }
+							</span>
+						) }
+					</li>
+				) ) }
+		</ul>
+	);
+}
+
+/**
+ * Two to four headline numbers.
+ *
+ * @param {Object} props       Props.
+ * @param {Array}  props.tiles [{ value, label }].
  * @return {Element} Description list.
  */
-export function SummaryList( { rows } ) {
+export function StatTiles( { tiles } ) {
 	return (
-		<dl className="convocept-summary">
-			{ rows
-				.filter(
-					( row ) => null !== row.value && undefined !== row.value
-				)
-				.map( ( row ) => (
-					<div className="convocept-summary__row" key={ row.label }>
-						<dt>{ row.label }</dt>
-						<dd>{ row.value }</dd>
-					</div>
-				) ) }
+		<dl className="convocept-stats">
+			{ tiles.map( ( tile ) => (
+				<div className="convocept-stat" key={ tile.label }>
+					<dt className="convocept-stat__label">{ tile.label }</dt>
+					<dd className="convocept-stat__value">{ tile.value }</dd>
+				</div>
+			) ) }
 		</dl>
 	);
 }

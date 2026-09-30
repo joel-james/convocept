@@ -91,11 +91,12 @@ Every hook Convocept exposes for add-ons and site code. Updated as hooks are add
 
 ## Settings screen (JavaScript)
 
-- `window.convoceptAdmin.registerPanel( { id, group, title, icon, keys, render } )` — add a page
-  to Comments → Convocept. `group` is `settings`, `manage` or `more`; `keys` are the settings the
-  page edits (used to flag errors in the sidebar); `render` is a component receiving
-  `{ draft, saved, update, errors, boot }`. Enqueue the script with `convocept-admin` as a
-  dependency; pages are read when the DOM is ready.
+- `window.convoceptAdmin.registerPanel( { id, group, title, icon, keys, badge, render } )` — add
+  a page to Comments → Convocept. `group` is `settings`, `manage` or `more`; `keys` are the
+  settings the page edits (used to flag errors in the sidebar; a page with keys shows Save in its
+  header); `badge` is an optional `{ count, label }` shown at the end of the sidebar item;
+  `render` is a component receiving `{ draft, saved, update, errors, boot }`. Enqueue the script
+  with `convocept-admin` as a dependency; pages are read when the DOM is ready.
 
 ## WP-CLI
 

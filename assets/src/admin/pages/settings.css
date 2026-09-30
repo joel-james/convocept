@@ -1,0 +1,90 @@
+/**
+ * Convocept's own parts of the settings pages: the thread preview on
+ * Appearance. Everything shared lives in the admin kit (ui/ui.css).
+ */
+
+.convocept-preview {
+	--convocept-preview-bg: #fff;
+	--convocept-preview-fg: #1e1e1e;
+	--convocept-preview-muted: #50575e;
+	--convocept-preview-line: #dcdcde;
+	--convocept-preview-avatar: #dcdcde;
+
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 20px;
+	border: 1px solid var(--convocept-stroke-card);
+	border-radius: var(--convocept-radius-surface);
+	background: var(--convocept-preview-bg);
+	color: var(--convocept-preview-fg);
+}
+
+.convocept-preview--dark {
+	--convocept-preview-bg: #1e1e1e;
+	--convocept-preview-fg: #f0f0f0;
+	--convocept-preview-muted: #a7aaad;
+	--convocept-preview-line: #3c434a;
+	--convocept-preview-avatar: #3c434a;
+}
+
+.convocept-preview__comment {
+	display: flex;
+	gap: 12px;
+}
+
+.convocept-preview__avatar {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: var(--convocept-preview-avatar);
+	color: var(--convocept-preview-muted);
+	font-weight: 600;
+}
+
+.convocept-preview__meta {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.convocept-preview__meta span {
+	font-size: 12px;
+	color: var(--convocept-preview-muted);
+}
+
+.convocept-admin .convocept-preview__text {
+	margin: 2px 0 0;
+}
+
+.convocept-preview__actions {
+	display: flex;
+	gap: 16px;
+	margin-top: 6px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--convocept-preview-accent);
+}
+
+.convocept-preview__form {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--convocept-preview-line);
+	border-radius: 6px;
+	color: var(--convocept-preview-muted);
+}
+
+.convocept-preview__button {
+	padding: 6px 14px;
+	border-radius: 4px;
+	background: var(--convocept-preview-accent);
+	color: #fff;
+	font-weight: 600;
+}

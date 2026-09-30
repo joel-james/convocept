@@ -2,6 +2,32 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-09-30 — Admin screen on the new Foxe Plugin Admin Kit
+- After a review and a mockup (claude.ai canvas "Convocept admin — core WP look"), the owner chose
+  a look closer to core WordPress and a new design system, **Foxe Plugin Admin Kit**
+  (https://claude.ai/artifact/3GMTBRMn2xZB5jk7wZfX9w). The old "Foxe Plugin Admin UI" stays as it
+  was, for reference; nothing here follows it any more.
+- The accent is the user's admin theme colour. `ui.css` reads `--wp-admin-theme-color` and never
+  sets it (the old black override ignored every user's colour scheme). Ground `#f0f0f1`, cards
+  with a 1px `#e0e0e0` border and 8px radius, radii only 2 / 8 / pill.
+- Save moved from the floating ink bar into the sticky page header, disabled at rest, with
+  "N unsaved changes" / "N settings need fixing" and Discard beside it; it reads "Saved" after a
+  save. The floating bar overflowed phones and sat off-centre from the cards.
+- The sidebar stays (owner's call) but is sticky, uses a light theme-colour tint for the active
+  item, shows On/Off under the name (the header chip is gone) and a count badge for comments
+  waiting for review. Below 782px the section dropdown sits in the header next to Save.
+- Pages merged: Composer and Subscriptions are one "Comment form" page (`tab=comment-form`);
+  "Moderation & spam" is "Spam & moderation", with review first and the fixed checks as a
+  read-only list with ticks. No redirects from the old tabs: the plugin is unreleased.
+- Content is one left-aligned 720px column, 32px from the sidebar and the header. Number fields
+  are 180px with the unit inside (a native input in BaseControl: stable components have no
+  suffix slot). Notices come in four tones (success, error, warning, info); errors and warnings
+  cannot be dismissed. Import shows Upload › Review › Import › Done steps and stat tiles.
+- Appearance gains a static preview of one comment in the chosen accent and scheme (admin only,
+  not the real thread markup) and the colour picker offers the theme's `theme.json` palette
+  (six-digit hex only, as the setting stores) and suggested colours.
+- Uses `color-mix()` for the theme tints, since the theme colour is only known at runtime.
+
 ## 2026-09-28 — Settings fields keep WordPress's own look
 - Compared with a mockup built only from `@wordpress/components` (removed after review). The
   owner kept our layout (sidebar, cards, floating bar, tiles) but preferred core inputs.

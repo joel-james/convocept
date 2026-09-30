@@ -1,6 +1,6 @@
 /**
- * The Settings pages: General, Appearance, Composer, Moderation & spam,
- * Subscriptions and Advanced.
+ * The Settings pages: General, Appearance, Comment form, Spam & moderation
+ * and Advanced.
  *
  * Every page receives the same props from the app:
  * `{ draft, update, errors, boot }`. `draft` holds the settings as edited,
@@ -24,11 +24,12 @@ import {
 	Notice,
 	NumberField,
 	SelectField,
-	SummaryList,
+	StatusList,
 	TextareaListField,
 	Toggle,
 } from '../ui';
 import { contrastWithWhite } from '../app/validate';
+import './settings.css';
 
 /**
  * Build the common props of a number field.
@@ -49,6 +50,16 @@ function numberProps( { draft, update, errors, boot }, key ) {
 		error: errors[ key ],
 		onChange: ( value ) => update( key, value ),
 	};
+}
+
+/**
+ * The count a unit agrees with: the value, or many while the field is empty.
+ *
+ * @param {number|string} value Field value.
+ * @return {number} Count for _n().
+ */
+function count( value ) {
+	return '' === value ? 2 : Number( value );
 }
 
 /**
@@ -143,6 +154,15 @@ export function GeneralPage( props ) {
 				/>
 				<NumberField
 					label={ __( 'Comments per page', 'convocept' ) }
+					unit={
+						// translators: Unit after the number of comments per page.
+						_n(
+							'comment',
+							'comments',
+							count( draft.per_page ),
+							'convocept'
+						)
+					}
 					help={ __(
 						'Top-level comments; their replies come with them.',
 						'convocept'
@@ -151,6 +171,15 @@ export function GeneralPage( props ) {
 				/>
 				<NumberField
 					label={ __( 'Reply depth', 'convocept' ) }
+					unit={
+						// translators: Unit after the number of reply levels.
+						_n(
+							'level',
+							'levels',
+							count( draft.max_depth ),
+							'convocept'
+						)
+					}
 					help={ __(
 						'Deeper replies show in one flat list at this depth.',
 						'convocept'
@@ -159,6 +188,15 @@ export function GeneralPage( props ) {
 				/>
 				<NumberField
 					label={ __( 'Replies shown', 'convocept' ) }
+					unit={
+						// translators: Unit after the number of replies shown per comment.
+						_n(
+							'reply',
+							'replies',
+							count( draft.replies_shown ),
+							'convocept'
+						)
+					}
 					help={ __(
 						'Per comment, before “Show more replies”. 0 shows them all.',
 						'convocept'
@@ -194,7 +232,15 @@ export function GeneralPage( props ) {
 				{ draft.live_updates && (
 					<NumberField
 						label={ __( 'Check every', 'convocept' ) }
-						help={ __( 'Seconds between checks.', 'convocept' ) }
+						unit={
+							// translators: Unit after the number of seconds between checks.
+							_n(
+								'second',
+								'seconds',
+								count( draft.poll_interval ),
+								'convocept'
+							)
+						}
 						{ ...numberProps( props, 'poll_interval' ) }
 					/>
 				) }
@@ -204,7 +250,26 @@ export function GeneralPage( props ) {
 }
 
 /**
- * Appearance: colour scheme and accent colour.
+ * Suggested accent colours, beside the theme's own palette.
+ *
+ * All pass 4.5:1 as text on white, so links stay readable.
+ *
+ * @return {Array<{ name: string, color: string }>} Colours.
+ */
+function suggestedColors() {
+	return [
+		{ name: __( 'Blue', 'convocept' ), color: '#2563eb' },
+		{ name: __( 'Teal', 'convocept' ), color: '#0f766e' },
+		{ name: __( 'Green', 'convocept' ), color: '#15803d' },
+		{ name: __( 'Red', 'convocept' ), color: '#b91c1c' },
+		{ name: __( 'Orange', 'convocept' ), color: '#c2410c' },
+		{ name: __( 'Purple', 'convocept' ), color: '#7e22ce' },
+		{ name: __( 'Black', 'convocept' ), color: '#111111' },
+	];
+}
+
+/**
+ * Appearance: colour scheme, accent colour and a preview.
  *
  * @param {Object}                                props        Page props.
  * @param {Object}                                props.draft  Settings as edited.
@@ -215,87 +280,169 @@ export function GeneralPage( props ) {
  */
 export function AppearancePage( { draft, update, errors, boot } ) {
 	const accent = draft.accent_color;
-	const lowContrast =
-		/^#[0-9a-f]{6}$/i.test( accent ) && contrastWithWhite( accent ) < 4.5;
+	const valid = /^#[0-9a-f]{6}$/i.test( accent );
+	const lowContrast = valid && contrastWithWhite( accent ) < 4.5;
 
 	return (
-		<Card
-			title={ __( 'Colours', 'convocept' ) }
-			description={ __(
-				'How the thread looks next to your theme.',
-				'convocept'
-			) }
-		>
-			<ChoiceTiles
-				label={ __( 'Colour scheme', 'convocept' ) }
-				value={ draft.color_scheme }
-				options={ [
-					{
-						value: 'auto',
-						label: __( 'Match the theme', 'convocept' ),
-						description: __(
-							'Uses your theme’s text and background colours.',
-							'convocept'
-						),
-					},
-					{
-						value: 'system',
-						label: __( 'Follow the reader’s device', 'convocept' ),
-						description: __(
-							'Light or dark, from the reader’s system setting.',
-							'convocept'
-						),
-					},
-					{
-						value: 'light',
-						label: __( 'Always light', 'convocept' ),
-						description: __(
-							'Dark text on a light background.',
-							'convocept'
-						),
-					},
-					{
-						value: 'dark',
-						label: __( 'Always dark', 'convocept' ),
-						description: __(
-							'Light text on a dark background.',
-							'convocept'
-						),
-					},
-				] }
-				onChange={ ( value ) => update( 'color_scheme', value ) }
-			/>
-			<ColorField
-				label={ __( 'Accent colour', 'convocept' ) }
-				help={ __(
-					'Links, buttons and focus rings in the thread.',
+		<>
+			<Card
+				title={ __( 'Colours', 'convocept' ) }
+				description={ __(
+					'How the thread looks next to your theme.',
 					'convocept'
 				) }
-				warning={
-					lowContrast
-						? __(
-								'This colour is hard to read as text on white. Pick a darker one so links stay readable.',
+			>
+				<ChoiceTiles
+					label={ __( 'Colour scheme', 'convocept' ) }
+					value={ draft.color_scheme }
+					options={ [
+						{
+							value: 'auto',
+							label: __( 'Match the theme', 'convocept' ),
+							description: __(
+								'Uses your theme’s text and background colours.',
 								'convocept'
-							)
-						: ''
-				}
-				value={ accent }
-				defaultValue={ boot.defaults.accent_color }
-				error={ errors.accent_color }
-				onChange={ ( value ) => update( 'accent_color', value ) }
-			/>
-		</Card>
+							),
+						},
+						{
+							value: 'system',
+							label: __(
+								'Follow the reader’s device',
+								'convocept'
+							),
+							description: __(
+								'Light or dark, from the reader’s system setting.',
+								'convocept'
+							),
+						},
+						{
+							value: 'light',
+							label: __( 'Always light', 'convocept' ),
+							description: __(
+								'Dark text on a light background.',
+								'convocept'
+							),
+						},
+						{
+							value: 'dark',
+							label: __( 'Always dark', 'convocept' ),
+							description: __(
+								'Light text on a dark background.',
+								'convocept'
+							),
+						},
+					] }
+					onChange={ ( value ) => update( 'color_scheme', value ) }
+				/>
+				<ColorField
+					label={ __( 'Accent colour', 'convocept' ) }
+					name={ __( 'Accent', 'convocept' ) }
+					help={ __(
+						'Links, buttons and focus rings in the thread.',
+						'convocept'
+					) }
+					warning={
+						lowContrast
+							? __(
+									'This colour is hard to read as text on white. Pick a darker one so links stay readable.',
+									'convocept'
+								)
+							: ''
+					}
+					value={ accent }
+					defaultValue={ boot.defaults.accent_color }
+					palettes={ [
+						{
+							name: __( 'Theme', 'convocept' ),
+							colors: boot.palette || [],
+						},
+						{
+							name: __( 'Suggested', 'convocept' ),
+							colors: suggestedColors(),
+						},
+					] }
+					error={ errors.accent_color }
+					onChange={ ( value ) => update( 'accent_color', value ) }
+				/>
+			</Card>
+			<Card
+				title={ __( 'Preview', 'convocept' ) }
+				description={ __(
+					'A sample comment with these colours. Your theme’s fonts apply on the site.',
+					'convocept'
+				) }
+			>
+				<ThreadPreview
+					dark={ 'dark' === draft.color_scheme }
+					accent={ valid ? accent : boot.defaults.accent_color }
+				/>
+			</Card>
+		</>
 	);
 }
 
 /**
- * Composer: the edit window and the rules WordPress sets.
+ * A static sample of one comment and the form, in the chosen colours.
+ *
+ * Illustration only: the real thread is rendered by PHP on the site and
+ * takes the theme's fonts, so this draws just enough to judge the accent.
+ *
+ * @param {Object}  props        Props.
+ * @param {boolean} props.dark   Whether to draw the dark scheme.
+ * @param {string}  props.accent Accent colour.
+ * @return {Element} Preview.
+ */
+function ThreadPreview( { dark, accent } ) {
+	return (
+		<div
+			className={ `convocept-preview${ dark ? ' convocept-preview--dark' : '' }` }
+			style={ { '--convocept-preview-accent': accent } }
+			aria-hidden="true"
+		>
+			<div className="convocept-preview__comment">
+				<span className="convocept-preview__avatar">A</span>
+				<div>
+					<div className="convocept-preview__meta">
+						<strong>{ __( 'A reader', 'convocept' ) }</strong>
+						<span>{ __( '2 hours ago', 'convocept' ) }</span>
+					</div>
+					<p className="convocept-preview__text">
+						{ __(
+							'Thanks for writing this up. The part about caching saved me an afternoon.',
+							'convocept'
+						) }
+					</p>
+					<div className="convocept-preview__actions">
+						<span>{ __( 'Reply', 'convocept' ) }</span>
+						<span>
+							{ sprintf(
+								/* translators: %d: Number of upvotes in the preview. */
+								__( '▲ %d', 'convocept' ),
+								12
+							) }
+						</span>
+					</div>
+				</div>
+			</div>
+			<div className="convocept-preview__form">
+				<span>{ __( 'Join the discussion…', 'convocept' ) }</span>
+				<span className="convocept-preview__button">
+					{ __( 'Post comment', 'convocept' ) }
+				</span>
+			</div>
+		</div>
+	);
+}
+
+/**
+ * Comment form: the edit window, email subscriptions and the rules
+ * WordPress sets.
  *
  * @param {Object} props Page props.
  * @return {Element} Page content.
  */
-export function ComposerPage( props ) {
-	const { boot } = props;
+export function CommentFormPage( props ) {
+	const { draft, update, boot } = props;
 	const yes = __( 'Yes', 'convocept' );
 	const no = __( 'No', 'convocept' );
 	const days = boot.discussion.closeAfterDays;
@@ -311,179 +458,22 @@ export function ComposerPage( props ) {
 			>
 				<NumberField
 					label={ __( 'Edit window', 'convocept' ) }
+					unit={
+						// translators: Unit after the number of minutes a comment can be edited.
+						_n(
+							'minute',
+							'minutes',
+							count( draft.edit_window ),
+							'convocept'
+						)
+					}
 					help={ __(
-						'Minutes. 0 turns editing off. Moderators can always edit.',
+						'0 turns editing off. Moderators can always edit.',
 						'convocept'
 					) }
 					{ ...numberProps( props, 'edit_window' ) }
 				/>
 			</Card>
-			<Card
-				title={ __( 'Set in WordPress', 'convocept' ) }
-				description={ __(
-					'Convocept follows your Discussion settings for who can comment.',
-					'convocept'
-				) }
-			>
-				<SummaryList
-					rows={ [
-						{
-							label: __( 'Name and email required', 'convocept' ),
-							value: boot.discussion.requireNameEmail ? yes : no,
-						},
-						{
-							label: __(
-								'Must be logged in to comment',
-								'convocept'
-							),
-							value: boot.discussion.registration ? yes : no,
-						},
-						{
-							label: __(
-								'Every comment waits for approval',
-								'convocept'
-							),
-							value: boot.discussion.manualApproval ? yes : no,
-						},
-						{
-							label: __(
-								'Close comments on old posts',
-								'convocept'
-							),
-							value: days
-								? sprintf(
-										/* translators: %d: Number of days. */
-										_n(
-											'After %d day',
-											'After %d days',
-											days,
-											'convocept'
-										),
-										days
-									)
-								: __( 'Never', 'convocept' ),
-						},
-					] }
-				/>
-				<Button variant="secondary" href={ boot.urls.discussion }>
-					{ __( 'Open Discussion settings', 'convocept' ) }
-				</Button>
-			</Card>
-		</>
-	);
-}
-
-/**
- * Moderation & spam: the protection in place and the review queue.
- *
- * @param {Object} props      Page props.
- * @param {Object} props.boot Boot data.
- * @return {Element} Page content.
- */
-export function ModerationPage( { boot } ) {
-	const on = __( 'On', 'convocept' );
-	const seconds = boot.spam.minSubmitSeconds;
-
-	return (
-		<>
-			<Card
-				title={ __( 'Spam protection', 'convocept' ) }
-				description={ __(
-					'These checks run on every comment, without asking readers to solve anything.',
-					'convocept'
-				) }
-			>
-				<SummaryList
-					rows={ [
-						{
-							label: __(
-								'Hidden trap field for bots',
-								'convocept'
-							),
-							value: on,
-						},
-						{
-							label: __(
-								'Minimum time to write a comment',
-								'convocept'
-							),
-							value:
-								seconds > 0
-									? sprintf(
-											/* translators: %s: Number of seconds. */
-											_n(
-												'%s second',
-												'%s seconds',
-												seconds,
-												'convocept'
-											),
-											seconds
-										)
-									: __( 'Off', 'convocept' ),
-						},
-						{
-							label: __(
-								'Limits on how fast one visitor can post',
-								'convocept'
-							),
-							value: on,
-						},
-						{
-							label: __( 'Akismet', 'convocept' ),
-							value: boot.spam.akismet
-								? __( 'Active', 'convocept' )
-								: __( 'Not installed', 'convocept' ),
-						},
-					] }
-				/>
-				{ ! boot.spam.akismet && (
-					<p className="convocept-help">
-						{ __(
-							'Convocept works with Akismet and other anti-spam plugins that check core comments.',
-							'convocept'
-						) }
-					</p>
-				) }
-			</Card>
-			<Card
-				title={ __( 'Waiting for review', 'convocept' ) }
-				description={
-					boot.pending
-						? sprintf(
-								/* translators: %s: Number of comments. */
-								_n(
-									'%s comment is waiting for approval.',
-									'%s comments are waiting for approval.',
-									boot.pending,
-									'convocept'
-								),
-								boot.pending.toLocaleString()
-							)
-						: __(
-								'No comments are waiting for approval.',
-								'convocept'
-							)
-				}
-			>
-				<Button variant="secondary" href={ boot.urls.pending }>
-					{ __( 'Review comments', 'convocept' ) }
-				</Button>
-			</Card>
-		</>
-	);
-}
-
-/**
- * Subscriptions: email subscriptions and sending.
- *
- * @param {Object} props Page props.
- * @return {Element} Page content.
- */
-export function SubscriptionsPage( props ) {
-	const { draft, update } = props;
-
-	return (
-		<>
 			<Card
 				title={ __( 'Email subscriptions', 'convocept' ) }
 				description={ __(
@@ -515,21 +505,91 @@ export function SubscriptionsPage( props ) {
 					checked={ draft.double_opt_in }
 					onChange={ ( value ) => update( 'double_opt_in', value ) }
 				/>
-			</Card>
-			<Card
-				title={ __( 'Sending', 'convocept' ) }
-				description={ __(
-					'Notifications go out in the background, a batch at a time.',
-					'convocept'
-				) }
-			>
 				<NumberField
 					label={ __( 'Emails per batch', 'convocept' ) }
+					unit={
+						// translators: Unit after the number of emails sent per batch.
+						_n(
+							'email',
+							'emails',
+							count( draft.batch_size ),
+							'convocept'
+						)
+					}
 					help={ __(
-						'Lower it if your email service limits how fast you can send.',
+						'Notifications go out in the background, a batch at a time. Lower it if your email service limits how fast you can send.',
 						'convocept'
 					) }
 					{ ...numberProps( props, 'batch_size' ) }
+				/>
+			</Card>
+			<Card
+				title={ __( 'Set in WordPress', 'convocept' ) }
+				description={ __(
+					'Convocept follows your Discussion settings for who can comment.',
+					'convocept'
+				) }
+				footer={
+					<>
+						<p className="convocept-help">
+							{ __(
+								'Change these for the whole site.',
+								'convocept'
+							) }
+						</p>
+						<Button
+							variant="secondary"
+							size="compact"
+							href={ boot.urls.discussion }
+						>
+							{ __( 'Open Discussion settings', 'convocept' ) }
+						</Button>
+					</>
+				}
+			>
+				<StatusList
+					rows={ [
+						{
+							label: __( 'Name and email required', 'convocept' ),
+							on: boot.discussion.requireNameEmail,
+							value: boot.discussion.requireNameEmail ? yes : no,
+						},
+						{
+							label: __(
+								'Must be logged in to comment',
+								'convocept'
+							),
+							on: boot.discussion.registration,
+							value: boot.discussion.registration ? yes : no,
+						},
+						{
+							label: __(
+								'Every comment waits for approval',
+								'convocept'
+							),
+							on: boot.discussion.manualApproval,
+							value: boot.discussion.manualApproval ? yes : no,
+						},
+						{
+							label: __(
+								'Close comments on old posts',
+								'convocept'
+							),
+							on: days > 0,
+							value: days
+								? sprintf(
+										/* translators: %d: Number of days. */
+										_n(
+											'After %d day',
+											'After %d days',
+											days,
+											'convocept'
+										),
+										days
+									)
+								: __( 'Never', 'convocept' ),
+						},
+					] }
 				/>
 			</Card>
 		</>
@@ -537,15 +597,126 @@ export function SubscriptionsPage( props ) {
 }
 
 /**
- * Advanced: visitor IPs behind proxies and structured data.
+ * Spam & moderation: the review queue and the protection in place.
+ *
+ * @param {Object} props      Page props.
+ * @param {Object} props.boot Boot data.
+ * @return {Element} Page content.
+ */
+export function ModerationPage( { boot } ) {
+	const seconds = boot.spam.minSubmitSeconds;
+
+	return (
+		<>
+			<Card
+				title={ __( 'Waiting for review', 'convocept' ) }
+				description={
+					boot.pending
+						? sprintf(
+								/* translators: %s: Number of comments. */
+								_n(
+									'%s comment is waiting for approval.',
+									'%s comments are waiting for approval.',
+									boot.pending,
+									'convocept'
+								),
+								boot.pending.toLocaleString()
+							)
+						: __(
+								'No comments are waiting for approval.',
+								'convocept'
+							)
+				}
+				action={
+					boot.pending > 0 && (
+						<Button
+							variant="primary"
+							size="compact"
+							href={ boot.urls.pending }
+						>
+							{ __( 'Review comments', 'convocept' ) }
+						</Button>
+					)
+				}
+			/>
+			<Card
+				title={ __( 'Active protections', 'convocept' ) }
+				description={ __(
+					'These checks run on every comment, without asking readers to solve anything.',
+					'convocept'
+				) }
+				footer={
+					! boot.spam.akismet && (
+						<p className="convocept-help">
+							{ __(
+								'Convocept works with Akismet and other anti-spam plugins that check core comments.',
+								'convocept'
+							) }
+						</p>
+					)
+				}
+			>
+				<StatusList
+					rows={ [
+						{
+							label: __(
+								'Hidden trap field for bots',
+								'convocept'
+							),
+							on: true,
+						},
+						{
+							label: __(
+								'Minimum time to write a comment',
+								'convocept'
+							),
+							on: seconds > 0,
+							value:
+								seconds > 0
+									? sprintf(
+											/* translators: %s: Number of seconds. */
+											_n(
+												'%s second',
+												'%s seconds',
+												seconds,
+												'convocept'
+											),
+											seconds
+										)
+									: __( 'Off', 'convocept' ),
+						},
+						{
+							label: __(
+								'Limits on how fast one visitor can post',
+								'convocept'
+							),
+							on: true,
+						},
+						{
+							label: __( 'Akismet', 'convocept' ),
+							on: boot.spam.akismet,
+							value: boot.spam.akismet
+								? __( 'Active', 'convocept' )
+								: __( 'Not installed', 'convocept' ),
+						},
+					] }
+				/>
+			</Card>
+		</>
+	);
+}
+
+/**
+ * Advanced: visitor IPs behind proxies, privacy, structured data and uninstall.
  *
  * @param {Object}                                props        Page props.
  * @param {Object}                                props.draft  Settings as edited.
  * @param {(key: string, value: unknown) => void} props.update Change one setting.
  * @param {Object}                                props.errors Error message per setting key.
+ * @param {Object}                                props.boot   Boot data.
  * @return {Element} Page content.
  */
-export function AdvancedPage( { draft, update, errors } ) {
+export function AdvancedPage( { draft, update, errors, boot } ) {
 	return (
 		<>
 			<Card
@@ -589,10 +760,24 @@ export function AdvancedPage( { draft, update, errors } ) {
 			<Card
 				title={ __( 'Privacy', 'convocept' ) }
 				description={ __(
-					'Tools → Export Personal Data and Erase Personal Data include comment subscriptions and the upvotes of registered users. Settings → Privacy has suggested text for your privacy policy.',
+					'The personal data tools include comment subscriptions and the upvotes of registered users.',
 					'convocept'
 				) }
 			>
+				<nav
+					className="convocept-links"
+					aria-label={ __( 'Privacy tools', 'convocept' ) }
+				>
+					<a href={ boot.urls.exportData }>
+						{ __( 'Export Personal Data', 'convocept' ) }
+					</a>
+					<a href={ boot.urls.eraseData }>
+						{ __( 'Erase Personal Data', 'convocept' ) }
+					</a>
+					<a href={ boot.urls.privacyGuide }>
+						{ __( 'Privacy policy guide', 'convocept' ) }
+					</a>
+				</nav>
 				<SelectField
 					label={ __(
 						'IP address stored with new comments',

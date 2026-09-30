@@ -1,6 +1,6 @@
 /**
  * Manage → Import: upload an export, review the dry run, import with
- * progress, then read the report.
+ * progress, then read the report, with the four steps shown above.
  *
  * Talks to the `/convocept/v1/import` routes. The job lives on the server,
  * so closing the page mid-import loses nothing: opening it again shows the
@@ -12,7 +12,13 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch } from '@wordpress/data';
-import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
+import {
+	createInterpolateElement,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 
@@ -25,8 +31,11 @@ import {
 	FileField,
 	Notice,
 	ProgressBar,
-	SummaryList,
+	StatTiles,
+	StatusList,
+	Steps,
 } from '../ui';
+import './import.css';
 
 const PATH = '/convocept/v1/import';
 
@@ -137,7 +146,12 @@ export function ImportPage( { boot } ) {
 
 	if ( ! state ) {
 		return error ? (
-			<Notice tone="error" title={ error } />
+			<Notice
+				tone="error"
+				title={ __( 'The import page could not load', 'convocept' ) }
+			>
+				{ error }
+			</Notice>
 		) : (
 			<Card title={ __( 'Loading…', 'convocept' ) } />
 		);
@@ -200,44 +214,117 @@ export function ImportPage( { boot } ) {
 		setBusy( false );
 	};
 
-	const errorNotice = error && <Notice tone="error" title={ error } />;
+	const errorNotice = error && (
+		<Notice
+			tone="error"
+			title={ __( 'The import could not go on', 'convocept' ) }
+		>
+			{ error }
+		</Notice>
+	);
+
+	/**
+	 * The step row above the cards.
+	 *
+	 * @param {number} current Index of the current step.
+	 * @return {Element} Steps.
+	 */
+	const steps = ( current ) => (
+		<Steps
+			label={ __( 'Import steps', 'convocept' ) }
+			steps={ [
+				__( 'Upload', 'convocept' ),
+				__( 'Review', 'convocept' ),
+				__( 'Import', 'convocept' ),
+				__( 'Done', 'convocept' ),
+			] }
+			current={ current }
+		/>
+	);
+
+	/**
+	 * A count as a skipped-row value, or null to leave the row out.
+	 *
+	 * @param {string} label Row label.
+	 * @param {number} value Count.
+	 * @return {Object} StatusList row.
+	 */
+	const skipped = ( label, value ) => ( {
+		label,
+		on: false,
+		value: nonZero( value ),
+	} );
 
 	if ( ! job ) {
 		return (
 			<>
+				{ steps( 0 ) }
 				{ errorNotice }
 				<Card
 					title={ __( 'Import from Disqus', 'convocept' ) }
 					description={ __(
-						'In Disqus, open Admin → Moderation → Export and download the file it emails you. Nothing is imported until you have reviewed a dry run, and running the same export again never duplicates comments.',
+						'Nothing is imported until you have reviewed a dry run. Running the same export again never duplicates comments.',
 						'convocept'
 					) }
-				>
-					<FileField
-						label={ __( 'Export file', 'convocept' ) }
-						accept=".xml,.gz"
-						file={ file }
-						onChange={ setFile }
-						help={ sprintf(
-							/* translators: 1: Maximum upload size, 2: WP-CLI command. */
-							__(
-								'.xml or .xml.gz, up to %1$s. Bigger exports: %2$s',
-								'convocept'
-							),
-							`${ Math.floor( state.max_upload / 1048576 ) } MB`,
-							'wp convocept import disqus export.xml'
-						) }
-					>
+					footer={
 						<Button
 							variant="primary"
+							__next40pxDefaultSize
 							onClick={ upload }
 							disabled={ ! file || busy }
 							isBusy={ busy }
 							accessibleWhenDisabled
 						>
-							{ __( 'Upload and analyse', 'convocept' ) }
+							{ __( 'Upload and review', 'convocept' ) }
 						</Button>
-					</FileField>
+					}
+				>
+					<ol className="convocept-how">
+						<li>
+							{ __(
+								'In Disqus, open Admin → Moderation → Export.',
+								'convocept'
+							) }
+						</li>
+						<li>
+							{ __(
+								'Download the file Disqus emails you.',
+								'convocept'
+							) }
+						</li>
+						<li>{ __( 'Drop it below.', 'convocept' ) }</li>
+					</ol>
+					<FileField
+						label={ __( 'Export file', 'convocept' ) }
+						prompt={ __(
+							'Drop your export file here',
+							'convocept'
+						) }
+						accept=".xml,.gz"
+						file={ file }
+						onChange={ setFile }
+						help={ sprintf(
+							/* translators: %s: Maximum upload size. */
+							__( '.xml or .xml.gz, up to %s.', 'convocept' ),
+							`${ Math.floor( state.max_upload / 1048576 ) } MB`
+						) }
+					/>
+					<Notice
+						tone="info"
+						title={ __( 'Bigger export?', 'convocept' ) }
+					>
+						{ createInterpolateElement(
+							sprintf(
+								/* translators: %s: WP-CLI command. */
+								__(
+									'Run <code>%s</code> on the server instead.',
+									'convocept'
+								),
+								'wp convocept import disqus export.xml'
+							),
+							{ code: <code className="convocept-code" /> }
+						) }
+					</Notice>
 				</Card>
 			</>
 		);
@@ -246,6 +333,7 @@ export function ImportPage( { boot } ) {
 	if ( 'prepared' === job.status ) {
 		return (
 			<>
+				{ steps( 1 ) }
 				{ errorNotice }
 				<Card
 					title={ __( 'Dry run', 'convocept' ) }
@@ -253,9 +341,33 @@ export function ImportPage( { boot } ) {
 						'Nothing has been imported yet. This is what the export holds.',
 						'convocept'
 					) }
+					footer={
+						<>
+							<Button
+								variant="tertiary"
+								__next40pxDefaultSize
+								onClick={ () =>
+									cancel(
+										__( 'Import cancelled.', 'convocept' )
+									)
+								}
+								disabled={ busy }
+							>
+								{ __( 'Cancel', 'convocept' ) }
+							</Button>
+							<Button
+								variant="primary"
+								__next40pxDefaultSize
+								onClick={ run }
+								disabled={ busy }
+							>
+								{ __( 'Start import', 'convocept' ) }
+							</Button>
+						</>
+					}
 				>
-					<SummaryList
-						rows={ [
+					<StatTiles
+						tiles={ [
 							{
 								label: __( 'Comments to import', 'convocept' ),
 								value: count( job.total ),
@@ -276,16 +388,21 @@ export function ImportPage( { boot } ) {
 									),
 									count( counter( job, 'threads_unmatched' ) )
 								),
-								value: nonZero( counter( job, 'unmatched' ) ),
+								value: count( counter( job, 'unmatched' ) ),
 							},
-							{
-								label: __( 'Spam (skipped)', 'convocept' ),
-								value: nonZero( counter( job, 'spam' ) ),
-							},
-							{
-								label: __( 'Deleted (skipped)', 'convocept' ),
-								value: nonZero( counter( job, 'deleted' ) ),
-							},
+						] }
+					/>
+					<StatusList
+						end
+						rows={ [
+							skipped(
+								__( 'Spam (skipped)', 'convocept' ),
+								counter( job, 'spam' )
+							),
+							skipped(
+								__( 'Deleted (skipped)', 'convocept' ),
+								counter( job, 'deleted' )
+							),
 						] }
 					/>
 					<p className="convocept-help">
@@ -294,24 +411,6 @@ export function ImportPage( { boot } ) {
 							'convocept'
 						) }
 					</p>
-					<div className="convocept-card__actions">
-						<Button
-							variant="primary"
-							onClick={ run }
-							disabled={ busy }
-						>
-							{ __( 'Start import', 'convocept' ) }
-						</Button>
-						<Button
-							variant="tertiary"
-							onClick={ () =>
-								cancel( __( 'Import cancelled.', 'convocept' ) )
-							}
-							disabled={ busy }
-						>
-							{ __( 'Cancel', 'convocept' ) }
-						</Button>
-					</div>
 				</Card>
 				{ job.sample.length > 0 && (
 					<Card
@@ -342,7 +441,9 @@ export function ImportPage( { boot } ) {
 								{ job.sample.map( ( row, index ) => (
 									<tr key={ index }>
 										<td>{ row.author }</td>
-										<td>{ row.date }</td>
+										<td className="convocept-table__date">
+											{ row.date }
+										</td>
 										<td>{ row.excerpt }</td>
 										<td>{ row.post }</td>
 									</tr>
@@ -358,6 +459,7 @@ export function ImportPage( { boot } ) {
 	if ( 'running' === job.status ) {
 		return (
 			<>
+				{ steps( 2 ) }
 				{ errorNotice }
 				<Card
 					title={ __( 'Importing', 'convocept' ) }
@@ -371,6 +473,35 @@ export function ImportPage( { boot } ) {
 									'The import is paused. Continue picks up where it stopped.',
 									'convocept'
 								)
+					}
+					footer={
+						<>
+							<Button
+								variant="tertiary"
+								__next40pxDefaultSize
+								onClick={ () =>
+									cancel(
+										__(
+											'Import cancelled. Comments already imported stay.',
+											'convocept'
+										)
+									)
+								}
+								disabled={ busy }
+							>
+								{ __( 'Cancel import', 'convocept' ) }
+							</Button>
+							{ ! running && (
+								<Button
+									variant="primary"
+									__next40pxDefaultSize
+									onClick={ run }
+									disabled={ busy }
+								>
+									{ __( 'Continue', 'convocept' ) }
+								</Button>
+							) }
+						</>
 					}
 				>
 					<ProgressBar
@@ -387,31 +518,6 @@ export function ImportPage( { boot } ) {
 							count( counter( job, 'imported' ) )
 						) }
 					/>
-					<div className="convocept-card__actions">
-						{ ! running && (
-							<Button
-								variant="primary"
-								onClick={ run }
-								disabled={ busy }
-							>
-								{ __( 'Continue', 'convocept' ) }
-							</Button>
-						) }
-						<Button
-							variant="tertiary"
-							onClick={ () =>
-								cancel(
-									__(
-										'Import cancelled. Comments already imported stay.',
-										'convocept'
-									)
-								)
-							}
-							disabled={ busy }
-						>
-							{ __( 'Cancel import', 'convocept' ) }
-						</Button>
-					</div>
 				</Card>
 			</>
 		);
@@ -419,62 +525,69 @@ export function ImportPage( { boot } ) {
 
 	return (
 		<>
+			{ steps( 3 ) }
 			{ errorNotice }
-			<Card title={ __( 'Import complete', 'convocept' ) }>
-				<SummaryList
-					rows={ [
+			<Card
+				title={ __( 'Import complete', 'convocept' ) }
+				footer={
+					<>
+						<Button
+							variant="tertiary"
+							__next40pxDefaultSize
+							onClick={ () => cancel( '' ) }
+							disabled={ busy }
+						>
+							{ __( 'Start another import', 'convocept' ) }
+						</Button>
+						<Button
+							variant="primary"
+							__next40pxDefaultSize
+							href={ boot.urls.comments }
+						>
+							{ __( 'View comments', 'convocept' ) }
+						</Button>
+					</>
+				}
+			>
+				<StatTiles
+					tiles={ [
 						{
 							label: __( 'Imported', 'convocept' ),
 							value: count( counter( job, 'imported' ) ),
 						},
-						{
-							label: __(
-								'Already on this site (skipped)',
-								'convocept'
-							),
-							value: nonZero( counter( job, 'existing' ) ),
-						},
-						{
-							label: __(
-								'Post not found (skipped)',
-								'convocept'
-							),
-							value: nonZero( counter( job, 'no_post' ) ),
-						},
-						{
-							label: __( 'Spam (skipped)', 'convocept' ),
-							value: nonZero( counter( job, 'spam' ) ),
-						},
-						{
-							label: __( 'Deleted (skipped)', 'convocept' ),
-							value: nonZero( counter( job, 'deleted' ) ),
-						},
-						{
-							label: __( 'Empty (skipped)', 'convocept' ),
-							value: nonZero(
-								counter( job, 'empty' ) +
-									counter( job, 'invalid' ) +
-									counter( job, 'filtered' )
-							),
-						},
-						{
-							label: __( 'Failed', 'convocept' ),
-							value: nonZero( counter( job, 'failed' ) ),
-						},
 					] }
 				/>
-				<div className="convocept-card__actions">
-					<Button variant="secondary" href={ boot.urls.comments }>
-						{ __( 'View comments', 'convocept' ) }
-					</Button>
-					<Button
-						variant="tertiary"
-						onClick={ () => cancel( '' ) }
-						disabled={ busy }
-					>
-						{ __( 'Start another import', 'convocept' ) }
-					</Button>
-				</div>
+				<StatusList
+					end
+					rows={ [
+						skipped(
+							__( 'Already on this site (skipped)', 'convocept' ),
+							counter( job, 'existing' )
+						),
+						skipped(
+							__( 'Post not found (skipped)', 'convocept' ),
+							counter( job, 'no_post' )
+						),
+						skipped(
+							__( 'Spam (skipped)', 'convocept' ),
+							counter( job, 'spam' )
+						),
+						skipped(
+							__( 'Deleted (skipped)', 'convocept' ),
+							counter( job, 'deleted' )
+						),
+						skipped(
+							__( 'Empty (skipped)', 'convocept' ),
+							counter( job, 'empty' ) +
+								counter( job, 'invalid' ) +
+								counter( job, 'filtered' )
+						),
+						skipped(
+							__( 'Failed', 'convocept' ),
+							counter( job, 'failed' )
+						),
+					] }
+				/>
 			</Card>
 		</>
 	);

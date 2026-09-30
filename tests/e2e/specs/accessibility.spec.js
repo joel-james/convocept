@@ -263,16 +263,18 @@ test.describe( 'Accessibility', () => {
 		const nav = page.getByRole( 'navigation', {
 			name: 'Convocept sections',
 		} );
-		const names = ( await nav.getByRole( 'link' ).allTextContents() ).map(
-			( name ) => name.trim()
-		);
+		const names = (
+			await nav.locator( '.convocept-nav-item__label' ).allTextContents()
+		).map( ( name ) => name.trim() );
 
 		expect( names.length ).toBeGreaterThan( 5 );
 		expect( await violations( page, '.convocept-admin' ) ).toEqual( [] );
 
 		// From the first page, visit every other one; moving moves focus to the heading.
 		for ( const name of names.slice( 1 ) ) {
-			await nav.getByRole( 'link', { name, exact: true } ).click();
+			await nav
+				.locator( '.convocept-nav-item', { hasText: name } )
+				.click();
 			await expect(
 				page.getByRole( 'heading', { level: 1, name } )
 			).toBeFocused();
@@ -283,15 +285,15 @@ test.describe( 'Accessibility', () => {
 			).toEqual( [] );
 		}
 
-		// A page with an invalid value and the save bar showing.
+		// A page with an invalid value and the save status showing.
 		await page
 			.getByRole( 'navigation', { name: 'Convocept sections' } )
 			.getByRole( 'link', { name: 'General' } )
 			.click();
 		await page.getByLabel( 'Comments per page' ).fill( '0' );
-		await expect(
-			page.getByRole( 'region', { name: 'Unsaved changes' } )
-		).toBeVisible();
+		await expect( page.locator( '.convocept-header' ) ).toContainText(
+			'1 setting needs fixing'
+		);
 
 		expect( await violations( page, '.convocept-admin' ) ).toEqual( [] );
 	} );

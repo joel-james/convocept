@@ -6,6 +6,17 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- Comments → Convocept is rebuilt on the new Foxe Plugin Admin Kit and looks like core
+  WordPress: your admin colour scheme instead of black, WordPress's grey background, bordered
+  cards in one left-aligned column. Save sits in the sticky page header with the count of unsaved
+  changes and Discard beside it, instead of a floating bar (which overflowed on phones). The
+  sidebar stays in view while scrolling, shows whether Convocept is on, and counts comments
+  waiting for review. Composer and Subscriptions are merged into **Comment form**; **Spam &
+  moderation** lists the active protections with ticks. Number fields show their unit inside
+  (25 comments, 30 seconds). The accent colour opens a picker with your theme's colours and a few
+  suggested ones, and Appearance shows a preview comment. Import shows its four steps and the dry
+  run as headline numbers. Help can copy the versions for a support post. On phones the section
+  dropdown and Save share one sticky row.
 - The comment thread has more breathing space and slightly smaller text (15px instead of 16px
   at the default root size, set by `--convocept-font-size`). More space between threads (2rem, `--convocept-gap`),
   between replies and before a comment's first reply (1.75rem), between the avatar and the text

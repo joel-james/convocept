@@ -12,7 +12,7 @@
  */
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -21,10 +21,9 @@ import App from './app/App';
 import {
 	AdvancedPage,
 	AppearancePage,
-	ComposerPage,
+	CommentFormPage,
 	GeneralPage,
 	ModerationPage,
-	SubscriptionsPage,
 } from './pages/settings';
 import { ImportPage } from './pages/import';
 import { HelpPage } from './pages/help';
@@ -35,13 +34,14 @@ window.convoceptAdmin = window.convoceptAdmin || {
 	/**
 	 * Add a page to the settings screen.
 	 *
-	 * @param {Object}                     panel        Page.
-	 * @param {string}                     panel.id     Unique ID, used as the `tab` query argument.
-	 * @param {string}                     panel.group  'settings', 'manage' or 'more'.
-	 * @param {string}                     panel.title  Short noun label.
-	 * @param {string}                     [panel.icon] Icon name from the admin UI icon set.
-	 * @param {string[]}                   [panel.keys] Settings keys edited on the page.
-	 * @param {(props: Object) => Element} panel.render Component receiving `{ draft, saved, update, errors, boot }`.
+	 * @param {Object}                     panel         Page.
+	 * @param {string}                     panel.id      Unique ID, used as the `tab` query argument.
+	 * @param {string}                     panel.group   'settings', 'manage' or 'more'.
+	 * @param {string}                     panel.title   Short noun label.
+	 * @param {string}                     [panel.icon]  Icon name from the admin UI icon set.
+	 * @param {string[]}                   [panel.keys]  Settings keys edited on the page; a page with keys shows Save in its header.
+	 * @param {Object}                     [panel.badge] Count shown at the end of the sidebar item: { count, label }.
+	 * @param {(props: Object) => Element} panel.render  Component receiving `{ draft, saved, update, errors, boot }`.
 	 * @return {void}
 	 */
 	registerPanel( panel ) {
@@ -100,28 +100,40 @@ domReady( () => {
 			render: AppearancePage,
 		},
 		{
-			id: 'composer',
+			id: 'comment-form',
 			group: 'settings',
-			title: __( 'Composer', 'convocept' ),
+			title: __( 'Comment form', 'convocept' ),
 			icon: 'composer',
-			keys: [ 'edit_window' ],
-			render: ComposerPage,
+			keys: [
+				'edit_window',
+				'subscriptions',
+				'double_opt_in',
+				'batch_size',
+			],
+			render: CommentFormPage,
 		},
 		{
 			id: 'moderation',
 			group: 'settings',
-			title: __( 'Moderation & spam', 'convocept' ),
+			title: __( 'Spam & moderation', 'convocept' ),
 			icon: 'moderation',
 			keys: [],
+			badge: boot.pending
+				? {
+						count: boot.pending.toLocaleString(),
+						label: sprintf(
+							/* translators: %s: Number of comments. */
+							_n(
+								'%s comment waiting for review',
+								'%s comments waiting for review',
+								boot.pending,
+								'convocept'
+							),
+							boot.pending.toLocaleString()
+						),
+					}
+				: null,
 			render: ModerationPage,
-		},
-		{
-			id: 'subscriptions',
-			group: 'settings',
-			title: __( 'Subscriptions', 'convocept' ),
-			icon: 'subscriptions',
-			keys: [ 'subscriptions', 'double_opt_in', 'batch_size' ],
-			render: SubscriptionsPage,
 		},
 		{
 			id: 'advanced',

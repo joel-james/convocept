@@ -1,0 +1,13 @@
+/**
+ * Convocept's own parts of the Import page: the numbered export steps.
+ */
+
+.convocept-admin .convocept-how {
+	margin: 0;
+	padding-inline-start: 20px;
+	list-style: decimal;
+}
+
+.convocept-admin .convocept-how li {
+	margin: 0 0 4px;
+}

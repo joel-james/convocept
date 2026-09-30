@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * It sits under Comments, next to the screens it works with, rather than
  * under Settings. The screen is a React app (assets/src/admin) built on the
- * Foxe Plugin Admin UI: a light sidebar of pages grouped as Settings,
- * Manage and More.
+ * Foxe Plugin Admin Kit: a light sidebar of pages grouped as Settings,
+ * Manage and More, with Save in each settings page's header.
  * PHP only prints the mount point and the data the app starts with, so
  * the first paint needs no REST request. The app's script and styles load
  * on this screen only.
@@ -228,16 +228,20 @@ class SettingsPage {
 				'minSubmitSeconds' => (float) apply_filters( 'convocept_min_submit_seconds', 3.0 ),
 			),
 			'pending'    => (int) $counts->moderated,
+			'palette'    => $this->theme_palette(),
 			'urls'       => array(
-				'discussion' => admin_url( 'options-discussion.php' ),
-				'pending'    => admin_url( 'edit-comments.php?comment_status=moderated' ),
-				'comments'   => admin_url( 'edit-comments.php' ),
-				'plugins'    => admin_url( 'plugins.php' ),
-				'docs'       => 'https://docs.foxelabs.com/software/convocept/getting-started',
-				'support'    => 'https://wordpress.org/support/plugin/convocept/',
-				'website'    => 'https://convocept.com/',
-				'foxelabs'   => 'https://foxelabs.com/',
-				'review'     => 'https://wordpress.org/support/plugin/convocept/reviews/#new-post',
+				'discussion'   => admin_url( 'options-discussion.php' ),
+				'pending'      => admin_url( 'edit-comments.php?comment_status=moderated' ),
+				'comments'     => admin_url( 'edit-comments.php' ),
+				'plugins'      => admin_url( 'plugins.php' ),
+				'exportData'   => admin_url( 'export-personal-data.php' ),
+				'eraseData'    => admin_url( 'erase-personal-data.php' ),
+				'privacyGuide' => admin_url( 'options-privacy.php?tab=policyguide' ),
+				'docs'         => 'https://docs.foxelabs.com/software/convocept/getting-started',
+				'support'      => 'https://wordpress.org/support/plugin/convocept/',
+				'website'      => 'https://convocept.com/',
+				'foxelabs'     => 'https://foxelabs.com/',
+				'review'       => 'https://wordpress.org/support/plugin/convocept/reviews/#new-post',
 			),
 		);
 
@@ -251,6 +255,38 @@ class SettingsPage {
 		 * @param array<string, mixed> $data Boot data.
 		 */
 		return (array) apply_filters( 'convocept_admin_boot_data', $data );
+	}
+
+	/**
+	 * Get the active theme's colour palette, for the accent colour picker.
+	 *
+	 * Reads the theme's own palette from theme.json (block themes and classic
+	 * themes that declare one); classic themes without one return nothing,
+	 * and the picker shows only the suggested colours.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array<int, array{name: string, color: string}>
+	 */
+	private function theme_palette(): array {
+		$palette = function_exists( 'wp_get_global_settings' ) ? wp_get_global_settings( array( 'color', 'palette', 'theme' ) ) : array();
+		$colors  = array();
+
+		foreach ( (array) $palette as $entry ) {
+			$color = isset( $entry['color'] ) ? sanitize_hex_color( (string) $entry['color'] ) : null;
+
+			// The setting stores six-digit hex only, so shorthand and other formats are left out.
+			if ( ! $color || 7 !== strlen( $color ) ) {
+				continue;
+			}
+
+			$colors[] = array(
+				'name'  => isset( $entry['name'] ) ? (string) $entry['name'] : $color,
+				'color' => strtolower( $color ),
+			);
+		}
+
+		return $colors;
 	}
 
 	/**

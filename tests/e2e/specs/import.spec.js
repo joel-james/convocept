@@ -130,7 +130,7 @@ test.describe( 'Disqus importer', () => {
 			.click();
 
 		const upload = page.getByRole( 'button', {
-			name: 'Upload and analyse',
+			name: 'Upload and review',
 		} );
 		await expect( upload ).toBeDisabled();
 
@@ -139,7 +139,7 @@ test.describe( 'Disqus importer', () => {
 			mimeType: 'text/xml',
 			buffer: disqusExport( post.id, tag ),
 		} );
-		await expect( page.locator( '.convocept-file__name' ) ).toHaveText(
+		await expect( page.locator( '.convocept-drop__title' ) ).toHaveText(
 			'export.xml'
 		);
 		await upload.click();
@@ -147,9 +147,15 @@ test.describe( 'Disqus importer', () => {
 		await expect(
 			page.getByRole( 'heading', { name: 'Dry run' } )
 		).toBeVisible();
-		const summary = page.locator( '.convocept-summary' );
-		await expect( summary ).toContainText( 'Comments to import2' );
-		await expect( summary ).toContainText( 'Spam (skipped)1' );
+		await expect( page.locator( '.convocept-stats' ) ).toContainText(
+			'Comments to import2'
+		);
+		await expect( page.locator( '.convocept-status-list' ) ).toContainText(
+			'Spam (skipped)1'
+		);
+		await expect(
+			page.getByRole( 'list', { name: 'Import steps' } )
+		).toContainText( 'Review' );
 		await expect(
 			page.getByRole( 'cell', { name: `Imported top ${ tag }` } )
 		).toBeVisible();
@@ -159,7 +165,7 @@ test.describe( 'Disqus importer', () => {
 		await expect(
 			page.getByRole( 'heading', { name: 'Import complete' } )
 		).toBeVisible();
-		await expect( page.locator( '.convocept-summary' ) ).toContainText(
+		await expect( page.locator( '.convocept-stats' ) ).toContainText(
 			'Imported2'
 		);
 
@@ -190,9 +196,7 @@ test.describe( 'Disqus importer', () => {
 			mimeType: 'text/xml',
 			buffer: Buffer.from( '<?xml version="1.0"?><rss/>' ),
 		} );
-		await page
-			.getByRole( 'button', { name: 'Upload and analyse' } )
-			.click();
+		await page.getByRole( 'button', { name: 'Upload and review' } ).click();
 
 		await expect(
 			page

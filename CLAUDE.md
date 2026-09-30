@@ -14,7 +14,7 @@ after M8.
 - **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
   lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
   the Disqus part of M8 (`wp convocept import`; StCR/wpDiscuz are 1.1) and the 1.0 part of M9
-  (Comments → Convocept, React on the Foxe Plugin Admin UI design system), and M11
+  (Comments → Convocept, React on the Foxe Plugin Admin Kit design system), and M11
   (privacy exporters/erasers and IP setting, opt-in data deletion on uninstall, server-built
   plural labels, axe checks in `tests/e2e/specs/accessibility.spec.js`). Milestones are
   marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
@@ -23,8 +23,10 @@ after M8.
   otherwise done (name, readme, assets generator, user docs, Plugin Check, security review). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
   not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Comments → Convocept through `POST /convocept/v1/settings`.
-- **Admin UI:** follow the "Foxe Plugin Admin UI" design system (claude.ai artifact
-  https://claude.ai/artifact/DMUyGbeBUS6J38hLcS8dZF). Its components live in
+- **Admin UI:** follow the "Foxe Plugin Admin Kit" design system (claude.ai artifact
+  https://claude.ai/artifact/3GMTBRMn2xZB5jk7wZfX9w; it replaced "Foxe Plugin Admin UI" on
+  2026-09-30). It looks like core WordPress: the user's admin theme colour (never override
+  `--wp-admin-theme-color`), `#f0f0f1` ground, bordered 8px cards, Save in the page header. Its components live in
   `assets/src/admin/ui/` (prefix `convocept-`, tokens `--convocept-*`), kept free of Convocept
   logic so they can move to a shared Foxe package later. Add missing components to the design
   system first. No upsells until add-ons exist.
