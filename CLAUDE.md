@@ -36,9 +36,7 @@ after M8.
   when behaviour, labels or defaults change. `docs/hooks.md` here stays the developer reference.
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M12 to `main`; Twenty Twenty-One shows its
-  own dark submit button instead of our accent colour, and also paints the moderator buttons
-  (Pin, Spam, Trash) as dark boxes (not investigated); confirm the plan to ship basic AI checks
+- **Open items to raise with the owner:** merge M1–M12 to `main`; confirm the plan to ship basic AI checks
   free in 1.2 (decisions.md); the WordPress.org icon/banner still use the old placeholder mark (the
   admin sidebar uses the convocept.com mark in black/white since 2026-09-28); the subscription page is plain
   theme markup and looks weak in screenshot 6.
