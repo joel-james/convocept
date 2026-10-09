@@ -47,7 +47,8 @@ First release.
 ### Spam protection
 - Honeypot, timing check, link limit and per-visitor rate limits, also for the no-JavaScript
   form; works alongside Akismet, Antispam Bee and WordPress's moderation rules. Trusted-proxy
-  aware IP detection. The Comments screen shows why a comment was held.
+  aware IP detection. Edits are checked again, and an edit that adds a link goes back to
+  review. The Comments screen shows why a comment was held.
 
 ### Importer
 - Disqus importer (Comments → Convocept → Import, Tools → Import and

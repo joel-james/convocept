@@ -7,21 +7,18 @@ Convocept is a free WordPress.org plugin (slug `convocept`, by Foxe Labs, websit
 a very fast, self-hosted replacement for the default WordPress comment UI. Comments stay in the
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
-**Current state (2026-09-26):** rebuild toward release 1.0.0. The slug was reserved with an
-unreleased React prototype (first git commit); its files and its data migration were deleted
-after M8.
+**Current state (2026-10-09):** 1.0.0 is prepared for release on `dev` (version bumped, readme
+and CHANGELOG rewritten as a first release, assets regenerated, release zip passes Plugin
+Check, final security/correctness review fixes applied). It is not yet submitted to the
+WordPress.org SVN; the slug was reserved with an unreleased React prototype, since deleted.
 
-- **Done:** M0–M7 (scaffolding, server-rendered thread, composer, replies/load more/deep links,
-  lazy loading + cache + live updates, votes/pins/moderation, subscriptions, structured data)
-  the Disqus part of M8 (`wp convocept import`; StCR/wpDiscuz are 1.1) and the 1.0 part of M9
-  (Comments → Convocept, React on the Foxe Plugin Admin Kit design system), and M11
-  (privacy exporters/erasers and IP setting, opt-in data deletion on uninstall, server-built
-  plural labels, axe checks in `tests/e2e/specs/accessibility.spec.js`). Milestones are
-  marked ✅ in PLAN.md §8; per-milestone decisions are in `docs/decisions.md` (newest first).
-- **Next:** release 1.0.0 when the owner decides: bump `Version`/`CONVOCEPT_VERSION` to 1.0.0,
-  re-run `npm run wporg:assets` and `npm run release`, then Plugin Check on the zip. M12 is
-  otherwise done (name, readme, assets generator, user docs, Plugin Check, security review). Planned for 1.1: M13 Insights, M14 own Comments screen (beside core,
-  not replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
+- **Done:** M0–M9 (1.0 parts), M11, M12. Milestones are marked ✅ in PLAN.md §8; per-milestone
+  decisions are in `docs/decisions.md` (newest first).
+- **Next:** the owner commits 1.0.0 to WordPress.org SVN (trunk + `tags/1.0.0`, `.wordpress-org/`
+  into `assets/`) from `npm run release`, then merges `dev` to `main`. Known follow-ups for 1.0.1:
+  a Cloudflare trusted-proxy preset / notice, one confirmation email for several pending
+  subscriptions. Planned for 1.1: M13 Insights, M14 own Comments screen (beside core, not
+  replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
   Comments → Convocept through `POST /convocept/v1/settings`.
 - **Admin UI:** follow the "Foxe Plugin Admin Kit" design system (claude.ai artifact
   https://claude.ai/artifact/3GMTBRMn2xZB5jk7wZfX9w; it replaced "Foxe Plugin Admin UI" on

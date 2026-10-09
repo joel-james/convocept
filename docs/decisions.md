@@ -2,6 +2,22 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-09 — Final review before 1.0.0
+- **Notification queue:** one non-autoloaded option per job (`convocept_notification_job_{id}`,
+  value = cursor), listed with a direct query. One shared array lost or repeated jobs when a
+  request queued a comment while the sender ran (each side wrote back a stale copy).
+- **Fragment cache without an object cache:** one transient per slot (post, page, sort,
+  expanded comment) storing `{version, html}`. Core bumps "comments last changed" on every
+  comment meta write, so a vote anywhere used to add a new row per viewed post.
+- **`convocept_expand`** only counts when it names a top-level comment on the page (it is part
+  of cache keys).
+- **Edits:** an edit that adds a link is held, because Akismet and similar filters only see new
+  comments. The REST timing check caps the reported time at the form token's age.
+- **Re-subscribing** resets `created_at`, which the 48-hour confirmation expiry is measured from.
+- Deferred to 1.0.1: a Cloudflare trusted-proxy preset or notice (behind a proxy without
+  trusted proxies, all visitors share one rate-limit bucket); one confirmation email covering
+  several pending subscriptions (today the second needs Confirm on the subscription page).
+
 ## 2026-10-09 — Subscription page: the thread's design
 - The page from subscription emails was bare markup inside the theme, so themes such as Raft
   gave it a huge heading and large theme buttons. It is now a Convocept card like the thread.

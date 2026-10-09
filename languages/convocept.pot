@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-09T10:18:08+00:00\n"
+"POT-Creation-Date: 2026-10-09T10:36:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convocept\n"
@@ -100,7 +100,7 @@ msgid "The Convocept settings need JavaScript. Turn it on in your browser to cha
 msgstr ""
 
 #: src/Assets/FrontAssets.php:139
-#: templates/thread.php:86
+#: templates/thread.php:92
 msgid "Posting…"
 msgstr ""
 
@@ -109,6 +109,7 @@ msgid "Your comment was posted."
 msgstr ""
 
 #: src/Assets/FrontAssets.php:141
+#: templates/thread.php:64
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
@@ -168,11 +169,11 @@ msgstr ""
 msgid "Check your email to confirm your subscription."
 msgstr ""
 
-#: src/Comments/Submission.php:319
+#: src/Comments/Submission.php:324
 msgid "Comment Submission Failure"
 msgstr ""
 
-#: src/Comments/Submission.php:464
+#: src/Comments/Submission.php:469
 msgid "You are posting comments too quickly. Please wait a moment and try again."
 msgstr ""
 
@@ -369,7 +370,7 @@ msgid "Author"
 msgstr ""
 
 #: src/Render/Labels.php:35
-#: templates/thread.php:42
+#: templates/thread.php:44
 msgid "Comments"
 msgstr ""
 
@@ -389,15 +390,15 @@ msgid_plural "Show %s more replies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Render/ThreadRenderer.php:798
+#: src/Render/ThreadRenderer.php:846
 msgid "Oldest"
 msgstr ""
 
-#: src/Render/ThreadRenderer.php:799
+#: src/Render/ThreadRenderer.php:847
 msgid "Newest"
 msgstr ""
 
-#: src/Render/ThreadRenderer.php:800
+#: src/Render/ThreadRenderer.php:848
 msgid "Top"
 msgstr ""
 
@@ -407,7 +408,7 @@ msgid "Comments are not available for this post."
 msgstr ""
 
 #: src/Rest/CommentsEndpoint.php:246
-#: src/Rest/CommentsEndpoint.php:323
+#: src/Rest/CommentsEndpoint.php:326
 #: src/Rest/ModerationEndpoint.php:136
 #: src/Rest/ReactionsEndpoint.php:93
 #: src/Rest/ThreadEndpoint.php:166
@@ -422,7 +423,7 @@ msgstr ""
 msgid "Please edit this comment from the dashboard."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:302
+#: src/Rest/CommentsEndpoint.php:303
 msgid "Too many edits. Please wait a moment."
 msgstr ""
 
@@ -446,11 +447,11 @@ msgstr ""
 msgid "You are not allowed to moderate these comments."
 msgstr ""
 
-#: src/Rest/ModerationEndpoint.php:183
+#: src/Rest/ModerationEndpoint.php:197
 msgid "The comment could not be updated."
 msgstr ""
 
-#: src/Rest/ModerationEndpoint.php:224
+#: src/Rest/ModerationEndpoint.php:238
 msgid "Only approved top-level comments can be pinned."
 msgstr ""
 
@@ -521,24 +522,24 @@ msgstr ""
 msgid "\"%s\" is not an IP address or CIDR range."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:199
+#: src/Subscriptions/ManagePage.php:202
 #: templates/subscription-manage.php:57
 msgid "Your comment subscriptions"
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:311
+#: src/Subscriptions/ManagePage.php:314
 msgid "Thanks! Your subscription is confirmed."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:312
+#: src/Subscriptions/ManagePage.php:315
 msgid "You are unsubscribed."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:313
+#: src/Subscriptions/ManagePage.php:316
 msgid "You are unsubscribed from everything on this site."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:314
+#: src/Subscriptions/ManagePage.php:317
 msgid "You are subscribed again."
 msgstr ""
 
@@ -630,7 +631,7 @@ msgid "Log in to join the conversation."
 msgstr ""
 
 #: templates/composer.php:87
-#: templates/thread.php:123
+#: templates/thread.php:129
 #: assets/dist/admin/index.js:35
 msgid "Cancel"
 msgstr ""
@@ -813,19 +814,19 @@ msgstr ""
 msgid "Get new comments on this site by email"
 msgstr ""
 
-#: templates/subscribe-form.php:39
+#: templates/subscribe-form.php:43
 msgid "Email address"
 msgstr ""
 
-#: templates/subscribe-form.php:40
+#: templates/subscribe-form.php:44
 msgid "you@example.com"
 msgstr ""
 
-#: templates/subscribe-form.php:41
+#: templates/subscribe-form.php:45
 msgid "Subscribe"
 msgstr ""
 
-#: templates/subscribe-form.php:48
+#: templates/subscribe-form.php:52
 msgid "One email per new comment. Unsubscribe with one click at any time."
 msgstr ""
 
@@ -863,51 +864,51 @@ msgstr ""
 msgid "Sort comments"
 msgstr ""
 
-#: templates/thread.php:62
+#: templates/thread.php:68
 msgid "Comments are closed."
 msgstr ""
 
-#: templates/thread.php:66
+#: templates/thread.php:72
 msgid "No comments yet. Start the conversation."
 msgstr ""
 
-#: templates/thread.php:99
+#: templates/thread.php:105
 msgid "Edit"
 msgstr ""
 
-#: templates/thread.php:105
+#: templates/thread.php:111
 msgid "Moderate"
 msgstr ""
 
-#: templates/thread.php:108
+#: templates/thread.php:114
 msgid "Approve"
 msgstr ""
 
-#: templates/thread.php:109
+#: templates/thread.php:115
 msgid "Pin to top"
 msgstr ""
 
-#: templates/thread.php:110
+#: templates/thread.php:116
 msgid "Unpin"
 msgstr ""
 
-#: templates/thread.php:111
+#: templates/thread.php:117
 msgid "Edit in dashboard"
 msgstr ""
 
-#: templates/thread.php:112
+#: templates/thread.php:118
 msgid "Mark as spam"
 msgstr ""
 
-#: templates/thread.php:113
+#: templates/thread.php:119
 msgid "Move to trash"
 msgstr ""
 
-#: templates/thread.php:119
+#: templates/thread.php:125
 msgid "Edit your comment"
 msgstr ""
 
-#: templates/thread.php:124
+#: templates/thread.php:130
 #: assets/dist/admin/index.js:8
 msgid "Save"
 msgstr ""
