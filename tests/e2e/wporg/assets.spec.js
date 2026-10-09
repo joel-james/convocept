@@ -390,14 +390,19 @@ test.describe( 'WordPress.org assets', () => {
 			method: 'DELETE',
 			path: '/convocept-e2e/v1/mails',
 		} );
-		// Subscribing again to the same scope reuses the subscription, so a fixed address is fine.
+		// Earlier runs' subscriptions would be listed too, so start clean.
 		const address = 'sam@example.com';
+		await requestUtils.rest( {
+			method: 'POST',
+			path: '/convocept-e2e/v1/reset-subscriptions',
+			data: { email: address },
+		} );
 		const post = await requestUtils.createPost( {
 			title: 'How we halved our page weight',
 			status: 'publish',
 		} );
 		const { page, context } = await openAsGuest( browser, post.link, {
-			viewport: { width: 900, height: 900 },
+			viewport: { width: 1280, height: 900 },
 		} );
 
 		await page.getByRole( 'button', { name: 'Follow' } ).click();
@@ -428,8 +433,36 @@ test.describe( 'WordPress.org assets', () => {
 			page.locator( '.convocept-subscriptions' )
 		).toContainText( 'confirmed' );
 
-		// 6. Include the page title above the list.
-		await capture( page.locator( 'main' ), 'screenshot-6.png' );
+		// 6. The page title and the list, with the theme's background around them.
+		const box = await page.evaluate( () => {
+			const title = document.querySelector( 'main h1' );
+			const list = document.querySelector( '.convocept-subscriptions' );
+			const top = title.getBoundingClientRect();
+			const bottom = list.getBoundingClientRect();
+			const left = Math.min( top.left, bottom.left );
+
+			return {
+				x: left,
+				y: top.top + window.scrollY,
+				width: Math.max( top.right, bottom.right ) - left,
+				height: bottom.bottom - top.top,
+			};
+		} );
+		const pad = 64;
+		const width = Math.max( box.width + pad * 2, 1000 );
+		const x = Math.max( 0, box.x - ( width - box.width ) / 2 );
+
+		await page.screenshot( {
+			path: path.join( OUT, 'screenshot-6.png' ),
+			animations: 'disabled',
+			fullPage: true,
+			clip: {
+				x,
+				y: Math.max( 0, box.y - pad ),
+				width,
+				height: box.height + pad * 2,
+			},
+		} );
 		await context.close();
 	} );
 } );

@@ -151,6 +151,28 @@ add_action(
 			)
 		);
 
+		// Deletes one address's subscriptions, so a run can subscribe it afresh.
+		register_rest_route(
+			'convocept-e2e/v1',
+			'/reset-subscriptions',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $admin,
+				'callback'            => static function ( WP_REST_Request $request ) {
+					global $wpdb;
+
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Test-only cleanup of a custom table.
+					$wpdb->delete(
+						\Convocept\Database\Migrations\SubscriptionsTable::name(),
+						array( 'email' => sanitize_email( (string) $request->get_param( 'email' ) ) ),
+						array( '%s' )
+					);
+
+					return true;
+				},
+			)
+		);
+
 		// Cancels any import left over from an earlier (failed) test run.
 		register_rest_route(
 			'convocept-e2e/v1',
