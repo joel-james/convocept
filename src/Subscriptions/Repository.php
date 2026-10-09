@@ -98,7 +98,7 @@ class Repository {
 			}
 
 			return $existing;
-		}
+		}//end if
 
 		$wpdb->insert(
 			SubscriptionsTable::name(),
