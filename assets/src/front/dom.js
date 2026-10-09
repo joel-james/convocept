@@ -104,3 +104,19 @@ export function reveal( element ) {
 		block: 'nearest',
 	} );
 }
+
+/**
+ * Put a new top-level comment first in the list, below any pinned ones.
+ *
+ * @param {Element} list Comment list.
+ * @param {Element} item Comment list item.
+ */
+export function prependComment( list, item ) {
+	const pinned = list.querySelectorAll( ':scope > [data-convocept-pinned]' );
+
+	if ( pinned.length ) {
+		pinned[ pinned.length - 1 ].after( item );
+	} else {
+		list.prepend( item );
+	}
+}

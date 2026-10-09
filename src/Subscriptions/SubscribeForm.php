@@ -281,13 +281,31 @@ class SubscribeForm {
 				'compact'     => $compact,
 				'action_url'  => admin_url( 'admin-post.php' ),
 				'action'      => self::ACTION,
-				'redirect_to' => $post_id ? (string) get_permalink( $post_id ) : home_url( add_query_arg( array() ) ),
+				'redirect_to' => $post_id ? (string) get_permalink( $post_id ) : $this->current_url(),
 				'message'     => 'sent' === $done
 					? __( 'Thanks! Check your inbox: if this address needs confirming, we have sent you a link.', 'convocept' )
 					: ( 'error' === $done ? __( 'That did not work. Please check the address and try again.', 'convocept' ) : '' ),
 				'is_error'    => 'error' === $done,
 			)
 		);
+	}
+
+	/**
+	 * Get the address of the page being shown, to come back to after a no-JS submit.
+	 *
+	 * The request path already includes a subdirectory install's path, so
+	 * only the scheme and host come from the home URL.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	private function current_url(): string {
+		$home = wp_parse_url( home_url( '/' ) );
+		$path = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
+		$host = ( $home['host'] ?? '' ) . ( isset( $home['port'] ) ? ':' . $home['port'] : '' );
+
+		return remove_query_arg( self::DONE_VAR, ( $home['scheme'] ?? 'https' ) . '://' . $host . '/' . ltrim( $path, '/' ) );
 	}
 
 	/**

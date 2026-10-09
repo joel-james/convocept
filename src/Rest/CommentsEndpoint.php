@@ -287,8 +287,9 @@ class CommentsEndpoint {
 	 * Handle PATCH /comments/{id}.
 	 *
 	 * The edited text goes through core's comment filters (kses), and an
-	 * author's edit is re-checked against the site's moderation rules, so
-	 * editing cannot sneak links or blocked words past moderation.
+	 * author's edit is re-checked against the site's moderation rules, and
+	 * held when it adds a link, so editing cannot sneak links or blocked
+	 * words past moderation.
 	 *
 	 * @since 1.0.0
 	 *
@@ -302,6 +303,8 @@ class CommentsEndpoint {
 			return new WP_Error( 'convocept_rate_limited', __( 'Too many edits. Please wait a moment.', 'convocept' ), array( 'status' => 429 ) );
 		}
 
+		$before  = get_comment( $comment_id );
+		$links   = $before instanceof WP_Comment ? $this->count_links( $before->comment_content ) : 0;
 		$content = $this->plugin->submission()->encode_markdown( (string) $request->get_param( 'content' ) );
 		$result  = wp_update_comment(
 			array(
@@ -323,7 +326,12 @@ class CommentsEndpoint {
 			return new WP_Error( 'convocept_invalid_comment', __( 'Comment not found.', 'convocept' ), array( 'status' => 404 ) );
 		}
 
-		if ( ! current_user_can( 'moderate_comments' ) && '1' === (string) $comment->comment_approved && ! $this->passes_moderation_rules( $comment ) ) {
+		// Akismet and the other spam filters only see new comments, so an edit
+		// that adds a link goes back to review: otherwise a harmless approved
+		// comment could be turned into spam within the edit window.
+		$adds_links = $this->count_links( $comment->comment_content ) > $links;
+
+		if ( ! current_user_can( 'moderate_comments' ) && '1' === (string) $comment->comment_approved && ( $adds_links || ! $this->passes_moderation_rules( $comment ) ) ) {
 			wp_set_comment_status( $comment, 'hold' );
 			$comment = get_comment( $comment_id );
 		}
@@ -357,7 +365,7 @@ class CommentsEndpoint {
 	private function passes_moderation_rules( WP_Comment $comment ): bool {
 		$max_links = (int) get_option( 'comment_max_links' );
 
-		if ( $max_links > 0 && preg_match_all( '#https?://#i', $comment->comment_content ) >= $max_links ) {
+		if ( $max_links > 0 && $this->count_links( $comment->comment_content ) >= $max_links ) {
 			return false;
 		}
 
@@ -375,6 +383,18 @@ class CommentsEndpoint {
 			$comment->comment_agent,
 			$comment->comment_type
 		);
+	}
+
+	/**
+	 * Count the web addresses in comment content.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $content Comment content.
+	 * @return int
+	 */
+	private function count_links( string $content ): int {
+		return (int) preg_match_all( '#https?://#i', $content );
 	}
 
 	/**

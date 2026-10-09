@@ -212,9 +212,14 @@ class Submission {
 		$post_id = (int) ( $data['post_id'] ?? 0 );
 		$elapsed = isset( $data['elapsed'] ) && is_numeric( $data['elapsed'] ) ? max( 0.0, (float) $data['elapsed'] ) : null;
 
-		// The elapsed time comes from the browser; only trust it from a client that loaded the form.
-		if ( null === $this->tokens->time( $data['token'] ?? '' ) ) {
+		// The elapsed time comes from the browser; only trust it from a client that
+		// loaded the form, and never beyond the time since the form's token was made.
+		$issued = $this->tokens->time( $data['token'] ?? '' );
+
+		if ( null === $issued ) {
 			$elapsed = null;
+		} elseif ( null !== $elapsed ) {
+			$elapsed = min( $elapsed, (float) max( 0, time() - $issued ) );
 		}
 
 		$this->begin(

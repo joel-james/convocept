@@ -196,7 +196,10 @@ class ManagePage {
 	 * @return string
 	 */
 	public function title(): string {
-		return __( 'Your comment subscriptions', 'convocept' ) . ' – ' . get_bloginfo( 'name' );
+		// Core's own filter, so the page matches the theme's other titles.
+		$separator = (string) apply_filters( 'document_title_separator', '-' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core filter.
+
+		return implode( ' ' . $separator . ' ', array( __( 'Your comment subscriptions', 'convocept' ), get_bloginfo( 'name', 'display' ) ) );
 	}
 
 	/**

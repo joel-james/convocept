@@ -6,7 +6,14 @@
  */
 import { request } from './api';
 import { config, number, t } from './config';
-import { added, announce, cloneTemplate, parseHtml, reveal } from './dom';
+import {
+	added,
+	announce,
+	cloneTemplate,
+	parseHtml,
+	prependComment,
+	reveal,
+} from './dom';
 import { getSession, savedGuest } from './session';
 import { addEditButton } from './edit';
 import { cancelReply } from './reply';
@@ -251,8 +258,12 @@ function insertPlaceholder( root, parent, content, author ) {
 		}
 	}
 
-	const newestFirst = /convocept_sort=newest/.test( window.location.search );
-	list[ newestFirst ? 'prepend' : 'append' ]( item );
+	// The sort is on the root: the URL leaves it out when it is the default.
+	if ( root.dataset.convoceptSort === 'newest' ) {
+		prependComment( list, item );
+	} else {
+		list.append( item );
+	}
 
 	return item;
 }

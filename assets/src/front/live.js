@@ -7,7 +7,13 @@
  */
 import { routeUrl } from './api';
 import { config, number, t } from './config';
-import { added, announce, cloneTemplate, parseHtml } from './dom';
+import {
+	added,
+	announce,
+	cloneTemplate,
+	parseHtml,
+	prependComment,
+} from './dom';
 
 /**
  * Start polling a thread, if live updates are enabled.
@@ -119,7 +125,7 @@ function insert( root, data ) {
 
 			replies.append( comment );
 		} else if ( ! item.parent && sort === 'newest' && page === '1' ) {
-			list( root ).prepend( comment );
+			prependComment( list( root ), comment );
 		} else if (
 			! item.parent &&
 			sort === 'oldest' &&

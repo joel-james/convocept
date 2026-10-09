@@ -276,4 +276,17 @@ class SubscriptionsTest extends RestTestCase {
 		$this->assertStringContainsString( 'name="convocept_subscribe_replies"', $html );
 		$this->assertStringContainsString( 'name="post_id" value="0"', do_shortcode( '[convocept_subscribe scope="site"]' ) );
 	}
+
+	public function test_site_form_returns_to_the_same_page_on_a_subdirectory_install(): void {
+		$home = static function ( $url, $path ) {
+			return 'http://example.org/blog/' . ltrim( (string) $path, '/' );
+		};
+		add_filter( 'home_url', $home, 10, 2 );
+		$_SERVER['REQUEST_URI'] = '/blog/news/?page=2&convocept_subscribed=sent';
+
+		$html = Plugin::instance()->subscribe_form()->render( 0 );
+
+		remove_filter( 'home_url', $home, 10 );
+		$this->assertStringContainsString( 'value="http://example.org/blog/news/?page=2"', $html );
+	}
 }

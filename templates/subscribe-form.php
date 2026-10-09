@@ -26,18 +26,22 @@ defined( 'ABSPATH' ) || exit;
 $convocept_label = $args['post_id']
 	? __( 'Get new comments on this post by email', 'convocept' )
 	: __( 'Get new comments on this site by email', 'convocept' );
+
+// Only the in-thread form owns #convocept-subscribe (the Follow link's target);
+// blocks and shortcodes, possibly several on the same page, get their own IDs.
+$convocept_id = $args['compact'] ? 'convocept-subscribe' : wp_unique_id( 'convocept-subscribe-' );
 ?>
 <?php if ( $args['compact'] ) : ?>
 <div id="convocept-subscribe" class="convocept-subscribe<?php echo $args['message'] ? ' is-open' : ''; ?>" data-convocept-subscribe>
 	<p class="convocept-subscribe__title"><?php echo esc_html( $convocept_label ); ?></p>
 <?php else : ?>
-<div id="convocept-subscribe" class="convocept-subscribe convocept-subscribe--standalone">
+<div id="<?php echo esc_attr( $convocept_id ); ?>" class="convocept-subscribe convocept-subscribe--standalone">
 	<p class="convocept-subscribe__title"><strong><?php echo esc_html( $convocept_label ); ?></strong></p>
 <?php endif; ?>
 
 	<form class="convocept-subscribe__form" action="<?php echo esc_url( $args['action_url'] ); ?>" method="post" data-convocept-subscribe-form>
-		<label class="screen-reader-text" for="convocept-subscribe-email-<?php echo esc_attr( (string) $args['post_id'] ); ?>"><?php esc_html_e( 'Email address', 'convocept' ); ?></label>
-		<input id="convocept-subscribe-email-<?php echo esc_attr( (string) $args['post_id'] ); ?>" type="email" name="email" required autocomplete="email" placeholder="<?php esc_attr_e( 'you@example.com', 'convocept' ); ?>">
+		<label class="screen-reader-text" for="<?php echo esc_attr( $convocept_id ); ?>-email"><?php esc_html_e( 'Email address', 'convocept' ); ?></label>
+		<input id="<?php echo esc_attr( $convocept_id ); ?>-email" type="email" name="email" required autocomplete="email" placeholder="<?php esc_attr_e( 'you@example.com', 'convocept' ); ?>">
 		<button type="submit" class="convocept-button"><?php esc_html_e( 'Subscribe', 'convocept' ); ?></button>
 		<input type="hidden" name="action" value="<?php echo esc_attr( $args['action'] ); ?>">
 		<input type="hidden" name="post_id" value="<?php echo esc_attr( (string) $args['post_id'] ); ?>">

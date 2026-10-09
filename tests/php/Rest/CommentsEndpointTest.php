@@ -239,6 +239,33 @@ class CommentsEndpointTest extends RestTestCase {
 		$this->assertSame( 'pending', $data['status'] );
 	}
 
+	public function test_edit_that_adds_a_link_is_held_even_under_the_limit(): void {
+		update_option( 'comment_max_links', 5 );
+		$post_id = self::factory()->post->create();
+		$created = $this->post_comment( $post_id, array( 'content' => 'See https://a.example' ) )->get_data();
+		$this->assertSame( 'approved', $created['status'] );
+
+		$same = $this->dispatch(
+			'PATCH',
+			"comments/{$created['id']}",
+			array(
+				'content'    => 'Fixed a typo: https://a.example',
+				'edit_token' => $created['edit_token'],
+			)
+		)->get_data();
+		$this->assertSame( 'approved', $same['status'], 'Edits that keep the links stay approved.' );
+
+		$more = $this->dispatch(
+			'PATCH',
+			"comments/{$created['id']}",
+			array(
+				'content'    => 'See https://a.example and https://spam.example',
+				'edit_token' => $created['edit_token'],
+			)
+		)->get_data();
+		$this->assertSame( 'pending', $more['status'] );
+	}
+
 	public function test_preview_renders_markdown(): void {
 		$data = $this->dispatch( 'POST', 'preview', array( 'content' => '**b** <script>x</script>' ) )->get_data();
 
@@ -257,6 +284,18 @@ class CommentsEndpointTest extends RestTestCase {
 		$data = $this->post_comment( self::factory()->post->create(), array( 'token' => '' ) )->get_data();
 
 		$this->assertSame( 'pending', $data['status'], 'A client-reported elapsed time alone is not trusted.' );
+	}
+
+	public function test_reported_time_cannot_exceed_the_tokens_age(): void {
+		$data = $this->post_comment(
+			self::factory()->post->create(),
+			array(
+				'elapsed' => 30,
+				'token'   => ( new \Convocept\Security\FormToken() )->create( time() ),
+			)
+		)->get_data();
+
+		$this->assertSame( 'pending', $data['status'], 'A form loaded just now cannot claim 30 seconds of typing.' );
 	}
 
 	public function test_edit_adding_disallowed_words_is_held(): void {

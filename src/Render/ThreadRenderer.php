@@ -201,6 +201,7 @@ class ThreadRenderer {
 			'composer_html' => $is_open ? $this->render_composer( $post_id ) : '',
 			'list_html'     => $this->render_items( $thread, $this->current_expand() ),
 			'pagination'    => $this->render_pagination( $thread ),
+			'held'          => $this->held_comment( $post_id ),
 		);
 
 		/**
@@ -258,6 +259,30 @@ class ThreadRenderer {
 	 */
 	public function current_expand(): int {
 		return absint( get_query_var( self::EXPAND_QUERY_VAR ) );
+	}
+
+	/**
+	 * Whether the visitor just posted a comment on this post that is held for review.
+	 *
+	 * After a no-JavaScript post, WordPress redirects to the post with
+	 * `unapproved` and `moderation-hash` in the URL. Those URLs are unique to
+	 * the comment, so showing a notice on them keeps cached pages safe.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	private function held_comment( int $post_id ): bool {
+		// wp_get_unapproved_comment_author_email() checks the hash against the comment.
+		if ( '' === wp_get_unapproved_comment_author_email() ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verified by the moderation hash above.
+		$comment = get_comment( isset( $_GET['unapproved'] ) ? absint( $_GET['unapproved'] ) : 0 );
+
+		return $comment instanceof WP_Comment && $post_id === (int) $comment->comment_post_ID && '0' === (string) $comment->comment_approved;
 	}
 
 	/**

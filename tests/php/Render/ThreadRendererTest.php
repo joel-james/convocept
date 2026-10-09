@@ -227,4 +227,29 @@ class ThreadRendererTest extends TestCase {
 		$this->assertFalse( $renderer->is_enabled_for( $post_id ) );
 		remove_filter( 'convocept_enabled', '__return_false' );
 	}
+
+	public function test_held_comment_notice_only_with_a_valid_moderation_hash(): void {
+		$post_id = self::factory()->post->create();
+		$this->comment( $post_id );
+		$held = $this->comment(
+			$post_id,
+			array(
+				'comment_approved'     => 0,
+				'comment_author_email' => 'held@example.com',
+				// Core shows a held comment to its author for 10 minutes only.
+				'comment_date'         => current_time( 'mysql', true ),
+				'comment_date_gmt'     => current_time( 'mysql', true ),
+			)
+		);
+		$this->view_post( $post_id );
+
+		$_GET['unapproved']      = (string) $held;
+		$_GET['moderation-hash'] = 'wrong';
+		$this->assertStringNotContainsString( 'awaiting moderation', $this->renderer()->render( $post_id ) );
+
+		$_GET['moderation-hash'] = wp_hash( get_comment( $held )->comment_date_gmt );
+		$this->assertStringContainsString( 'awaiting moderation', $this->renderer()->render( $post_id ) );
+
+		unset( $_GET['unapproved'], $_GET['moderation-hash'] );
+	}
 }

@@ -23,6 +23,8 @@
  *     @type string                     $pagination    Pagination, empty for a single page.
  *     @type string                     $subscribe_html "Subscribe without commenting" form, opened by the
  *                                                     header's Follow link, or empty.
+ *     @type bool                       $held          Whether the visitor's comment, just posted without
+ *                                                     JavaScript, is held for review.
  * }
  */
 
@@ -57,6 +59,10 @@ $convocept_thread = $args['thread'];
 	echo $args['subscribe_html'] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in subscribe-form.php.
 	echo $args['composer_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in composer.php.
 	?>
+
+	<?php if ( ! empty( $args['held'] ) ) : ?>
+		<p class="convocept-notice convocept-notice--held" role="status"><?php esc_html_e( 'Your comment is awaiting moderation.', 'convocept' ); ?></p>
+	<?php endif; ?>
 
 	<?php if ( ! $args['is_open'] ) : ?>
 		<p class="convocept-notice convocept-notice--closed"><?php esc_html_e( 'Comments are closed.', 'convocept' ); ?></p>
