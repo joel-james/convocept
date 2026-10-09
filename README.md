@@ -1,6 +1,6 @@
 # Convocept – Fast Native Comment System
 
-The fastest comment system for WordPress.
+Fast, native comments for WordPress.
 
 Convocept replaces the default WordPress comment UI with a modern, server-rendered thread that
 loads **zero JavaScript until readers reach the comments**. Every comment stays in the native
