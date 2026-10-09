@@ -66,7 +66,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 
 = 🔒 Private and accessible =
 
-* **No tracking, no outside service, no cookies of its own.** No account and no API key. Avatars follow Settings → Discussion (Gravatar by default, or initials when avatars are off).
+* **No external requests, no tracking, no cookies of its own** — except WordPress's Gravatar avatars when **Show Avatars** is on in Settings → Discussion (turn it off and Convocept shows initials). No account and no API key.
 * WordPress's **export and erase personal data** tools cover subscriptions and votes, and Settings → Privacy gets suggested policy text.
 * Choose to store commenters' IP addresses in full, anonymized or not at all.
 * **Accessible:** keyboard friendly, announced to screen readers, and checked against WCAG 2.2 AA in light and dark colours.
@@ -147,7 +147,7 @@ Readers see the full comment thread and a working comment form that posts the no
 
 = Is it GDPR friendly? =
 
-Convocept itself makes no external requests and sets no cookies of its own. Avatars follow Settings → Discussion: WordPress loads them from Gravatar by default; turn avatars off to show initials instead. WordPress's own "remember me" comment cookies apply only if the reader agrees. After commenting, the reader's browser keeps a short-lived code that lets them edit their comment; it is never sent anywhere else. Subscriptions use double opt-in, every email has an unsubscribe link, and WordPress's export and erase tools cover subscriptions and votes. You can choose not to store commenters' IP addresses.
+Convocept makes no external requests and sets no cookies of its own. The one exception is WordPress's Gravatar avatars: with **Show Avatars** on in Settings → Discussion (the WordPress default), readers' browsers load avatar images from Gravatar. Turn it off and Convocept shows initials instead, with no outside request at all. WordPress's own "remember me" comment cookies apply only if the reader agrees. After commenting, the reader's browser keeps a short-lived code that lets them edit their comment; it is never sent anywhere else. Subscriptions use double opt-in, every email has an unsubscribe link, and WordPress's export and erase tools cover subscriptions and votes. You can choose not to store commenters' IP addresses.
 
 = Does uninstalling delete my comments? =
 
