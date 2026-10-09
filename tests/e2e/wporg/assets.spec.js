@@ -186,7 +186,10 @@ async function openAsGuest( browser, url, options = {} ) {
 test.describe( 'WordPress.org assets', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
 		await requestUtils.activatePlugin( SLUG );
-		await requestUtils.activateTheme( 'twentytwentyfive' );
+		// WPORG_THEME picks another installed theme, e.g. WPORG_THEME=raft.
+		await requestUtils.activateTheme(
+			process.env.WPORG_THEME || 'twentytwentyfive'
+		);
 		await requestUtils.deleteAllComments();
 		await requestUtils.rest( {
 			method: 'POST',
@@ -305,7 +308,8 @@ test.describe( 'WordPress.org assets', () => {
 	} );
 
 	test( 'screenshots of the admin', async ( { page, requestUtils } ) => {
-		await page.setViewportSize( { width: 1440, height: 1000 } );
+		// Tall enough for the whole page, so the sticky sidebar spans it.
+		await page.setViewportSize( { width: 1440, height: 1300 } );
 
 		// 4. Comments → Convocept.
 		await requestUtils.rest( {
@@ -357,16 +361,17 @@ test.describe( 'WordPress.org assets', () => {
 		await page.goto(
 			'/wp-admin/edit-comments.php?page=convocept&tab=import'
 		);
-		await page.getByLabel( 'Export file' ).setInputFiles( {
-			name: 'disqus-export.xml',
-			mimeType: 'text/xml',
-			buffer: Buffer.from(
-				`<?xml version="1.0" encoding="utf-8"?><disqus xmlns="http://disqus.com" xmlns:dsq="http://disqus.com/disqus-internals"><thread dsq:id="1"><id>${ post.id }</id><link>http://example.invalid/</link><title>Tools</title></thread>${ posts }</disqus>`
-			),
-		} );
 		await page
-			.getByRole( 'button', { name: 'Upload and analyse' } )
-			.click();
+			.getByRole( 'group', { name: 'Export file' } )
+			.locator( 'input[type="file"]' )
+			.setInputFiles( {
+				name: 'disqus-export.xml',
+				mimeType: 'text/xml',
+				buffer: Buffer.from(
+					`<?xml version="1.0" encoding="utf-8"?><disqus xmlns="http://disqus.com" xmlns:dsq="http://disqus.com/disqus-internals"><thread dsq:id="1"><id>${ post.id }</id><link>http://example.invalid/</link><title>Tools</title></thread>${ posts }</disqus>`
+				),
+			} );
+		await page.getByRole( 'button', { name: 'Upload and review' } ).click();
 		await expect(
 			page.getByRole( 'heading', { name: 'Dry run' } )
 		).toBeVisible();
@@ -395,7 +400,7 @@ test.describe( 'WordPress.org assets', () => {
 			viewport: { width: 900, height: 900 },
 		} );
 
-		await page.locator( '.convocept-subscribe summary' ).click();
+		await page.getByRole( 'button', { name: 'Follow' } ).click();
 		await page
 			.locator( '.convocept-subscribe input[type="email"]' )
 			.fill( address );
