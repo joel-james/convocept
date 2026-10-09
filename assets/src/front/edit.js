@@ -177,8 +177,9 @@ async function openEditor( root, item ) {
 				);
 			}
 
+			// The form's own status went with the old body: use the thread's.
 			announce(
-				body.querySelector( '[data-convocept-content]' ) && status,
+				root.querySelector( '[data-convocept-status]' ),
 				t( 'saved' )
 			);
 			body.querySelector( '[data-convocept-actions] button' )?.focus();

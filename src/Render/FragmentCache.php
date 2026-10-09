@@ -18,8 +18,11 @@ defined( 'ABSPATH' ) || exit;
  * deleted, so a cached list can never outlive a change to its comments.
  * Stale entries are simply never read again and expire on their own.
  *
- * Uses the object cache when a persistent one is installed, otherwise
- * transients.
+ * Uses the object cache when a persistent one is installed. Otherwise each
+ * entry is a transient named after what it shows (post, page, sort,
+ * expanded comment) that stores the full key with the HTML: a change
+ * overwrites that one row instead of adding a new one. Core bumps "last
+ * changed" on every vote anywhere, so new rows per change would pile up.
  *
  * @since 1.0.0
  */
@@ -32,6 +35,14 @@ class FragmentCache {
 	 * @var string
 	 */
 	const GROUP = 'convocept_html';
+
+	/**
+	 * Key parts that change while the output still shows the same thing.
+	 *
+	 * @since 1.0.0
+	 * @var string[]
+	 */
+	const VOLATILE = array( 'comments_changed', 'version', 'locale', 'theme', 'options', 'settings', 'modified', 'template' );
 
 	/**
 	 * Build a cache key from everything the output depends on.
@@ -52,7 +63,9 @@ class FragmentCache {
 			$parts['options'][ $option ] = get_option( $option );
 		}
 
-		return 'convocept_html_' . md5( (string) wp_json_encode( $parts ) );
+		$slot = array_diff_key( $parts, array_flip( self::VOLATILE ) );
+
+		return 'convocept_html_' . md5( (string) wp_json_encode( $slot ) ) . ':' . md5( (string) wp_json_encode( $parts ) );
 	}
 
 	/**
@@ -68,9 +81,16 @@ class FragmentCache {
 			return null;
 		}
 
-		$html = wp_using_ext_object_cache() ? wp_cache_get( $key, self::GROUP ) : get_transient( $key );
+		if ( wp_using_ext_object_cache() ) {
+			$html = wp_cache_get( $key, self::GROUP );
 
-		return is_string( $html ) ? $html : null;
+			return is_string( $html ) ? $html : null;
+		}
+
+		list( $slot, $version ) = $this->split( $key );
+		$entry                  = get_transient( $slot );
+
+		return is_array( $entry ) && ( $entry['version'] ?? '' ) === $version && is_string( $entry['html'] ?? null ) ? $entry['html'] : null;
 	}
 
 	/**
@@ -92,7 +112,30 @@ class FragmentCache {
 			return;
 		}
 
-		set_transient( $key, $html, DAY_IN_SECONDS );
+		list( $slot, $version ) = $this->split( $key );
+
+		set_transient(
+			$slot,
+			array(
+				'version' => $version,
+				'html'    => $html,
+			),
+			DAY_IN_SECONDS
+		);
+	}
+
+	/**
+	 * Split a key into its transient name and version.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key Cache key from key().
+	 * @return array{0: string, 1: string} Transient name, then version.
+	 */
+	private function split( string $key ): array {
+		$parts = explode( ':', $key, 2 );
+
+		return array( $parts[0], $parts[1] ?? '' );
 	}
 
 	/**

@@ -7,7 +7,7 @@
  */
 import { request } from './api';
 import { config } from './config';
-import { added, cloneTemplate, parseHtml } from './dom';
+import { added, announce, cloneTemplate, parseHtml } from './dom';
 import { getSession } from './session';
 
 /**
@@ -183,6 +183,12 @@ async function act( root, session, button ) {
 	} catch ( error ) {
 		button.disabled = false;
 		button.title = error.message;
+		// The menu is already closed, so say it where screen readers and eyes reach.
+		announce(
+			root.querySelector( '[data-convocept-status]' ),
+			error.message,
+			true
+		);
 	}
 }
 

@@ -72,6 +72,30 @@ class FragmentCacheTest extends TestCase {
 		$this->assertNotSame( $a, $cache->key( array( 'post' => 1 ) ) );
 	}
 
+	public function test_changes_overwrite_one_row_per_view_instead_of_adding_rows(): void {
+		global $wpdb;
+
+		if ( wp_using_ext_object_cache() ) {
+			$this->markTestSkipped( 'Rows only exist without a persistent object cache.' );
+		}
+
+		$post_id  = self::factory()->post->create();
+		$renderer = $this->renderer();
+		$id       = $this->comment( $post_id );
+		$count    = static function () use ( $wpdb ): int {
+			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '\\_transient\\_convocept\\_html\\_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		};
+
+		$renderer->render_items( ( new ThreadQuery() )->run( $post_id ) );
+		$rows = $count();
+
+		// A vote anywhere bumps core's "comments last changed".
+		update_comment_meta( $id, 'convocept_score', 3 );
+		$renderer->render_items( ( new ThreadQuery() )->run( $post_id ) );
+
+		$this->assertSame( $rows, $count() );
+	}
+
 	public function test_cache_can_be_disabled(): void {
 		add_filter( 'convocept_fragment_cache', '__return_false' );
 		$cache = new FragmentCache();

@@ -173,7 +173,21 @@ class ModerationEndpoint {
 	public function moderate( WP_REST_Request $request ) {
 		$comment_id = (int) $request->get_param( 'id' );
 		$action     = (string) $request->get_param( 'action' );
-		$result     = 'trash' === $action ? wp_trash_comment( $comment_id ) : wp_set_comment_status( $comment_id, self::ACTIONS[ $action ], true );
+		$current    = wp_get_comment_status( $comment_id );
+		$target     = array(
+			'approve' => 'approved',
+			'hold'    => 'unapproved',
+			'spam'    => 'spam',
+			'trash'   => 'trash',
+		);
+
+		// Another moderator (or a double click) got there first: core reports
+		// an unchanged status as a database error, but the outcome is the one asked for.
+		if ( $current === $target[ $action ] ) {
+			$result = true;
+		} else {
+			$result = 'trash' === $action ? wp_trash_comment( $comment_id ) : wp_set_comment_status( $comment_id, self::ACTIONS[ $action ], true );
+		}
 
 		if ( is_wp_error( $result ) ) {
 			return $result;

@@ -62,6 +62,23 @@ class ModerationEndpointTest extends RestTestCase {
 		$this->assertSame( 400, $this->dispatch( 'POST', "comments/{$trash}/moderate", array( 'action' => 'delete' ) )->get_status() );
 	}
 
+	public function test_repeating_an_action_succeeds(): void {
+		$this->moderator();
+		$post_id = self::factory()->post->create();
+		$id      = $this->comment( $post_id );
+
+		$first  = $this->dispatch( 'POST', "comments/{$id}/moderate", array( 'action' => 'spam' ) );
+		$second = $this->dispatch( 'POST', "comments/{$id}/moderate", array( 'action' => 'spam' ) );
+		$again  = $this->dispatch( 'POST', "comments/{$id}/moderate", array( 'action' => 'approve' ) );
+		$twice  = $this->dispatch( 'POST', "comments/{$id}/moderate", array( 'action' => 'approve' ) );
+
+		$this->assertSame( 200, $first->get_status() );
+		$this->assertSame( 200, $second->get_status(), 'Two moderators marking the same comment is not an error.' );
+		$this->assertSame( 200, $again->get_status() );
+		$this->assertSame( 200, $twice->get_status() );
+		$this->assertSame( '1', get_comment( $id )->comment_approved );
+	}
+
 	public function test_pending_list_is_for_moderators_only(): void {
 		$post_id = self::factory()->post->create();
 		$pending = $this->comment( $post_id, array( 'comment_approved' => 0 ) );
