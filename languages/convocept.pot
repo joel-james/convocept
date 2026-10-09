@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convocept – Fast Native Comment System 1.0.0-dev\n"
+"Project-Id-Version: Convocept – Fast Native Comment System 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convocept\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-28T06:51:20+00:00\n"
+"POT-Creation-Date: 2026-10-09T10:18:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convocept\n"
@@ -44,9 +44,9 @@ msgid "Convocept is missing its autoloader. Run \"composer install\" in the plug
 msgstr ""
 
 #: src/Admin/CommentsColumn.php:77
-#: src/Admin/SettingsPage.php:107
-#: src/Admin/SettingsPage.php:108
-#: assets/dist/admin/index.js:13
+#: src/Admin/SettingsPage.php:109
+#: src/Admin/SettingsPage.php:110
+#: assets/dist/admin/index.js:39
 msgid "Convocept"
 msgstr ""
 
@@ -72,7 +72,6 @@ msgid "Held"
 msgstr ""
 
 #: src/Admin/CommentsColumn.php:167
-#: templates/thread.php:105
 msgid "Spam"
 msgstr ""
 
@@ -80,18 +79,28 @@ msgstr ""
 msgid "Trashed"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:124
-#: assets/dist/admin/index.js:13
+#. translators: %s: List of post type names, e.g. "Posts and Pages".
+#: src/Admin/DiscussionNotice.php:87
+#, php-format
+msgid "Convocept shows the comments on %s. There, its own settings for threading, comment pages and comment order replace the ones below, and pingbacks and trackbacks are not shown. Everything else on this screen still applies."
+msgstr ""
+
+#: src/Admin/DiscussionNotice.php:94
+msgid "Open Convocept settings"
+msgstr ""
+
+#: src/Admin/SettingsPage.php:146
+#: assets/dist/admin/index.js:39
 #: assets/dist/blocks/subscribe/index.js:1
 msgid "Settings"
 msgstr ""
 
-#: src/Admin/SettingsPage.php:141
+#: src/Admin/SettingsPage.php:163
 msgid "The Convocept settings need JavaScript. Turn it on in your browser to change them."
 msgstr ""
 
 #: src/Assets/FrontAssets.php:139
-#: templates/thread.php:85
+#: templates/thread.php:86
 msgid "Posting…"
 msgstr ""
 
@@ -143,7 +152,7 @@ msgstr ""
 
 #. translators: %s: Name of the person being replied to.
 #: src/Assets/FrontAssets.php:154
-#: templates/comment.php:103
+#: templates/comment.php:98
 #: templates/composer.php:84
 #, php-format
 msgid "Replying to %s"
@@ -159,11 +168,11 @@ msgstr ""
 msgid "Check your email to confirm your subscription."
 msgstr ""
 
-#: src/Comments/Submission.php:291
+#: src/Comments/Submission.php:319
 msgid "Comment Submission Failure"
 msgstr ""
 
-#: src/Comments/Submission.php:436
+#: src/Comments/Submission.php:464
 msgid "You are posting comments too quickly. Please wait a moment and try again."
 msgstr ""
 
@@ -195,7 +204,7 @@ msgstr ""
 msgid "The PHP XMLReader extension is required to import Disqus exports."
 msgstr ""
 
-#: src/Import/Disqus/Parser.php:151
+#: src/Import/Disqus/Parser.php:153
 msgid "This file is not a valid Disqus XML export."
 msgstr ""
 
@@ -248,102 +257,103 @@ msgstr ""
 msgid "Submitted %s seconds after the form appeared."
 msgstr ""
 
-#: src/Privacy/Privacy.php:132
-#: src/Privacy/Privacy.php:155
+#: src/Privacy/Privacy.php:175
+#: src/Privacy/Privacy.php:198
 msgid "Comment subscriptions (Convocept)"
 msgstr ""
 
-#: src/Privacy/Privacy.php:136
-#: src/Privacy/Privacy.php:159
+#: src/Privacy/Privacy.php:179
+#: src/Privacy/Privacy.php:202
 msgid "Comment upvotes (Convocept)"
 msgstr ""
 
-#: src/Privacy/Privacy.php:186
+#: src/Privacy/Privacy.php:229
 #: templates/composer.php:135
 msgid "Email"
 msgstr ""
 
-#: src/Privacy/Privacy.php:190
+#: src/Privacy/Privacy.php:233
 msgid "Follows"
 msgstr ""
 
-#: src/Privacy/Privacy.php:194
+#: src/Privacy/Privacy.php:237
 msgid "Status"
 msgstr ""
 
-#: src/Privacy/Privacy.php:198
+#: src/Privacy/Privacy.php:241
 msgid "Subscribed"
 msgstr ""
 
-#: src/Privacy/Privacy.php:205
+#: src/Privacy/Privacy.php:248
 msgid "Confirmed"
 msgstr ""
 
-#: src/Privacy/Privacy.php:212
-#: assets/dist/admin/index.js:11
+#: src/Privacy/Privacy.php:255
+#: assets/dist/admin/index.js:36
 msgid "Post"
 msgstr ""
 
-#: src/Privacy/Privacy.php:219
+#: src/Privacy/Privacy.php:262
 msgid "Comment subscriptions"
 msgstr ""
 
-#: src/Privacy/Privacy.php:283
+#: src/Privacy/Privacy.php:326
 msgid "Comment upvotes"
 msgstr ""
 
-#: src/Privacy/Privacy.php:287
+#: src/Privacy/Privacy.php:330
 #: templates/composer.php:110
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Comment"
 msgstr ""
 
-#: src/Privacy/Privacy.php:291
+#: src/Privacy/Privacy.php:334
 msgid "Upvoted"
 msgstr ""
 
-#: src/Privacy/Privacy.php:341
+#: src/Privacy/Privacy.php:384
 msgid "the IP address you comment from is stored with your comment, as WordPress normally does"
 msgstr ""
 
-#: src/Privacy/Privacy.php:342
+#: src/Privacy/Privacy.php:385
 msgid "the IP address you comment from is stored with its last part removed, so it no longer identifies you"
 msgstr ""
 
-#: src/Privacy/Privacy.php:343
+#: src/Privacy/Privacy.php:386
 msgid "the IP address you comment from is not stored with your comment"
 msgstr ""
 
 #. translators: %s: What happens to the commenter's IP address, e.g. "the IP address you comment from is not stored with your comment".
-#: src/Privacy/Privacy.php:349
+#: src/Privacy/Privacy.php:392
 #, php-format
 msgid "When you comment, we store what you enter in the comment form. In addition, %s."
 msgstr ""
 
-#: src/Privacy/Privacy.php:352
+#: src/Privacy/Privacy.php:395
 msgid "If you subscribe to comments, we store your email address, what you follow, when you subscribed and confirmed, and your language, so we can email you new comments. Every email has a link to unsubscribe or manage your subscriptions. You can also ask us to export or erase this data."
 msgstr ""
 
-#: src/Privacy/Privacy.php:353
-msgid "If you upvote a comment, we store a one-way code instead of who you are: made from your user account if you are logged in, otherwise from your IP address and browser. We cannot turn it back into your IP address. Votes of logged-in users are included when you ask us to export or erase your data."
+#: src/Privacy/Privacy.php:396
+msgid "If you upvote a comment, we store a one-way code instead of who you are: made from your user account if you are logged in, otherwise from your IP address. We cannot turn it back into your IP address. Votes of logged-in users are included when you ask us to export or erase your data."
 msgstr ""
 
-#: src/Privacy/Privacy.php:354
+#: src/Privacy/Privacy.php:397
 msgid "To limit spam, a one-way code made from your IP address is kept for a few minutes to count how often you post. After you comment, your browser keeps a code that lets you edit your comment for a short time; it is not sent to anyone else."
 msgstr ""
 
-#: src/Privacy/Privacy.php:390
-#: assets/dist/admin/index.js:9
+#: src/Privacy/Privacy.php:433
+#: templates/subscription-manage.php:38
+#: assets/dist/admin/index.js:35
 msgid "Active"
 msgstr ""
 
-#: src/Privacy/Privacy.php:391
-#: templates/subscription-manage.php:84
+#: src/Privacy/Privacy.php:434
+#: templates/subscription-manage.php:40
 msgid "Waiting for confirmation"
 msgstr ""
 
-#: src/Privacy/Privacy.php:392
-#: templates/subscription-manage.php:77
+#: src/Privacy/Privacy.php:435
+#: templates/subscription-manage.php:39
 msgid "Unsubscribed"
 msgstr ""
 
@@ -354,12 +364,12 @@ msgid "%1$s at %2$s"
 msgstr ""
 
 #: src/Render/CommentPresenter.php:230
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Author"
 msgstr ""
 
 #: src/Render/Labels.php:35
-#: templates/thread.php:41
+#: templates/thread.php:42
 msgid "Comments"
 msgstr ""
 
@@ -391,28 +401,28 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:167
+#: src/Rest/CommentsEndpoint.php:171
 #: src/Rest/ThreadEndpoint.php:148
 msgid "Comments are not available for this post."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:241
-#: src/Rest/CommentsEndpoint.php:314
+#: src/Rest/CommentsEndpoint.php:246
+#: src/Rest/CommentsEndpoint.php:323
 #: src/Rest/ModerationEndpoint.php:136
-#: src/Rest/ReactionsEndpoint.php:92
+#: src/Rest/ReactionsEndpoint.php:93
 #: src/Rest/ThreadEndpoint.php:166
 msgid "Comment not found."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:245
+#: src/Rest/CommentsEndpoint.php:254
 msgid "This comment can no longer be edited."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:250
+#: src/Rest/CommentsEndpoint.php:259
 msgid "Please edit this comment from the dashboard."
 msgstr ""
 
-#: src/Rest/CommentsEndpoint.php:293
+#: src/Rest/CommentsEndpoint.php:302
 msgid "Too many edits. Please wait a moment."
 msgstr ""
 
@@ -448,7 +458,7 @@ msgstr ""
 msgid "Too many previews. Please wait a moment."
 msgstr ""
 
-#: src/Rest/ReactionsEndpoint.php:108
+#: src/Rest/ReactionsEndpoint.php:109
 msgid "Too many votes. Please wait a moment."
 msgstr ""
 
@@ -461,132 +471,132 @@ msgid "This setting does not exist."
 msgstr ""
 
 #: src/Settings/Settings.php:294
-#: assets/dist/admin/index.js:1
+#: assets/dist/admin/index.js:2
 msgid "Choose on or off."
 msgstr ""
 
 #. translators: 1: Smallest allowed number, 2: Largest allowed number.
 #: src/Settings/Settings.php:303
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 #, php-format,js-format
 msgid "Enter a number from %1$d to %2$d."
 msgstr ""
 
 #: src/Settings/Settings.php:309
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 msgid "Enter text."
 msgstr ""
 
 #: src/Settings/Settings.php:313
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 msgid "Choose one of the listed options."
 msgstr ""
 
 #: src/Settings/Settings.php:317
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 msgid "Enter a colour as # and six hex digits, like #2563eb."
 msgstr ""
 
 #: src/Settings/Settings.php:317
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 msgid "This value is not in the expected format."
 msgstr ""
 
 #: src/Settings/Settings.php:323
-#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:3
 msgid "Enter a list of values."
 msgstr ""
 
 #. translators: %s: Post type name.
 #: src/Settings/Settings.php:330
-#: assets/dist/admin/index.js:3
+#: assets/dist/admin/index.js:4
 #, php-format,js-format
 msgid "There is no post type called \"%s\"."
 msgstr ""
 
 #. translators: %s: The invalid line.
 #: src/Settings/Settings.php:339
-#: assets/dist/admin/index.js:4
+#: assets/dist/admin/index.js:5
 #, php-format,js-format
 msgid "\"%s\" is not an IP address or CIDR range."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:177
-#: templates/subscription-manage.php:32
+#: src/Subscriptions/ManagePage.php:199
+#: templates/subscription-manage.php:57
 msgid "Your comment subscriptions"
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:289
+#: src/Subscriptions/ManagePage.php:311
 msgid "Thanks! Your subscription is confirmed."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:290
+#: src/Subscriptions/ManagePage.php:312
 msgid "You are unsubscribed."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:291
+#: src/Subscriptions/ManagePage.php:313
 msgid "You are unsubscribed from everything on this site."
 msgstr ""
 
-#: src/Subscriptions/ManagePage.php:292
+#: src/Subscriptions/ManagePage.php:314
 msgid "You are subscribed again."
-msgstr ""
-
-#. translators: 1: Comment author, 2: Post title.
-#: src/Subscriptions/Notifier.php:298
-#, php-format
-msgid "%1$s replied to your comment on “%2$s”"
 msgstr ""
 
 #. translators: 1: Comment author, 2: Post title.
 #: src/Subscriptions/Notifier.php:300
 #, php-format
+msgid "%1$s replied to your comment on “%2$s”"
+msgstr ""
+
+#. translators: 1: Comment author, 2: Post title.
+#: src/Subscriptions/Notifier.php:302
+#, php-format
 msgid "%1$s commented on “%2$s”"
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:149
-#: src/Subscriptions/SubscribeForm.php:284
+#: src/Subscriptions/SubscribeForm.php:151
+#: src/Subscriptions/SubscribeForm.php:286
 msgid "Thanks! Check your inbox: if this address needs confirming, we have sent you a link."
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:160
+#: src/Subscriptions/SubscribeForm.php:162
 msgid "Too many attempts. Please try again in a few minutes."
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:169
+#: src/Subscriptions/SubscribeForm.php:171
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:176
+#: src/Subscriptions/SubscribeForm.php:178
 msgid "This post does not accept subscriptions."
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:187
+#: src/Subscriptions/SubscribeForm.php:189
 msgid "You are subscribed."
 msgstr ""
 
-#: src/Subscriptions/SubscribeForm.php:285
+#: src/Subscriptions/SubscribeForm.php:287
 msgid "That did not work. Please check the address and try again."
-msgstr ""
-
-#. translators: %s: Post title.
-#: src/Subscriptions/Subscriptions.php:290
-#, php-format
-msgid "Replies to your comment on “%s”"
 msgstr ""
 
 #. translators: %s: Post title.
 #: src/Subscriptions/Subscriptions.php:295
 #, php-format
+msgid "Replies to your comment on “%s”"
+msgstr ""
+
+#. translators: %s: Post title.
+#: src/Subscriptions/Subscriptions.php:300
+#, php-format
 msgid "All new comments on “%s”"
 msgstr ""
 
-#: src/Subscriptions/Subscriptions.php:298
+#: src/Subscriptions/Subscriptions.php:303
 msgid "All new comments on this site"
 msgstr ""
 
 #. translators: %s: Site name.
-#: src/Subscriptions/Subscriptions.php:323
+#: src/Subscriptions/Subscriptions.php:328
 #, php-format
 msgid "Confirm your subscription to %s"
 msgstr ""
@@ -595,7 +605,7 @@ msgstr ""
 msgid "(edited)"
 msgstr ""
 
-#: templates/comment.php:96
+#: templates/comment.php:105
 msgid "Awaiting moderation."
 msgstr ""
 
@@ -611,6 +621,7 @@ msgstr ""
 
 #. translators: %s: Comment author name.
 #: templates/comment.php:136
+#: assets/dist/admin/index.js:25
 msgid "Reply"
 msgstr ""
 
@@ -619,8 +630,8 @@ msgid "Log in to join the conversation."
 msgstr ""
 
 #: templates/composer.php:87
-#: templates/thread.php:116
-#: assets/dist/admin/index.js:11
+#: templates/thread.php:123
+#: assets/dist/admin/index.js:35
 msgid "Cancel"
 msgstr ""
 
@@ -633,6 +644,7 @@ msgid "Write"
 msgstr ""
 
 #: templates/composer.php:96
+#: assets/dist/admin/index.js:25
 msgid "Preview"
 msgstr ""
 
@@ -661,6 +673,7 @@ msgid "Quote"
 msgstr ""
 
 #: templates/composer.php:112
+#: assets/dist/admin/index.js:26
 msgid "Join the discussion…"
 msgstr ""
 
@@ -697,6 +710,7 @@ msgid "Leave this field empty"
 msgstr ""
 
 #: templates/composer.php:184
+#: assets/dist/admin/index.js:26
 msgid "Post comment"
 msgstr ""
 
@@ -722,7 +736,7 @@ msgid "If you did not ask for this, ignore this email and nothing will be sent. 
 msgstr ""
 
 #: templates/emails/confirm.php:32
-#: templates/subscription-manage.php:53
+#: templates/subscription-manage.php:82
 msgid "Confirm subscription"
 msgstr ""
 
@@ -763,7 +777,7 @@ msgid "You get this because you subscribed on %s."
 msgstr ""
 
 #: templates/emails/notification.php:48
-#: templates/subscription-manage.php:74
+#: templates/subscription-manage.php:44
 msgid "Unsubscribe"
 msgstr ""
 
@@ -791,163 +805,172 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: templates/subscribe-form.php:26
+#: templates/subscribe-form.php:27
 msgid "Get new comments on this post by email"
 msgstr ""
 
-#: templates/subscribe-form.php:27
+#: templates/subscribe-form.php:28
 msgid "Get new comments on this site by email"
 msgstr ""
 
-#: templates/subscribe-form.php:38
+#: templates/subscribe-form.php:39
 msgid "Email address"
 msgstr ""
 
-#: templates/subscribe-form.php:39
+#: templates/subscribe-form.php:40
 msgid "you@example.com"
 msgstr ""
 
-#: templates/subscribe-form.php:40
+#: templates/subscribe-form.php:41
 msgid "Subscribe"
 msgstr ""
 
-#: templates/subscribe-form.php:47
+#: templates/subscribe-form.php:48
 msgid "One email per new comment. Unsubscribe with one click at any time."
 msgstr ""
 
-#: templates/subscription-manage.php:39
+#: templates/subscription-manage.php:45
+msgid "Subscribe again"
+msgstr ""
+
+#: templates/subscription-manage.php:47
+msgid "Confirm"
+msgstr ""
+
+#: templates/subscription-manage.php:68
 msgid "This link is not valid any more. Use the link in your most recent email, or subscribe again from any post."
 msgstr ""
 
-#: templates/subscription-manage.php:43
+#: templates/subscription-manage.php:72
 msgid "This confirmation link has expired. Please subscribe again."
 msgstr ""
 
 #. translators: 1: What the subscription follows, 2: Email address.
-#: templates/subscription-manage.php:48
+#: templates/subscription-manage.php:77
 #, php-format
 msgid "Confirm email notifications for: %1$s, sent to %2$s."
 msgstr ""
 
-#. translators: %s: Email address.
-#: templates/subscription-manage.php:61
-#, php-format
-msgid "Subscriptions for %s:"
-msgstr ""
-
-#: templates/subscription-manage.php:81
-msgid "Subscribe again"
-msgstr ""
-
-#: templates/subscription-manage.php:93
+#: templates/subscription-manage.php:110
 msgid "Unsubscribe from everything"
 msgstr ""
 
-#: templates/thread-header.php:30
+#: templates/thread-header.php:40
+msgid "Follow"
+msgstr ""
+
+#: templates/thread-header.php:45
 msgid "Sort comments"
 msgstr ""
 
-#: templates/thread.php:61
+#: templates/thread.php:62
 msgid "Comments are closed."
 msgstr ""
 
-#: templates/thread.php:65
+#: templates/thread.php:66
 msgid "No comments yet. Start the conversation."
 msgstr ""
 
-#: templates/thread.php:98
+#: templates/thread.php:99
 msgid "Edit"
 msgstr ""
 
-#: templates/thread.php:102
+#: templates/thread.php:105
+msgid "Moderate"
+msgstr ""
+
+#: templates/thread.php:108
 msgid "Approve"
 msgstr ""
 
-#: templates/thread.php:103
-msgid "Pin"
+#: templates/thread.php:109
+msgid "Pin to top"
 msgstr ""
 
-#: templates/thread.php:104
+#: templates/thread.php:110
 msgid "Unpin"
 msgstr ""
 
-#: templates/thread.php:106
-msgid "Trash"
-msgstr ""
-
-#: templates/thread.php:107
+#: templates/thread.php:111
 msgid "Edit in dashboard"
 msgstr ""
 
 #: templates/thread.php:112
+msgid "Mark as spam"
+msgstr ""
+
+#: templates/thread.php:113
+msgid "Move to trash"
+msgstr ""
+
+#: templates/thread.php:119
 msgid "Edit your comment"
 msgstr ""
 
-#: templates/thread.php:117
+#: templates/thread.php:124
+#: assets/dist/admin/index.js:8
 msgid "Save"
-msgstr ""
-
-#: assets/dist/admin/index.js:1
-msgid "Convocept sections"
 msgstr ""
 
 #: assets/dist/admin/index.js:1
 msgid "Section"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
-msgid "Unsaved changes"
+#. translators: 1: Page title, 2: "Needs fixing", or a count such as comments waiting for review.
+#: assets/dist/admin/index.js:2
+#, js-format
+msgid "%1$s (%2$s)"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
-msgid "Decrease"
+#: assets/dist/admin/index.js:2
+#: assets/dist/admin/index.js:39
+msgid "(opens in a new tab)"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
-msgid "Increase"
+#: assets/dist/admin/index.js:2
+msgid "Dismiss"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
-msgid "Pick a colour"
-msgstr ""
-
-#: assets/dist/admin/index.js:1
-msgid "Hex value"
-msgstr ""
-
-#: assets/dist/admin/index.js:1
+#: assets/dist/admin/index.js:2
 msgid "Reset"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
+#: assets/dist/admin/index.js:2
+msgid "or"
+msgstr ""
+
+#: assets/dist/admin/index.js:2
+msgid "Choose another file"
+msgstr ""
+
+#: assets/dist/admin/index.js:2
 msgid "Choose file"
 msgstr ""
 
-#: assets/dist/admin/index.js:1
-msgid "or drop it here"
+#: assets/dist/admin/index.js:2
+msgid "(done)"
 msgstr ""
 
-#: assets/dist/admin/index.js:4
+#. translators: 1: Page title, e.g. "Appearance", 2: The screen's own title from WordPress.
+#: assets/dist/admin/index.js:6
+#, js-format
+msgid "%1$s ‹ %2$s"
+msgstr ""
+
+#: assets/dist/admin/index.js:6
+msgid "Settings saved."
+msgstr ""
+
+#: assets/dist/admin/index.js:6
+msgid "The server didn’t answer."
+msgstr ""
+
+#: assets/dist/admin/index.js:6
 msgid "Needs fixing"
 msgstr ""
 
-#. translators: %s: Plugin version.
-#: assets/dist/admin/index.js:5
-#, js-format
-msgid "Comments · %s"
-msgstr ""
-
-#: assets/dist/admin/index.js:5
-msgid "Comments replaced"
-msgstr ""
-
-#: assets/dist/admin/index.js:5
-#: assets/dist/admin/index.js:9
-msgid "Off"
-msgstr ""
-
 #. translators: %d: Number of settings with an error.
-#: assets/dist/admin/index.js:6
+#: assets/dist/admin/index.js:7
 #, js-format
 msgid "%d setting needs fixing"
 msgid_plural "%d settings need fixing"
@@ -955,674 +978,903 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: Number of changed settings.
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:8
 #, js-format
 msgid "%d unsaved change"
 msgid_plural "%d unsaved changes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:8
 msgid "Discard"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Save changes"
+#: assets/dist/admin/index.js:8
+msgid "Saved"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Settings saved."
+#: assets/dist/admin/index.js:8
+msgid "Convocept sections"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "The settings could not be saved. Try again."
+#. translators: %s: Plugin version.
+#: assets/dist/admin/index.js:9
+#, js-format
+msgid "On · %s"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#. translators: %s: Plugin version.
+#: assets/dist/admin/index.js:10
+#, js-format
+msgid "Off · %s"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "The settings could not be saved"
+msgstr ""
+
+#: assets/dist/admin/index.js:10
+msgid "Try again"
+msgstr ""
+
+#. translators: %s: Error message from the server.
+#: assets/dist/admin/index.js:11
+#, js-format
+msgid "%s Your changes are still here, so nothing is lost."
+msgstr ""
+
+#. translators: %s: Plugin version. <a> links to the maker's website.
+#: assets/dist/admin/index.js:12
+#, js-format
+msgid "Convocept %s · by <a>Foxe Labs</a>"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "About Convocept"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:39
+msgid "Documentation"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Homepage"
+msgstr ""
+
+#: assets/dist/admin/index.js:12
+msgid "Leave a <stars>★★★★★</stars><sr>five-star</sr> review"
+msgstr ""
+
+#. translators: <stars> holds five star symbols, hidden from screen readers; <sr> is read to screen readers only.
+#: assets/dist/admin/index.js:13
 msgid "Convocept is off"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Turn Convocept on"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Your theme's own comments show on every post. Turn it on to use Convocept's thread and form."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Where it shows"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Convocept replaces the theme's comment list and form on these content types."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Replace the theme's comments"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Turn it off to go back to your theme’s comments. Nothing is deleted."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Show on"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Other content types keep their theme’s comments."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Thread"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "How comments are ordered and split into pages."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Default order"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Readers can still switch order above the thread."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Oldest first"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Newest first"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Most upvoted"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:13
 msgid "Comments per page"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#. translators: Unit after the number of comments per page.
+#: assets/dist/admin/index.js:16
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:16
 msgid "Top-level comments; their replies come with them."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:16
 msgid "Reply depth"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#. translators: Unit after the number of reply levels.
+#: assets/dist/admin/index.js:19
+msgid "level"
+msgid_plural "levels"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:19
 msgid "Deeper replies show in one flat list at this depth."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:19
 msgid "Replies shown"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#. translators: Unit after the number of replies shown per comment.
+#: assets/dist/admin/index.js:22
+msgid "reply"
+msgid_plural "replies"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:22
 msgid "Per comment, before “Show more replies”. 0 shows them all."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "Readers can upvote comments"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "One vote per reader. Adds the “Most upvoted” order."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "Live updates"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "New comments appear while a reader has the page open."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "Check for new comments"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "Only while the tab is visible. When nothing is new, a check costs almost nothing."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:22
 msgid "Check every"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Seconds between checks."
-msgstr ""
+#. translators: Unit after the number of seconds between checks.
+#: assets/dist/admin/index.js:25
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
 msgid "Colours"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "How the thread looks next to your theme."
+#: assets/dist/admin/index.js:25
+msgid "The thread has its own look and uses your theme’s font."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
 msgid "Colour scheme"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Match the theme"
+#: assets/dist/admin/index.js:25
+msgid "Light"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Uses your theme’s text and background colours."
+#: assets/dist/admin/index.js:25
+msgid "Dark text on a white card. Fits any theme."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
+msgid "Dark"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Light text on a dark card, for dark themes."
+msgstr ""
+
+#: assets/dist/admin/index.js:25
 msgid "Follow the reader’s device"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
 msgid "Light or dark, from the reader’s system setting."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Always light"
-msgstr ""
-
-#: assets/dist/admin/index.js:7
-msgid "Dark text on a light background."
-msgstr ""
-
-#: assets/dist/admin/index.js:7
-msgid "Always dark"
-msgstr ""
-
-#: assets/dist/admin/index.js:7
-msgid "Light text on a dark background."
-msgstr ""
-
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
 msgid "Accent colour"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
+msgid "Accent"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
 msgid "Links, buttons and focus rings in the thread."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
 msgid "This colour is hard to read as text on white. Pick a darker one so links stay readable."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:25
+msgid "Theme"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Suggested"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Blue"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Teal"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Green"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Red"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Orange"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Purple"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Black"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "A sample comment with these colours. Your theme’s fonts apply on the site."
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "A reader"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "2 hours ago"
+msgstr ""
+
+#: assets/dist/admin/index.js:25
+msgid "Thanks for writing this up. The part about caching saved me an afternoon."
+msgstr ""
+
+#. translators: %d: Number of upvotes in the preview.
+#: assets/dist/admin/index.js:26
+#, js-format
+msgid "▲ %d"
+msgstr ""
+
+#: assets/dist/admin/index.js:26
 msgid "Yes"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:26
 msgid "No"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:26
 msgid "Editing after posting"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:26
 msgid "Authors can fix a typo for a short while after posting, even as guests."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:26
 msgid "Edit window"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
-msgid "Minutes. 0 turns editing off. Moderators can always edit."
+#. translators: Unit after the number of minutes a comment can be edited.
+#: assets/dist/admin/index.js:29
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:29
+msgid "0 turns editing off. Moderators can always edit."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:29
+msgid "Email subscriptions"
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "Readers get an email when someone replies, or when a post gets new comments."
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "Readers can subscribe by email"
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "Adds the options to the comment form and a “subscribe without commenting” form."
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "Ask new subscribers to confirm their address"
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "They click a link in an email first. Recommended: it keeps strangers from signing others up."
+msgstr ""
+
+#: assets/dist/admin/index.js:29
+msgid "Emails per batch"
+msgstr ""
+
+#. translators: Unit after the number of emails sent per batch.
+#: assets/dist/admin/index.js:32
+msgid "email"
+msgid_plural "emails"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:32
+msgid "Notifications go out in the background, a batch at a time. Lower it if your email service limits how fast you can send."
+msgstr ""
+
+#: assets/dist/admin/index.js:32
 msgid "Set in WordPress"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:32
 msgid "Convocept follows your Discussion settings for who can comment."
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:32
+msgid "Change these for the whole site."
+msgstr ""
+
+#: assets/dist/admin/index.js:32
+msgid "Open Discussion settings"
+msgstr ""
+
+#: assets/dist/admin/index.js:32
 msgid "Name and email required"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:32
 msgid "Must be logged in to comment"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:32
 msgid "Every comment waits for approval"
 msgstr ""
 
-#: assets/dist/admin/index.js:7
+#: assets/dist/admin/index.js:32
 msgid "Close comments on old posts"
 msgstr ""
 
 #. translators: %d: Number of days.
-#: assets/dist/admin/index.js:8
+#: assets/dist/admin/index.js:33
 #, js-format
 msgid "After %d day"
 msgid_plural "After %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/dist/admin/index.js:8
+#: assets/dist/admin/index.js:33
 msgid "Never"
 msgstr ""
 
-#: assets/dist/admin/index.js:8
-msgid "Open Discussion settings"
-msgstr ""
-
-#: assets/dist/admin/index.js:8
-msgid "On"
-msgstr ""
-
-#: assets/dist/admin/index.js:8
-msgid "Spam protection"
-msgstr ""
-
-#: assets/dist/admin/index.js:8
-msgid "These checks run on every comment, without asking readers to solve anything."
-msgstr ""
-
-#: assets/dist/admin/index.js:8
-msgid "Hidden trap field for bots"
-msgstr ""
-
-#: assets/dist/admin/index.js:8
-msgid "Minimum time to write a comment"
-msgstr ""
-
-#. translators: %s: Number of seconds.
-#: assets/dist/admin/index.js:9
-#, js-format
-msgid "%s second"
-msgid_plural "%s seconds"
-msgstr[0] ""
-msgstr[1] ""
-
-#: assets/dist/admin/index.js:9
-msgid "Limits on how fast one visitor can post"
-msgstr ""
-
-#: assets/dist/admin/index.js:9
-msgid "Akismet"
-msgstr ""
-
-#: assets/dist/admin/index.js:9
-msgid "Not installed"
-msgstr ""
-
-#: assets/dist/admin/index.js:9
-msgid "Convocept works with Akismet and other anti-spam plugins that check core comments."
-msgstr ""
-
-#: assets/dist/admin/index.js:9
+#: assets/dist/admin/index.js:33
 msgid "Waiting for review"
 msgstr ""
 
 #. translators: %s: Number of comments.
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:34
 #, js-format
 msgid "%s comment is waiting for approval."
 msgid_plural "%s comments are waiting for approval."
 msgstr[0] ""
 msgstr[1] ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:34
 msgid "No comments are waiting for approval."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:34
 msgid "Review comments"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Email subscriptions"
+#: assets/dist/admin/index.js:34
+msgid "Active protections"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Readers get an email when someone replies, or when a post gets new comments."
+#: assets/dist/admin/index.js:34
+msgid "These checks run on every comment, without asking readers to solve anything."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Readers can subscribe by email"
+#: assets/dist/admin/index.js:34
+msgid "Convocept works with Akismet and other anti-spam plugins that check core comments."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Adds the options to the comment form and a “subscribe without commenting” form."
+#: assets/dist/admin/index.js:34
+msgid "Hidden trap field for bots"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Ask new subscribers to confirm their address"
+#: assets/dist/admin/index.js:34
+msgid "Minimum time to write a comment"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "They click a link in an email first. Recommended: it keeps strangers from signing others up."
+#. translators: %s: Number of seconds.
+#: assets/dist/admin/index.js:35
+#, js-format
+msgid "%s second"
+msgid_plural "%s seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/dist/admin/index.js:35
+msgid "Off"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Sending"
+#: assets/dist/admin/index.js:35
+msgid "Limits on how fast one visitor can post"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Notifications go out in the background, a batch at a time."
+#: assets/dist/admin/index.js:35
+msgid "Akismet"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Emails per batch"
+#: assets/dist/admin/index.js:35
+msgid "Not installed"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Lower it if your email service limits how fast you can send."
-msgstr ""
-
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Visitor IP addresses"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Rate limits and spam checks use the visitor’s IP address. Behind a proxy or CDN, every visitor looks like the proxy unless you trust it here."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Trusted proxies"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "One IP address or CIDR range per line. Leave empty unless your site is behind a proxy."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Header with the visitor’s IP"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Read only on requests from a trusted proxy."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Privacy"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
-msgid "Tools → Export Personal Data and Erase Personal Data include comment subscriptions and the upvotes of registered users. Settings → Privacy has suggested text for your privacy policy."
+#: assets/dist/admin/index.js:35
+msgid "The personal data tools include comment subscriptions and the upvotes of registered users."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
+msgid "Privacy tools"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Export Personal Data"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Erase Personal Data"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Privacy policy guide"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
 msgid "IP address stored with new comments"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Spam checks still see the full address when a comment arrives. Also applies to imported comments. Comments already stored are not changed."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Full address (WordPress default)"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Anonymized (last part removed)"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "None"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Search engines"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Comments are in the page’s HTML either way, so search engines can read them."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Describe comments with structured data"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Adds schema.org data for the comments on each page. With Yoast SEO or Rank Math it joins their data."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Uninstall"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Comments always stay: they belong to WordPress. Deactivating the plugin never deletes anything."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Delete all Convocept data when the plugin is deleted"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Removes settings, subscriptions, upvotes, pins and edit history. Leave off to keep them for a later reinstall."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "The import stopped."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
+msgid "The import page could not load"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
 msgid "Loading…"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
+msgid "The import stopped"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "This file can’t be imported"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Import steps"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Upload"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Review"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+#: assets/dist/admin/index.js:40
+msgid "Import"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Done"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
 msgid "Dry run"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "Nothing has been imported yet. This is what the export holds."
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
+msgid "Import cancelled."
+msgstr ""
+
+#: assets/dist/admin/index.js:35
+msgid "Start import"
+msgstr ""
+
+#: assets/dist/admin/index.js:35
 msgid "Comments to import"
 msgstr ""
 
-#: assets/dist/admin/index.js:10
+#: assets/dist/admin/index.js:35
 msgid "On posts found on this site"
 msgstr ""
 
 #. translators: %s: Number of Disqus threads.
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 #, js-format
 msgid "On %s pages not found here (skipped)"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:36
+#: assets/dist/admin/index.js:37
 msgid "Spam (skipped)"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:36
+#: assets/dist/admin/index.js:37
 msgid "Deleted (skipped)"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Imported comments don’t email your subscribers. Comments already on this site, from an earlier import or the Disqus plugin, are skipped."
 msgstr ""
 
-#: assets/dist/admin/index.js:11
-msgid "Start import"
-msgstr ""
-
-#: assets/dist/admin/index.js:11
-msgid "Import cancelled."
-msgstr ""
-
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Sample"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "The first comments in the export, as they will be imported."
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Date"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Importing"
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "Keep this page open. If it closes, come back and click Continue: the import picks up where it stopped."
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
 msgid "The import is paused. Continue picks up where it stopped."
 msgstr ""
 
-#: assets/dist/admin/index.js:11
+#: assets/dist/admin/index.js:36
+msgid "Import cancelled. Comments already imported stay."
+msgstr ""
+
+#: assets/dist/admin/index.js:36
+msgid "Cancel import"
+msgstr ""
+
+#: assets/dist/admin/index.js:36
+msgid "Continue"
+msgstr ""
+
+#: assets/dist/admin/index.js:36
 msgid "Import progress"
 msgstr ""
 
 #. translators: 1: Comments processed, 2: Total comments, 3: Comments imported.
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:37
 #, js-format
 msgid "Processed %1$s of %2$s comments; %3$s imported."
 msgstr ""
 
-#: assets/dist/admin/index.js:12
-msgid "Continue"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Import cancelled. Comments already imported stay."
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Cancel import"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:37
 msgid "Import complete"
 msgstr ""
 
-#: assets/dist/admin/index.js:12
-msgid "Imported"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Already on this site (skipped)"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Post not found (skipped)"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Empty (skipped)"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "Failed"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
-msgid "View comments"
-msgstr ""
-
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:37
 msgid "Start another import"
 msgstr ""
 
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:37
+msgid "View comments"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Imported"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Already on this site (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Post not found (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Empty (skipped)"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Failed"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
 msgid "Import from Disqus"
 msgstr ""
 
-#: assets/dist/admin/index.js:12
-msgid "In Disqus, open Admin → Moderation → Export and download the file it emails you. Nothing is imported until you have reviewed a dry run, and running the same export again never duplicates comments."
+#: assets/dist/admin/index.js:37
+msgid "Nothing is imported until you have reviewed a dry run. Running the same export again never duplicates comments."
 msgstr ""
 
-#: assets/dist/admin/index.js:12
+#: assets/dist/admin/index.js:37
+msgid "Upload and review"
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "In Disqus, open Admin → Moderation → Export."
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Download the file Disqus emails you."
+msgstr ""
+
+#: assets/dist/admin/index.js:37
+msgid "Drop it below."
+msgstr ""
+
+#: assets/dist/admin/index.js:37
 msgid "Export file"
 msgstr ""
 
-#. translators: 1: Maximum upload size, 2: WP-CLI command.
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:37
+msgid "Drop your export file here"
+msgstr ""
+
+#. translators: %s: Maximum upload size.
+#: assets/dist/admin/index.js:38
 #, js-format
-msgid ".xml or .xml.gz, up to %1$s. Bigger exports: %2$s"
+msgid ".xml or .xml.gz, up to %s."
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Upload and analyse"
+#: assets/dist/admin/index.js:38
+msgid "Bigger export?"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Get help"
+#. translators: %s: WP-CLI command.
+#: assets/dist/admin/index.js:39
+#, js-format
+msgid "Run <code>%s</code> on the server instead."
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Ask in the support forum on WordPress.org. Include the versions below."
-msgstr ""
-
-#: assets/dist/admin/index.js:13
-msgid "Open the support forum"
-msgstr ""
-
-#: assets/dist/admin/index.js:13
-msgid "Visit convocept.com"
-msgstr ""
-
-#: assets/dist/admin/index.js:13
-msgid "Versions"
-msgstr ""
-
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
 msgid "WordPress"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
 msgid "PHP"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
+msgid "Setting up, moving from Disqus, theming and the hooks reference."
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Read the docs"
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Get help"
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Ask in the support forum on WordPress.org. Paste the versions below into your post."
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Support forum"
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Versions"
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "What’s running on this site."
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Versions copied."
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Your browser blocked copying. Select the versions and copy them instead."
+msgstr ""
+
+#: assets/dist/admin/index.js:39
+msgid "Copy versions"
+msgstr ""
+
+#: assets/dist/admin/index.js:39
 msgid "Manage"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
 msgid "More"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
 msgid "General"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:39
 msgid "Appearance"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Composer"
+#: assets/dist/admin/index.js:39
+msgid "Comment form"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Moderation & spam"
+#: assets/dist/admin/index.js:39
+msgid "Spam & moderation"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Subscriptions"
-msgstr ""
+#. translators: %s: Number of comments.
+#: assets/dist/admin/index.js:40
+#, js-format
+msgid "%s comment waiting for review"
+msgid_plural "%s comments waiting for review"
+msgstr[0] ""
+msgstr[1] ""
 
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:40
 msgid "Advanced"
 msgstr ""
 
-#: assets/dist/admin/index.js:13
-msgid "Import"
-msgstr ""
-
-#: assets/dist/admin/index.js:13
+#: assets/dist/admin/index.js:40
 msgid "Help"
 msgstr ""
 

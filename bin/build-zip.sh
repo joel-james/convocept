@@ -32,6 +32,7 @@ readonly INCLUDE=(
 	"convocept.php"
 	"uninstall.php"
 	"readme.txt"
+	"LICENSE"
 	"CHANGELOG.md"
 	"composer.json"
 	"package.json"

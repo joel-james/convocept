@@ -41,7 +41,9 @@ class NotifierTest extends TestCase {
 				return 'wordpress@example.org';
 			}
 		);
-		delete_option( Queue::JOBS_OPTION );
+		foreach ( array_keys( ( new Queue( new \Convocept\Settings\Settings() ) )->jobs() ) as $comment_id ) {
+			delete_option( Queue::JOB_PREFIX . $comment_id );
+		}
 		delete_option( Queue::LOCK_OPTION );
 	}
 

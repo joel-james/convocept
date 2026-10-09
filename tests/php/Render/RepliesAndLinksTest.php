@@ -62,6 +62,20 @@ class RepliesAndLinksTest extends TestCase {
 		$this->assertStringNotContainsString( 'more replies', $html );
 	}
 
+	public function test_unknown_expand_value_is_ignored_and_never_varies_the_cache(): void {
+		$post_id                  = self::factory()->post->create();
+		list( $parent, $replies ) = $this->branch( $post_id, 4 );
+		$renderer                 = $this->renderer( array( 'replies_shown' => 2 ) );
+		$thread                   = $renderer->current_thread( $post_id );
+
+		$this->assertSame( $parent, $renderer->valid_expand( $thread, $parent ) );
+		$this->assertSame( 0, $renderer->valid_expand( $thread, $replies[0] ), 'Only top-level comments expand.' );
+		$this->assertSame( 0, $renderer->valid_expand( $thread, 987654 ) );
+
+		$plain = $renderer->render_items( $thread );
+		$this->assertSame( $plain, $renderer->render_items( $thread, 987654 ) );
+	}
+
 	public function test_render_more_replies_returns_the_rest_in_batches(): void {
 		$post_id                  = self::factory()->post->create();
 		list( $parent, $replies ) = $this->branch( $post_id, 5 );

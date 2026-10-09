@@ -114,6 +114,29 @@ class SubscriptionsTest extends RestTestCase {
 		$this->assertSame( Repository::ACTIVE, $subscriptions->repository()->find( $row['id'] )['status'] );
 	}
 
+	public function test_subscribing_again_restarts_the_confirmation_window(): void {
+		$subscriptions = Plugin::instance()->subscriptions();
+		$repository    = $subscriptions->repository();
+		$post_id       = self::factory()->post->create();
+		$hash          = $repository->hash_email( 'again@example.com' );
+		$old           = gmdate( 'Y-m-d H:i:s', time() - 30 * DAY_IN_SECONDS );
+
+		// Unsubscribed a month ago, then subscribing again.
+		$subscriptions->subscribe( 'again@example.com', $post_id, 0, true );
+		$row = $repository->for_email( $hash )[0];
+		$repository->update( $row['id'], array( 'created_at' => $old ) );
+		$subscriptions->unsubscribe( $repository->find( $row['id'] ) );
+		$subscriptions->subscribe( 'again@example.com', $post_id, 0, false );
+		$this->assertTrue( $subscriptions->confirm( $repository->find( $row['id'] ) ), 'The new link is not born expired.' );
+
+		// Still pending after the first email expired: asking again gives a working link.
+		$subscriptions->subscribe( 'retry@example.com', $post_id, 0, false );
+		$retry = $repository->for_email( $repository->hash_email( 'retry@example.com' ) )[0];
+		$repository->update( $retry['id'], array( 'created_at' => $old ) );
+		$subscriptions->subscribe( 'retry@example.com', $post_id, 0, false );
+		$this->assertTrue( $subscriptions->confirm( $repository->find( $retry['id'] ) ) );
+	}
+
 	public function test_unsubscribe_one_or_all_and_resubscribe_needs_confirming(): void {
 		$subscriptions = Plugin::instance()->subscriptions();
 		$a             = self::factory()->post->create();

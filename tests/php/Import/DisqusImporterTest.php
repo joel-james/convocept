@@ -232,12 +232,13 @@ class DisqusImporterTest extends TestCase {
 	}
 
 	public function test_imports_never_notify_subscribers(): void {
-		$before = get_option( 'convocept_notification_jobs', array() );
+		$queue  = new \Convocept\Subscriptions\Queue( new \Convocept\Settings\Settings() );
+		$before = $queue->jobs();
 		$runner = new Runner( new Workspace() );
 		$runner->start( 'disqus', $this->export() );
 		$this->run_all( $runner );
 
-		$this->assertSame( $before, get_option( 'convocept_notification_jobs', array() ) );
+		$this->assertSame( $before, $queue->jobs() );
 		$this->assertFalse( has_filter( 'convocept_should_notify', '__return_false' ), 'Only suppressed during batches.' );
 	}
 

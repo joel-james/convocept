@@ -143,8 +143,12 @@ class Uninstaller {
 	private function remove_working_state(): void {
 		global $wpdb;
 
-		foreach ( array( 'convocept_migration_lock', 'convocept_import_job', 'convocept_import_lock', Queue::JOBS_OPTION, Queue::LOCK_OPTION ) as $option ) {
+		foreach ( array( 'convocept_migration_lock', 'convocept_import_job', 'convocept_import_lock', Queue::LOCK_OPTION ) as $option ) {
 			delete_option( $option );
+		}
+
+		foreach ( array_keys( ( new Queue( new Settings() ) )->jobs() ) as $comment_id ) {
+			delete_option( Queue::JOB_PREFIX . $comment_id );
 		}
 
 		wp_clear_scheduled_hook( Queue::HOOK );

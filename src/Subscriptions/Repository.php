@@ -79,10 +79,22 @@ class Repository {
 		$existing = $this->find_scope( $hash, $post_id, $comment_id );
 
 		if ( $existing ) {
+			$changes = array();
+
 			// Re-subscribing after unsubscribing starts over (and needs confirming again).
 			if ( self::UNSUBSCRIBED === $existing['status'] ) {
-				$this->update( (int) $existing['id'], array( 'status' => $status ) );
-				$existing['status'] = $status;
+				$changes['status'] = $status;
+			}
+
+			// A new confirmation email goes out, so its 48 hours start now:
+			// confirmation links expire relative to created_at.
+			if ( self::PENDING === ( $changes['status'] ?? $existing['status'] ) ) {
+				$changes['created_at'] = current_time( 'mysql', true );
+			}
+
+			if ( $changes ) {
+				$this->update( (int) $existing['id'], $changes );
+				$existing = array_merge( $existing, $changes );
 			}
 
 			return $existing;

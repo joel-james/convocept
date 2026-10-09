@@ -14,20 +14,20 @@ Fast, modern WordPress comments: threaded replies, upvotes, comment subscription
 
 **Convocept is a fast, modern comment system for WordPress that keeps every comment in your own database.** It replaces your theme's comment section with threaded replies, upvotes, email subscriptions and smart spam protection, without loading a single script until your readers reach the comments.
 
-It is a lightweight **Disqus alternative** with no ads, no tracking and no outside service, and a leaner choice than heavy comment plugins such as wpDiscuz. Your comments stay native WordPress comments, so Akismet, backups, exports and the Comments screen keep working, and nothing is lost if you ever switch back.
+It is a lightweight **Disqus alternative** with no ads, no tracking and no outside service, and lighter than most comment plugins. Your comments stay native WordPress comments, so Akismet, backups, exports and the Comments screen keep working, and nothing is lost if you ever switch back.
 
 = ⚡ Built for speed =
 
-* **0 KB of JavaScript on page load.** A tiny script (under 6 KB gzipped) loads only when a reader scrolls near the comments or starts typing.
-* **0 extra requests.** Styles are under 3 KB and inlined next to the comments. No fonts, no icons to download, no third-party calls.
+* **0 KB of JavaScript on page load.** A small script (about 6 KB gzipped) loads only when a reader scrolls near the comments or starts typing.
+* **0 extra requests.** Styles are under 4 KB gzipped and inlined next to the comments. No fonts, no icons to download, no third-party scripts.
 * **Server-rendered comments.** Readers and search engines get every visible comment in the page HTML, straight away.
-* **No layout shift.** A post with 200 comments scores the same in Lighthouse as the same post with none.
+* **No layout shift.** In our tests a post with 200 comments scored 99–100 in Lighthouse, against 100 for the same post with none.
 * **Cache friendly.** Nothing personal is printed into the page, so WP Rocket, LiteSpeed Cache, Cloudflare and other page caches can serve it to everyone.
 
 = 💬 A comment section readers enjoy =
 
 * **Threaded comments** with inline replies: the comment form moves under the comment you answer.
-* **Formatting toolbar** for bold, italic, links, code and quotes, with a live preview.
+* **Formatting toolbar** for bold, italic, links, code and quotes, with a preview.
 * **Upvotes** and sorting by oldest, newest or top comments.
 * **Pinned comments** that lead the discussion.
 * **Edit after posting** for a few minutes, with a countdown.
@@ -66,7 +66,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 
 = 🔒 Private and accessible =
 
-* **No external requests, no tracking, no cookies of its own.** No account and no API key.
+* **No tracking, no outside service, no cookies of its own.** No account and no API key. Avatars follow Settings → Discussion (Gravatar by default, or initials when avatars are off).
 * WordPress's **export and erase personal data** tools cover subscriptions and votes, and Settings → Privacy gets suggested policy text.
 * Choose to store commenters' IP addresses in full, anonymized or not at all.
 * **Accessible:** keyboard friendly, announced to screen readers, and checked against WCAG 2.2 AA in light and dark colours.
@@ -78,7 +78,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 * Override any template from your theme: copy it to `your-theme/convocept/`.
 * Restyle with CSS custom properties such as `--convocept-radius` and `--convocept-font`.
 * Actions and filters at every step: rendering, submission, spam checks, subscriptions, structured data, importers and settings.
-* A REST API and WP-CLI commands.
+* A REST API and a WP-CLI import command.
 
 Documentation and the full hooks reference: [Convocept docs](https://docs.foxelabs.com/software/convocept/getting-started).
 
@@ -147,7 +147,7 @@ Readers see the full comment thread and a working comment form that posts the no
 
 = Is it GDPR friendly? =
 
-Convocept makes no external requests and sets no cookies of its own. WordPress's own "remember me" comment cookies apply only if the reader agrees. Subscriptions use double opt-in, every email has an unsubscribe link, and WordPress's export and erase tools cover subscriptions and votes. You can choose not to store commenters' IP addresses.
+Convocept itself makes no external requests and sets no cookies of its own. Avatars follow Settings → Discussion: WordPress loads them from Gravatar by default; turn avatars off to show initials instead. WordPress's own "remember me" comment cookies apply only if the reader agrees. After commenting, the reader's browser keeps a short-lived code that lets them edit their comment; it is never sent anywhere else. Subscriptions use double opt-in, every email has an unsubscribe link, and WordPress's export and erase tools cover subscriptions and votes. You can choose not to store commenters' IP addresses.
 
 = Does uninstalling delete my comments? =
 
@@ -157,15 +157,15 @@ No, never. Your comments are WordPress data. Settings, subscriptions and votes a
 
 1. Threaded comments with upvotes and a pinned comment.
 2. The dark comment theme, with nested replies.
-3. Replying inline, with the formatting toolbar and live preview.
-4. Comments → Convocept: all options in one place.
+3. Replying inline, with the formatting toolbar and preview.
+4. Comments → Convocept: settings that look like WordPress, in sections for General, Appearance, Comment form, Spam & moderation and Advanced.
 5. Importing comments from Disqus: the dry run shows what will be imported.
 6. Readers manage their comment subscriptions on their own page.
 
 == Changelog ==
 
 = 1.0.0 =
-* New: rebuilt from the ground up as a server-rendered comment system with zero JavaScript on page load.
+* First release: a server-rendered comment system with zero JavaScript on page load.
 * New: threaded comments with inline replies, a formatting toolbar with preview, an edit window, upvotes, sorting and pinned comments.
 * New: comment subscriptions with double opt-in, one-click unsubscribe, background sending, a subscription page, a block and a shortcode.
 * New: moderation tools in the thread and extra spam protection.
@@ -176,4 +176,4 @@ No, never. Your comments are WordPress data. Settings, subscriptions and votes a
 == Upgrade Notice ==
 
 = 1.0.0 =
-The rebuilt Convocept: faster comments, subscriptions and a Disqus importer. Your comments stay in WordPress; nothing to migrate.
+First release: fast comments, subscriptions and a Disqus importer. Your comments stay in WordPress; nothing to migrate.

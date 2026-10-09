@@ -261,6 +261,28 @@ class ThreadRenderer {
 	}
 
 	/**
+	 * Keep an expanded comment ID only when it is a top-level comment on the page.
+	 *
+	 * The ID comes from the URL and is part of cache keys, so any other value
+	 * would let visitors create cache entries without limit.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Thread $thread The thread page.
+	 * @param int    $expand Requested comment ID.
+	 * @return int The ID, or 0.
+	 */
+	public function valid_expand( Thread $thread, int $expand ): int {
+		foreach ( $thread->comments() as $comment ) {
+			if ( $expand === (int) $comment->comment_ID ) {
+				return $expand;
+			}
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Get the IDs of every comment a thread page shows.
 	 *
 	 * Follows the same rules as the rendered list (reply limits, expanded
@@ -398,6 +420,7 @@ class ThreadRenderer {
 	 * @return string Comment list items HTML.
 	 */
 	public function render_items( Thread $thread, int $expand = 0 ): string {
+		$expand  = $this->valid_expand( $thread, $expand );
 		$post    = get_post( $thread->post_id() );
 		$context = $this->context( $thread->post_id(), $this->page_url( $thread->post_id(), $thread->page(), $thread->sort() ), $expand );
 		$key     = $this->cache->key(

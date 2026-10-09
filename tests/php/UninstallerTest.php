@@ -51,7 +51,7 @@ class UninstallerTest extends TestCase {
 
 		update_option( 'convocept_db_version', 2 );
 		update_option( 'convocept_import_lock', time() );
-		update_option( Queue::JOBS_OPTION, array( $comment ) );
+		add_option( Queue::JOB_PREFIX . $comment, 0, '', false );
 		set_transient( 'convocept_html_test', 'x' );
 		set_transient( 'convocept_rl_test', 1 );
 		set_transient( 'other_plugin_test', 1 );
@@ -91,7 +91,7 @@ class UninstallerTest extends TestCase {
 		( new Uninstaller() )->run();
 
 		$this->assertFalse( get_option( 'convocept_import_lock' ) );
-		$this->assertFalse( get_option( Queue::JOBS_OPTION ) );
+		$this->assertFalse( get_option( Queue::JOB_PREFIX . $seed['comment'] ) );
 		$this->assertFalse( get_transient( 'convocept_html_test' ) );
 		$this->assertFalse( get_transient( 'convocept_rl_test' ) );
 		$this->assertSame( 1, get_transient( 'other_plugin_test' ), 'Other plugins’ transients stay.' );

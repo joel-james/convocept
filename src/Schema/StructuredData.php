@@ -221,7 +221,7 @@ class StructuredData {
 		}
 
 		$thread = $this->renderer->current_thread( $post_id );
-		$expand = $this->renderer->current_expand();
+		$expand = $this->renderer->valid_expand( $thread, $this->renderer->current_expand() );
 		$post   = get_post( $post_id );
 		$key    = $this->cache->key(
 			array(

@@ -36,12 +36,18 @@ class Queue {
 	const HOOK = 'convocept_send_notifications';
 
 	/**
-	 * Option holding pending jobs: comment ID => cursor.
+	 * Prefix of the options holding pending jobs, one per comment: the
+	 * comment ID follows the prefix and the value is the cursor.
+	 *
+	 * One row per job, not one shared array: adding a job is a single
+	 * insert and saving one job's cursor never rewrites another, so a web
+	 * request queuing a comment while the sender runs can't lose or repeat
+	 * a job.
 	 *
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const JOBS_OPTION = 'convocept_notification_jobs';
+	const JOB_PREFIX = 'convocept_notification_job_';
 
 	/**
 	 * Option used as a lock so two runs never send the same batch.
@@ -87,12 +93,8 @@ class Queue {
 	 * @return void
 	 */
 	public function add( int $comment_id ): void {
-		$jobs = $this->jobs();
-
-		if ( ! isset( $jobs[ $comment_id ] ) ) {
-			$jobs[ $comment_id ] = 0;
-			update_option( self::JOBS_OPTION, $jobs, false );
-		}
+		// add_option() refuses an existing row, so a queued job keeps its cursor.
+		add_option( self::JOB_PREFIX . $comment_id, 0, '', false );
 
 		$this->schedule();
 	}
@@ -105,9 +107,25 @@ class Queue {
 	 * @return array<int, int> Comment ID => cursor.
 	 */
 	public function jobs(): array {
-		$jobs = get_option( self::JOBS_OPTION, array() );
+		global $wpdb;
 
-		return is_array( $jobs ) ? array_map( 'intval', $jobs ) : array();
+		// Straight from the table: the options cache of a long-running sender
+		// would not see jobs queued by other requests.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Must bypass the options cache; there is no API to list options by prefix.
+		$rows = (array) $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT option_name, option_value FROM %i WHERE option_name LIKE %s ORDER BY option_id',
+				$wpdb->options,
+				$wpdb->esc_like( self::JOB_PREFIX ) . '%'
+			)
+		);
+		$jobs = array();
+
+		foreach ( $rows as $row ) {
+			$jobs[ (int) substr( (string) $row->option_name, strlen( self::JOB_PREFIX ) ) ] = (int) $row->option_value;
+		}
+
+		return $jobs;
 	}
 
 	/**
@@ -189,15 +207,11 @@ class Queue {
 	 * @return void
 	 */
 	private function save( int $comment_id, ?int $cursor ): void {
-		$jobs = $this->jobs();
-
 		if ( null === $cursor ) {
-			unset( $jobs[ $comment_id ] );
+			delete_option( self::JOB_PREFIX . $comment_id );
 		} else {
-			$jobs[ $comment_id ] = $cursor;
+			update_option( self::JOB_PREFIX . $comment_id, $cursor, false );
 		}
-
-		update_option( self::JOBS_OPTION, $jobs, false );
 	}
 
 	/**
