@@ -8,7 +8,9 @@
 
 namespace Convocept\Subscriptions;
 
+use Convocept\Assets\FrontAssets;
 use Convocept\Render\TemplateLoader;
+use Convocept\Settings\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -62,6 +64,22 @@ class ManagePage {
 	private $templates;
 
 	/**
+	 * Settings, for the colour scheme and accent colour.
+	 *
+	 * @since 1.0.0
+	 * @var Settings
+	 */
+	private $settings;
+
+	/**
+	 * Front-end assets, for the thread's stylesheet.
+	 *
+	 * @since 1.0.0
+	 * @var FrontAssets
+	 */
+	private $assets;
+
+	/**
 	 * Rendered page content, once built.
 	 *
 	 * @since 1.0.0
@@ -76,10 +94,14 @@ class ManagePage {
 	 *
 	 * @param Subscriptions  $subscriptions Subscription service.
 	 * @param TemplateLoader $templates     Templates.
+	 * @param Settings       $settings      Settings.
+	 * @param FrontAssets    $assets        Front-end assets.
 	 */
-	public function __construct( Subscriptions $subscriptions, TemplateLoader $templates ) {
+	public function __construct( Subscriptions $subscriptions, TemplateLoader $templates, Settings $settings, FrontAssets $assets ) {
 		$this->subscriptions = $subscriptions;
 		$this->templates     = $templates;
+		$this->settings      = $settings;
+		$this->assets        = $assets;
 	}
 
 	/**
@@ -301,6 +323,8 @@ class ManagePage {
 			'current'     => $row ? (int) $row['id'] : 0,
 			'items'       => array(),
 			'expired'     => false,
+			'scheme'      => (string) $this->settings->get( 'color_scheme' ),
+			'accent'      => (string) $this->settings->get( 'accent_color' ),
 		);
 
 		if ( $row && 'confirm' === $action ) {
@@ -322,6 +346,7 @@ class ManagePage {
 			}
 		}
 
-		return $this->templates->render( 'subscription-manage', $args );
+		// The page wears the thread's design, so it takes the thread's stylesheet.
+		return $this->assets->stylesheet() . $this->templates->render( 'subscription-manage', $args );
 	}
 }

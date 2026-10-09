@@ -920,6 +920,118 @@
 	font-weight: 600;
 }
 
+/* Subscription page (templates/subscription-manage.php)
+   ------------------------------------------------------------------ */
+
+#comments.convocept .convocept-subscriptions__header {
+	margin: 0 0 20px;
+}
+
+#comments.convocept .convocept-subscriptions__title {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+#comments.convocept .convocept-subscriptions__email {
+	margin: 4px 0 0;
+	color: var(--convocept-muted);
+	font-size: 14px;
+}
+
+#comments.convocept .convocept-notice--success {
+	background: color-mix(in srgb, var(--convocept-accent) 10%, transparent);
+	color: var(--convocept-text);
+}
+
+#comments.convocept .convocept-subscriptions__text {
+	margin: 0 0 16px;
+}
+
+#comments.convocept .convocept-subscriptions__list {
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--convocept-border);
+	border-radius: 10px;
+	list-style: none;
+}
+
+#comments.convocept .convocept-subscriptions__item {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 16px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 16px;
+}
+
+#comments.convocept .convocept-subscriptions__item + .convocept-subscriptions__item {
+	border-top: 1px solid var(--convocept-border);
+}
+
+#comments.convocept .convocept-subscriptions__info {
+	display: flex;
+	flex: 1 1 240px;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+#comments.convocept .convocept-subscriptions__link {
+	color: var(--convocept-text);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+#comments.convocept .convocept-subscriptions__link:hover {
+	text-decoration: underline;
+}
+
+#comments.convocept .convocept-subscriptions__status {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	color: var(--convocept-muted);
+	font-size: 13px;
+}
+
+#comments.convocept .convocept-subscriptions__status::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: currentcolor;
+}
+
+#comments.convocept .convocept-subscriptions__status.is-active {
+	color: var(--convocept-link);
+}
+
+#comments.convocept .convocept-subscriptions__item .convocept-button {
+	height: 34px;
+	padding: 0 14px;
+	font-size: 13px;
+}
+
+#comments.convocept .convocept-subscriptions__footer {
+	margin: 20px 0 0;
+}
+
+#comments.convocept .convocept-subscriptions__all {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--convocept-danger);
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+#comments.convocept .convocept-subscriptions__all:hover {
+	text-decoration: underline;
+}
+
 /* Phones
    ------------------------------------------------------------------ */
 

@@ -115,7 +115,7 @@ class FrontAssets {
 
 		$this->printed = true;
 
-		return $this->style() . $html . $this->config_block() . $this->loader();
+		return $this->stylesheet() . $html . $this->config_block() . $this->loader();
 	}
 
 	/**
@@ -218,11 +218,14 @@ class FrontAssets {
 	/**
 	 * Build the inline stylesheet.
 	 *
+	 * Printed once with the thread, and on the subscription page, which uses
+	 * the same design.
+	 *
 	 * @since 1.0.0
 	 *
-	 * @return string
+	 * @return string A <style> element, or empty when filtered away.
 	 */
-	private function style(): string {
+	public function stylesheet(): string {
 		$css = $this->read( 'assets/dist/convocept.css' );
 
 		/**

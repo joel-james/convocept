@@ -2,6 +2,15 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-09 — Subscription page: the thread's design
+- The page from subscription emails was bare markup inside the theme, so themes such as Raft
+  gave it a huge heading and large theme buttons. It is now a Convocept card like the thread.
+- Its wrapper is `<section id="comments" class="convocept convocept-subscriptions">`, so every
+  `#comments.convocept` rule (reset, tokens, buttons, schemes) applies unchanged. A second ID
+  would mean doubling 130 selectors; the page has no other comments section, so the ID is free.
+- It prints the same inline stylesheet as the thread (`FrontAssets::stylesheet()`); its own
+  rules add about 0.25 KB gzipped to the 5 KB budget. No JavaScript.
+
 ## 2026-10-01 — Thread: own design
 - Matching each theme failed in practice (screenshots of 12 themes): uppercase or dark theme
   buttons, hidden checkboxes, full-width or grey-band threads, small text. Like ReplyBox, the

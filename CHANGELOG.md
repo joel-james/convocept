@@ -6,6 +6,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased] — 1.0.0
 
 ### Added
+- The subscription page (from the links in subscription emails) has the thread's design: a card
+  with the page title and the reader's address, a success notice, and one row per subscription
+  with its post, a status (Active, Unsubscribed, Waiting for confirmation) and a button.
+  "Unsubscribe from everything" is a red text button. It follows the colour scheme and accent
+  colour settings, and no longer takes the theme's heading size or button style.
 - The comment thread has its own design and no longer borrows the theme's colours or form
   styles: a white card (or dark, or following the reader's device) with its own sizes, spacing,
   fields and buttons; only the font family comes from the theme. Theme styles for comment

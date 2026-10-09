@@ -169,7 +169,7 @@ final class Plugin {
 		if ( ! is_admin() ) {
 			( new ClassicTheme( $this->renderer() ) )->register();
 			( new BlockTheme( $this->renderer() ) )->register();
-			( new FrontAssets( $this->renderer(), $this->edit_window(), $this->settings() ) )->register();
+			$this->front_assets()->register();
 			$this->manage_page()->register();
 			$this->structured_data()->register();
 			( new SeoPlugins( $this->structured_data() ) )->register();
@@ -413,6 +413,22 @@ final class Plugin {
 	}
 
 	/**
+	 * Get the front-end assets service.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return FrontAssets
+	 */
+	public function front_assets(): FrontAssets {
+		return $this->service(
+			FrontAssets::class,
+			function () {
+				return new FrontAssets( $this->renderer(), $this->edit_window(), $this->settings() );
+			}
+		);
+	}
+
+	/**
 	 * Get the subscription page.
 	 *
 	 * @since 1.0.0
@@ -423,7 +439,7 @@ final class Plugin {
 		return $this->service(
 			ManagePage::class,
 			function () {
-				return new ManagePage( $this->subscriptions(), new TemplateLoader() );
+				return new ManagePage( $this->subscriptions(), new TemplateLoader(), $this->settings(), $this->front_assets() );
 			}
 		);
 	}
