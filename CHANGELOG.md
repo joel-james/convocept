@@ -3,7 +3,7 @@
 All notable changes to Convocept. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] — 2026-10-09
+## [1.0.0] — 2026-10-13
 
 First release.
 

@@ -164,7 +164,7 @@ No, never. Your comments are WordPress data. Settings, subscriptions and votes a
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.0.0 – 2026-10-13 =
 * First release: a server-rendered comment system with zero JavaScript on page load.
 * New: threaded comments with inline replies, a formatting toolbar with preview, an edit window, upvotes, sorting and pinned comments.
 * New: comment subscriptions with double opt-in, one-click unsubscribe, background sending, a subscription page, a block and a shortcode.
