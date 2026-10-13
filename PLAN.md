@@ -429,7 +429,7 @@ and via WP-CLI (`wp convocept import <source>`).
   "delete all Convocept data on uninstall".
 - **Accept:** axe reports zero serious issues; exporter/eraser tested; uninstall behaves as set.
 
-### M12 — Release preparation ✅ done except the release itself (version bump to 1.0.0, real logo for icon/banner)
+### M12 — Release preparation ✅ done except the release itself (version bumped to 1.0.0; icon and banner in the convocept.com palette)
 - `readme.txt`: title "Convocept – Fast Native Comment System" (keep "Convocept" first;
   no third-party trademarks such as Disqus in the name, put those in tags and description), short description with key terms, FAQ (migrations, caching, speed, privacy),
   screenshots, changelog. Tags: comments, comment system, disqus, subscribe to comments, spam.

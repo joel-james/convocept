@@ -34,8 +34,7 @@ WordPress.org SVN; the slug was reserved with an unreleased React prototype, sin
 - **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
   1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
 - **Open items to raise with the owner:** merge M1–M12 to `main`; confirm the plan to ship basic AI checks
-  free in 1.2 (decisions.md); the WordPress.org icon/banner still use the old placeholder mark (the
-  admin sidebar uses the convocept.com mark in black/white since 2026-09-28).
+  free in 1.2 (decisions.md).
 
 **Working environment notes**
 - Docker Desktop must be running for `npm run env:start` (wp-env: dev :8888, tests :8889).

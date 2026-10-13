@@ -1,8 +1,10 @@
 /**
  * Renders the WordPress.org plugin assets into `.wordpress-org/`.
  *
- * Run with `npm run wporg:assets` against the wp-env tests site. The icon
- * and banner use the placeholder mark until Convocept has its own logo; the
+ * Run with `npm run wporg:assets` against the wp-env tests site. The icon and
+ * banner use the convocept.com palette and fonts, in the style of the big
+ * directory listings (floating UI cards on a solid ground); the fonts load from
+ * Google Fonts, so generating needs network access. The
  * screenshots match the list in readme.txt (== Screenshots ==).
  */
 
@@ -20,14 +22,136 @@ const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
 const OUT = path.join( __dirname, '../../../.wordpress-org' );
 const SLUG = 'convocept-fast-native-comment-system';
 
-const MARK = `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-	<rect width="32" height="32" rx="8" fill="#111"/>
-	<path d="M8 9.5A2.5 2.5 0 0 1 10.5 7h11A2.5 2.5 0 0 1 24 9.5v8a2.5 2.5 0 0 1-2.5 2.5H15l-4.5 4v-4a2.5 2.5 0 0 1-2.5-2.5z" fill="#fff"/>
-	<path d="M12 12.5h8M12 16h5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
-</svg>`;
+// The convocept.com palette: black and white grounds with four hues, which
+// always carry black text.
+const HUES = {
+	emerald: '#10c877',
+	amber: '#f5a30b',
+	purple: '#9a5cf5',
+	blue: '#4d6bfa',
+};
 
-const FONT =
-	"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif";
+// The mark's speech bubble (a rounded square with a square bottom-left corner).
+const BUBBLE =
+	'M34 2h32a32 32 0 0 1 32 32v32a32 32 0 0 1-32 32H2V34A32 32 0 0 1 34 2z';
+
+// Three bubbles on a black rounded tile, as in the convocept.com launch post
+// image: a comment, a reply and someone typing. The corners stay transparent.
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+	<rect width="256" height="256" rx="56" fill="#000"/>
+	<g transform="translate(128 128) scale(0.9) translate(-128 -128)">
+		<path d="M56 44h92a20 20 0 0 1 20 20v12a20 20 0 0 1-20 20H36V64a20 20 0 0 1 20-20z" fill="${ HUES.amber }"/>
+		<path d="M58 63h70M58 78h44" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		<path d="M108 108h92a20 20 0 0 1 20 20v8a20 20 0 0 1-20 20H88v-28a20 20 0 0 1 20-20z" fill="${ HUES.purple }"/>
+		<path d="M110 132h76" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		<path d="M72 168h64a20 20 0 0 1 20 20v6a20 20 0 0 1-20 20H52v-26a20 20 0 0 1 20-20z" fill="${ HUES.emerald }"/>
+		<circle cx="82" cy="191" r="7"/><circle cx="104" cy="191" r="7"/><circle cx="126" cy="191" r="7"/>
+	</g>
+</svg>
+`;
+
+const FONTS =
+	'<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=block" rel="stylesheet">';
+
+// Lucide-style feature icons, drawn on a 24px grid.
+const FEATURE_ICONS = {
+	composer: '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+	threads:
+		'<path d="M6 3v12M18 9a9 9 0 0 1-9 9"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>',
+	upvotes: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+	subscriptions:
+		'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+	moderation:
+		'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+	import: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>',
+};
+
+// Every claim on the banner is a 1.0 feature.
+const FEATURES = [
+	[ 'emerald', 'composer', 'Composer' ],
+	[ 'amber', 'threads', 'Threads' ],
+	[ 'purple', 'upvotes', 'Upvotes &amp; pins' ],
+	[ 'blue', 'subscriptions', 'Subscriptions' ],
+	[ 'emerald', 'moderation', 'Moderation' ],
+	[ 'amber', 'import', 'Disqus import' ],
+];
+
+/**
+ * Build an outline of the mark's bubble, drawn as a background loop.
+ *
+ * @param {string} style Inline position, size and rotation.
+ * @return {string} SVG markup.
+ */
+function loop( style ) {
+	return `<svg class="loop" style="${ style }" viewBox="0 0 100 100"><path d="${ BUBBLE }" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+// Three columns of equal height with equal gutters, so no card touches
+// another; the comments mirror the convocept.com hero.
+const BANNER = `${ FONTS }
+<style>
+	html, body { margin: 0; }
+	* { box-sizing: border-box; }
+	.banner { position: relative; width: 772px; height: 250px; overflow: hidden; padding: 26px 40px; display: flex; align-items: stretch; gap: 24px; background: #000; font-family: 'Figtree', sans-serif; color: #fff; }
+	.banner > * { position: relative; }
+	.loop { position: absolute !important; fill: none; stroke: #161616; stroke-width: 5; }
+	.card { border-radius: 14px; background: #121212; border: 1px solid #2b2b2b; }
+	.list { flex: none; width: 184px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+	.feature { display: flex; align-items: center; gap: 10px; font: 700 14.5px/1 'Bricolage Grotesque'; letter-spacing: -0.01em; }
+	.feature i { flex: none; width: 22px; height: 22px; border-radius: 7px 7px 7px 2px; display: grid; place-items: center; }
+	.feature svg { width: 13px; height: 13px; fill: none; stroke: #000; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+	.panel { flex: none; width: 300px; padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+	.bubble { display: flex; gap: 10px; padding: 12px 14px 11px; border-radius: 18px 18px 18px 5px; color: #000; }
+	.bubble.reply { margin-left: 36px; }
+	.avatar { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 11px/1 'Figtree'; color: #fff; background: #000; }
+	.who { display: flex; align-items: center; gap: 6px; font: 700 12px/1.2 'Figtree'; }
+	.who span { font-size: 10.5px; font-weight: 600; opacity: 0.7; }
+	.who em { padding: 2px 6px; border-radius: 99px; font-size: 9.5px; font-style: normal; color: #fff; background: #000; }
+	.text { margin-top: 4px; font: 500 12.5px/1.35 'Figtree'; }
+	.meta { margin-top: 7px; font: 700 10.5px/1 'Figtree'; }
+	.side { flex: none; width: 160px; display: flex; flex-direction: column; gap: 14px; }
+	.stat { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 14px 16px 15px; border-radius: 14px; color: #000; background: ${ HUES.blue }; }
+	.stat b { display: block; font: 800 38px/1 'Bricolage Grotesque'; letter-spacing: -0.03em; }
+	.stat span { display: block; margin-top: 6px; font: 600 11.5px/1.25 'Figtree'; }
+	.toolbar { height: 44px; padding: 0 6px 0 14px; display: flex; align-items: center; gap: 13px; font: 800 14px/1 'Figtree'; }
+	.toolbar svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+	.toolbar .post { margin-left: auto; padding: 9px 14px; border-radius: 99px; font-size: 11.5px; font-weight: 700; color: #000; background: ${ HUES.emerald }; }
+</style>
+<div class="banner">
+	${ loop( 'left: -120px; top: -170px; width: 330px; height: 330px; transform: rotate(-12deg)' ) }
+	${ loop( 'left: 520px; top: 130px; width: 360px; height: 360px; transform: rotate(8deg)' ) }
+	<div class="list card">
+		${ FEATURES.map(
+			( [ hue, icon, label ] ) =>
+				`<div class="feature"><i style="background: ${ HUES[ hue ] }"><svg viewBox="0 0 24 24">${ FEATURE_ICONS[ icon ] }</svg></i>${ label }</div>`
+		).join( '' ) }
+	</div>
+	<div class="panel card">
+		<div class="bubble" style="background: ${ HUES.amber }">
+			<div class="avatar">KE</div>
+			<div>
+				<div class="who">Kripa E. <span>2 h ago</span> <em>Pinned</em></div>
+				<div class="text">Moved off Disqus. Pages feel instant again.</div>
+				<div class="meta">↑ 24 · Reply</div>
+			</div>
+		</div>
+		<div class="bubble reply" style="background: ${ HUES.purple }">
+			<div class="avatar">JJ</div>
+			<div>
+				<div class="who">Jake J. <span>35 min ago</span></div>
+				<div class="text">Subscribed to replies.</div>
+			</div>
+		</div>
+	</div>
+	<div class="side">
+		<div class="stat"><b>0 KB</b><span>JavaScript on<br>page load</span></div>
+		<div class="toolbar card">
+			<span>B</span><span style="font-style: italic; font-weight: 700">I</span>
+			<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+			<span class="post">Post</span>
+		</div>
+	</div>
+</div>`;
 
 /**
  * Save a screenshot of a page region.
@@ -208,34 +332,19 @@ test.describe( 'WordPress.org assets', () => {
 		const context = await browser.newContext();
 		const page = await context.newPage();
 
+		// The directory prefers icon.svg and falls back to the PNGs.
+		fs.writeFileSync( path.join( OUT, 'icon.svg' ), ICON );
+
 		for ( const size of [ 128, 256 ] ) {
 			await page.setViewportSize( { width: size, height: size } );
 			await page.setContent(
-				`<style>html,body{margin:0}svg{display:block;width:${ size }px;height:${ size }px}</style>${ MARK }`
+				`<style>html,body{margin:0}svg{display:block;width:${ size }px;height:${ size }px}</style>${ ICON }`
 			);
 			await page.screenshot( {
 				path: path.join( OUT, `icon-${ size }x${ size }.png` ),
 				omitBackground: true,
 			} );
 		}
-
-		const banner = `<style>
-			html, body { margin: 0; }
-			.banner { box-sizing: border-box; width: 772px; height: 250px; padding: 0 56px; display: flex; align-items: center; gap: 28px; background: #f6f7f9; font-family: ${ FONT }; color: #111; position: relative; overflow: hidden; }
-			.banner svg { width: 96px; height: 96px; flex: none; }
-			h1 { margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.02em; }
-			p { margin: 6px 0 0; font-size: 20px; color: #50575e; }
-			.stat { position: absolute; right: 56px; bottom: 28px; font-size: 14px; color: #50575e; }
-			.stat b { color: #111; }
-		</style>
-		<div class="banner">
-			${ MARK }
-			<div>
-				<h1>Convocept</h1>
-				<p>Fast, native comments for WordPress</p>
-			</div>
-			<div class="stat"><b>0 KB</b> JavaScript on page load</div>
-		</div>`;
 
 		for ( const [ scale, name ] of [
 			[ 1, 'banner-772x250.png' ],
@@ -247,7 +356,13 @@ test.describe( 'WordPress.org assets', () => {
 			} );
 			const bannerPage = await scaled.newPage();
 
-			await bannerPage.setContent( banner );
+			await bannerPage.setContent( BANNER );
+			await bannerPage.evaluate( () => document.fonts.ready );
+			expect(
+				await bannerPage.evaluate( () =>
+					document.fonts.check( "700 17px 'Bricolage Grotesque'" )
+				)
+			).toBe( true );
 			await bannerPage.screenshot( { path: path.join( OUT, name ) } );
 			await scaled.close();
 		}

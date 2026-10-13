@@ -2,6 +2,18 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-13 — WordPress.org icon and banner
+- Both use the convocept.com palette (emerald, amber, purple, blue on black, with black text on
+  the hues) and its fonts, Bricolage Grotesque and Figtree, loaded from Google Fonts when
+  `npm run wporg:assets` runs. They replace the placeholder mark.
+- **Banner:** dark, in the style of the WooCommerce listing (UI cards on a solid ground, no
+  logo or name, since the directory prints both below it). Three columns of equal height with
+  24px gutters: feature list with hued icon tiles, a two-comment thread, "0 KB" stat and the
+  composer toolbar. Every feature named ships in 1.0.
+- **Icon:** three bubbles (amber comment, purple reply, emerald typing) from the launch post
+  image, on a black tile with rounded corners (transparent in the PNGs). `icon.svg` is added
+  too; the directory prefers it. The admin sidebar keeps the single-bubble mark.
+
 ## 2026-10-09 — Final review before 1.0.0
 - **Notification queue:** one non-autoloaded option per job (`convocept_notification_job_{id}`,
   value = cursor), listed with a direct query. One shared array lost or repeated jobs when a
