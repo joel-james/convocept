@@ -1,11 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+	<style>
+		.bubble { transform-box: fill-box; transform-origin: 0% 100%; opacity: 0; animation: pop 0.45s cubic-bezier(0.3, 1.5, 0.6, 1) forwards; }
+		.reply { animation-delay: 0.5s; }
+		.typing { animation-delay: 1s; }
+		@keyframes pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+		.dot { transform-box: fill-box; transform-origin: center; animation: dot 1.2s 1.45s infinite ease-in-out; }
+		.dot + .dot { animation-delay: 1.6s; }
+		.dot + .dot + .dot { animation-delay: 1.75s; }
+		@keyframes dot { 0%, 50%, 100% { transform: translateY(0); opacity: 0.55; } 25% { transform: translateY(-7px); opacity: 1; } }
+		@media (prefers-reduced-motion: reduce) { .bubble, .dot { opacity: 1; animation: none; } }
+	</style>
 	<rect width="256" height="256" rx="56" fill="#000"/>
 	<g transform="translate(128 128) scale(0.9) translate(-128 -128)">
-		<path d="M56 44h92a20 20 0 0 1 20 20v12a20 20 0 0 1-20 20H36V64a20 20 0 0 1 20-20z" fill="#f5a30b"/>
-		<path d="M58 63h70M58 78h44" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
-		<path d="M108 108h92a20 20 0 0 1 20 20v8a20 20 0 0 1-20 20H88v-28a20 20 0 0 1 20-20z" fill="#9a5cf5"/>
-		<path d="M110 132h76" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
-		<path d="M72 168h64a20 20 0 0 1 20 20v6a20 20 0 0 1-20 20H52v-26a20 20 0 0 1 20-20z" fill="#10c877"/>
-		<circle cx="82" cy="191" r="7"/><circle cx="104" cy="191" r="7"/><circle cx="126" cy="191" r="7"/>
+		<g class="bubble">
+			<path d="M56 44h92a20 20 0 0 1 20 20v12a20 20 0 0 1-20 20H36V64a20 20 0 0 1 20-20z" fill="#f5a30b"/>
+			<path d="M58 63h70M58 78h44" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		</g>
+		<g class="bubble reply">
+			<path d="M108 108h92a20 20 0 0 1 20 20v8a20 20 0 0 1-20 20H88v-28a20 20 0 0 1 20-20z" fill="#9a5cf5"/>
+			<path d="M110 132h76" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		</g>
+		<g class="bubble typing">
+			<path d="M72 168h64a20 20 0 0 1 20 20v6a20 20 0 0 1-20 20H52v-26a20 20 0 0 1 20-20z" fill="#10c877"/>
+			<circle class="dot" cx="82" cy="191" r="7"/><circle class="dot" cx="104" cy="191" r="7"/><circle class="dot" cx="126" cy="191" r="7"/>
+		</g>
 	</g>
 </svg>

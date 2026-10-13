@@ -35,20 +35,51 @@ const HUES = {
 const BUBBLE =
 	'M34 2h32a32 32 0 0 1 32 32v32a32 32 0 0 1-32 32H2V34A32 32 0 0 1 34 2z';
 
-// Three bubbles on a black rounded tile, as in the convocept.com launch post
-// image: a comment, a reply and someone typing. The corners stay transparent.
-const ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+// Plays once in icon.svg: the bubbles pop in from their tails, then the dots
+// keep typing. Readers who prefer reduced motion get the still icon. The PNG
+// fallbacks are rendered without it.
+const ICON_ANIMATION = `<style>
+		.bubble { transform-box: fill-box; transform-origin: 0% 100%; opacity: 0; animation: pop 0.45s cubic-bezier(0.3, 1.5, 0.6, 1) forwards; }
+		.reply { animation-delay: 0.5s; }
+		.typing { animation-delay: 1s; }
+		@keyframes pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+		.dot { transform-box: fill-box; transform-origin: center; animation: dot 1.2s 1.45s infinite ease-in-out; }
+		.dot + .dot { animation-delay: 1.6s; }
+		.dot + .dot + .dot { animation-delay: 1.75s; }
+		@keyframes dot { 0%, 50%, 100% { transform: translateY(0); opacity: 0.55; } 25% { transform: translateY(-7px); opacity: 1; } }
+		@media (prefers-reduced-motion: reduce) { .bubble, .dot { opacity: 1; animation: none; } }
+	</style>`;
+
+/**
+ * Build the icon: three bubbles on a black rounded tile, as in the
+ * convocept.com launch post image (a comment, a reply and someone typing).
+ *
+ * The corners stay transparent.
+ *
+ * @param {string} style Optional `<style>` element that animates the icon.
+ * @return {string} SVG markup.
+ */
+function iconSvg( style = '' ) {
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+	${ style }
 	<rect width="256" height="256" rx="56" fill="#000"/>
 	<g transform="translate(128 128) scale(0.9) translate(-128 -128)">
-		<path d="M56 44h92a20 20 0 0 1 20 20v12a20 20 0 0 1-20 20H36V64a20 20 0 0 1 20-20z" fill="${ HUES.amber }"/>
-		<path d="M58 63h70M58 78h44" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
-		<path d="M108 108h92a20 20 0 0 1 20 20v8a20 20 0 0 1-20 20H88v-28a20 20 0 0 1 20-20z" fill="${ HUES.purple }"/>
-		<path d="M110 132h76" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
-		<path d="M72 168h64a20 20 0 0 1 20 20v6a20 20 0 0 1-20 20H52v-26a20 20 0 0 1 20-20z" fill="${ HUES.emerald }"/>
-		<circle cx="82" cy="191" r="7"/><circle cx="104" cy="191" r="7"/><circle cx="126" cy="191" r="7"/>
+		<g class="bubble">
+			<path d="M56 44h92a20 20 0 0 1 20 20v12a20 20 0 0 1-20 20H36V64a20 20 0 0 1 20-20z" fill="${ HUES.amber }"/>
+			<path d="M58 63h70M58 78h44" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		</g>
+		<g class="bubble reply">
+			<path d="M108 108h92a20 20 0 0 1 20 20v8a20 20 0 0 1-20 20H88v-28a20 20 0 0 1 20-20z" fill="${ HUES.purple }"/>
+			<path d="M110 132h76" stroke="#000" stroke-opacity=".55" stroke-width="8" stroke-linecap="round"/>
+		</g>
+		<g class="bubble typing">
+			<path d="M72 168h64a20 20 0 0 1 20 20v6a20 20 0 0 1-20 20H52v-26a20 20 0 0 1 20-20z" fill="${ HUES.emerald }"/>
+			<circle class="dot" cx="82" cy="191" r="7"/><circle class="dot" cx="104" cy="191" r="7"/><circle class="dot" cx="126" cy="191" r="7"/>
+		</g>
 	</g>
 </svg>
 `;
+}
 
 const FONTS =
 	'<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=block" rel="stylesheet">';
@@ -332,13 +363,17 @@ test.describe( 'WordPress.org assets', () => {
 		const context = await browser.newContext();
 		const page = await context.newPage();
 
-		// The directory prefers icon.svg and falls back to the PNGs.
-		fs.writeFileSync( path.join( OUT, 'icon.svg' ), ICON );
+		// The directory prefers icon.svg over any PNG or GIF, so the animation
+		// lives there; the PNGs are the required fallback.
+		fs.writeFileSync(
+			path.join( OUT, 'icon.svg' ),
+			iconSvg( ICON_ANIMATION )
+		);
 
 		for ( const size of [ 128, 256 ] ) {
 			await page.setViewportSize( { width: size, height: size } );
 			await page.setContent(
-				`<style>html,body{margin:0}svg{display:block;width:${ size }px;height:${ size }px}</style>${ ICON }`
+				`<style>html,body{margin:0}svg{display:block;width:${ size }px;height:${ size }px}</style>${ iconSvg() }`
 			);
 			await page.screenshot( {
 				path: path.join( OUT, `icon-${ size }x${ size }.png` ),

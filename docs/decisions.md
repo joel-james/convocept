@@ -11,8 +11,14 @@ Decisions not fully covered by `PLAN.md`. Newest first.
   24px gutters: feature list with hued icon tiles, a two-comment thread, "0 KB" stat and the
   composer toolbar. Every feature named ships in 1.0.
 - **Icon:** three bubbles (amber comment, purple reply, emerald typing) from the launch post
-  image, on a black tile with rounded corners (transparent in the PNGs). `icon.svg` is added
-  too; the directory prefers it. The admin sidebar keeps the single-bubble mark.
+  image, on a black tile with rounded corners (transparent in the PNGs). The admin sidebar keeps
+  the single-bubble mark.
+- **Animated icon:** the directory always picks `icon.svg` first, then PNG, JPG and GIF
+  (`get_plugin_icon()` and `find_best_asset()` in the plugin-directory source), so an animated
+  GIF would never show beside them. `icon.svg` carries a CSS animation instead: the bubbles pop
+  in once, then the dots keep typing; `prefers-reduced-motion` shows it still. It stays sharp,
+  keeps antialiased transparent corners (GIF transparency is 1-bit) and is under 2 KB. The
+  static PNGs remain the required fallback.
 
 ## 2026-10-09 — Final review before 1.0.0
 - **Notification queue:** one non-autoloaded option per job (`convocept_notification_job_{id}`,
