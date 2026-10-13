@@ -3,12 +3,22 @@
 All notable changes to Convocept. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.1] — 2026-10-13
 
 ### Fixed
-- On PHP 7.4 to 8.1, comment formatting lost its links, URLs and inline code: the Markdown
-  parser's placeholder pattern held a literal NUL byte, which PHP before 8.2 rejects, so the
-  placeholders were never swapped back (and a warning was logged).
+- On PHP 7.4 to 8.1, links, URLs and inline code in comments written with the Convocept
+  composer showed as a stray number: the Markdown parser's placeholder pattern held a literal
+  NUL byte, which PHP before 8.2 rejects ("Null byte in regex", logged as a warning), so the
+  placeholders were never swapped back. The stored comments were never affected, and the
+  version bump clears the cached thread HTML.
+
+### Changed
+- readme.txt links the Convocept website: features, comparisons, migration guides, docs,
+  roadmap and support.
+
+### Development
+- CI builds the assets before PHPStan and PHPUnit, and the tests accept pretty comment-page
+  links and `esc_url()`'s `&#038;` on WordPress 6.5.
 
 ## [1.0.0] — 2026-10-13
 

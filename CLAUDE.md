@@ -7,14 +7,16 @@ Convocept is a free WordPress.org plugin (slug `convocept`, by Foxe Labs, websit
 a very fast, self-hosted replacement for the default WordPress comment UI. Comments stay in the
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
-**Current state (2026-10-13):** 1.0.0 is released: committed to WordPress.org SVN on 2026-10-13
-(assets r3744273; trunk + `tags/1.0.0` r3744283) from the `npm run release` zip. The SVN
-working copy is `~/Sites/svn/duckdev/convocept` (user `joelcj91`); `assets/` images carry
-`svn:mime-type` (`image/png`, `image/svg+xml`).
+**Current state (2026-10-13):** 1.0.1 is released on WordPress.org (1.0.0 the same day: assets
+r3744273, trunk + `tags/1.0.0` r3744283). 1.0.1 fixes links and inline code in Markdown comments
+on PHP 7.4–8.1 and adds convocept.com links to the readme. Releases come from the
+`npm run release` zip; the SVN working copy is `~/Sites/svn/duckdev/convocept` (user
+`joelcj91`), and `assets/` images carry `svn:mime-type` (`image/png`, `image/svg+xml`). Each
+release is fast-forwarded to `main` and tagged `vX.Y.Z` on GitHub.
 
 - **Done:** M0–M9 (1.0 parts), M11, M12. Milestones are marked ✅ in PLAN.md §8; per-milestone
   decisions are in `docs/decisions.md` (newest first).
-- **Next:** merge `dev` to `main` when the owner asks. Known follow-ups for 1.0.1:
+- **Next:** known follow-ups for a later 1.0.x:
   a Cloudflare trusted-proxy preset / notice, one confirmation email for several pending
   subscriptions. Planned for 1.1: M13 Insights, M14 own Comments screen (beside core, not
   replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
@@ -30,9 +32,9 @@ working copy is `~/Sites/svn/duckdev/convocept` (user `joelcj91`); `assets/` ima
   (local checkout `~/Work/FoxeLabs/docs.foxelabs.com`, pages in `software/convocept/`, sidebar in
   `software/.vitepress/config.mjs`; pushing `main` deploys through Vercel). Update those pages
   when behaviour, labels or defaults change. `docs/hooks.md` here stays the developer reference.
-- **Branches:** work on `dev` (pushed to `origin`); `main` was last fast-forwarded at the
-  1.0.0 renumbering, before M1. Merge to `main` only when the owner asks.
-- **Open items to raise with the owner:** merge M1–M12 to `main`; confirm the plan to ship basic AI checks
+- **Branches:** work on `dev` (pushed to `origin`); `main` holds released code and is
+  fast-forwarded at each release (last: 1.0.1). Merge to `main` only when the owner asks.
+- **Open items to raise with the owner:** confirm the plan to ship basic AI checks
   free in 1.2 (decisions.md).
 
 **Working environment notes**

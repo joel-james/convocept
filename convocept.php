@@ -3,7 +3,7 @@
  * Plugin Name:       Convocept – Fast Native Comment System
  * Plugin URI:        https://convocept.com
  * Description:       Fast, modern comments built on native WordPress comments: no JavaScript on page load, replies, upvotes, email subscriptions and a Disqus importer.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Foxe Labs
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CONVOCEPT_VERSION', '1.0.0' );
+define( 'CONVOCEPT_VERSION', '1.0.1' );
 define( 'CONVOCEPT_FILE', __FILE__ );
 define( 'CONVOCEPT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONVOCEPT_URL', plugin_dir_url( __FILE__ ) );

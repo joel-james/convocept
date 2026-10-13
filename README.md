@@ -10,7 +10,7 @@ loads **zero JavaScript until readers reach the comments**. Every comment stays 
 - WordPress.org: [wordpress.org/plugins/convocept](https://wordpress.org/plugins/convocept/)
 - By [Foxe Labs](https://foxelabs.com)
 
-> **Status:** version 1.0.0 is released. See [CHANGELOG.md](CHANGELOG.md) and, for the roadmap,
+> **Status:** version 1.0.1 is released. See [CHANGELOG.md](CHANGELOG.md) and, for the roadmap,
 > [PLAN.md](PLAN.md).
 
 ## Why Convocept

@@ -4,7 +4,7 @@ Tags: comments, disqus, subscribe to comments, comment form, spam
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -186,6 +186,10 @@ Ask in the free WordPress.org support forum for this plugin. The [Convocept supp
 
 == Changelog ==
 
+= 1.0.1 – 2026-10-13 =
+* Fix: on PHP 7.4 to 8.1, links, web addresses and inline code in comments written with the Convocept comment form showed as a number instead, and PHP logged a "Null byte in regex" warning. They display correctly again after updating; nothing needs repairing.
+* Readme: links to the Convocept website, documentation, migration guides and support.
+
 = 1.0.0 – 2026-10-13 =
 * First release: a server-rendered comment system with zero JavaScript on page load.
 * New: threaded comments with inline replies, a formatting toolbar with preview, an edit window, upvotes, sorting and pinned comments.
@@ -196,6 +200,9 @@ Ask in the free WordPress.org support forum for this plugin. The [Convocept supp
 * New: settings screen, privacy tools, accessibility and translation support.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Fixes links and inline code in comments on PHP 7.4 to 8.1. Recommended for every site on PHP older than 8.2.
 
 = 1.0.0 =
 First release: fast comments, subscriptions and a Disqus importer. Your comments stay in WordPress; nothing to migrate.
