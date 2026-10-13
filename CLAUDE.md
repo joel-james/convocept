@@ -12,7 +12,7 @@ r3744273, trunk + `tags/1.0.0` r3744283). 1.0.1 fixes links and inline code in M
 on PHP 7.4–8.1 and adds convocept.com links to the readme. Releases come from the
 `npm run release` zip; the SVN working copy is `~/Sites/svn/duckdev/convocept` (user
 `joelcj91`), and `assets/` images carry `svn:mime-type` (`image/png`, `image/svg+xml`). Each
-release is fast-forwarded to `main` and tagged `vX.Y.Z` on GitHub.
+release is fast-forwarded to `main` and tagged `vX.Y.Z`; pushing the tag runs `.github/workflows/release.yml`, which builds the zip from the tag and publishes the GitHub release (notes from readme.txt plus a link to the docs changelog; it can also be run by hand for an existing tag).
 
 - **Done:** M0–M9 (1.0 parts), M11, M12. Milestones are marked ✅ in PLAN.md §8; per-milestone
   decisions are in `docs/decisions.md` (newest first).

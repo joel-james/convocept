@@ -1,0 +1,99 @@
+name: Release
+
+# Pushing a version tag (v1.2.3) builds the plugin zip from that tag and
+# publishes a GitHub release with the zip attached. The notes are the
+# version's entry from readme.txt plus a link to the full changelog on the
+# docs site. Run it by hand to (re)build the release for an existing tag.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to release, e.g. v1.0.1
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build zip and publish release
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      - name: Check the tag matches the plugin version
+        run: |
+          version=$( grep -m1 '^ \* Version:' convocept.php | sed -E 's/.*Version:[[:space:]]*//' | tr -d '[:space:]' )
+          if [[ "${TAG}" != "v${version}" ]]; then
+            echo "::error::Tag ${TAG} does not match the plugin version ${version}."
+            exit 1
+          fi
+          echo "VERSION=${version}" >> "${GITHUB_ENV}"
+
+      # The translation template is committed with each release, so the zip
+      # ships the one from the tag rather than regenerating it.
+      - name: Build the plugin zip
+        run: SKIP_POT=1 npm run release
+
+      - name: Write the release notes
+        run: |
+          # The version's entry in readme.txt: "= 1.0.1 – 2026-10-13 =" and its bullets.
+          heading=$( grep -m1 -E "^= ${VERSION//./\\.}( |=)" readme.txt || true )
+          date=$( grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' <<< "${heading}" || true )
+          changes=$( awk -v version="${VERSION}" '
+            $0 ~ "^= " version "( |=)" { found = 1; next }
+            found && ( /^=/ || /^$/ ) { exit }
+            found { sub( /^\* /, "- " ); print }
+          ' readme.txt )
+          if [[ -z "${changes}" ]]; then
+            echo "::error::readme.txt has no changelog entry for ${VERSION}."
+            exit 1
+          fi
+
+          # VitePress heading anchors, e.g. "1.0.1 — 2026-10-13" becomes #_1-0-1-—-2026-10-13.
+          changelog='https://docs.foxelabs.com/software/convocept/changelog'
+          if [[ -n "${date}" ]]; then
+            changelog="${changelog}#_${VERSION//./-}-%E2%80%94-${date}"
+          fi
+
+          {
+            echo '## Changes'
+            echo
+            echo "${changes}"
+            echo
+            echo "**Full changelog:** ${changelog}"
+            echo
+            echo '**Install:** from Plugins → Add New in WordPress, or [WordPress.org](https://wordpress.org/plugins/convocept/). The zip below is the same package.'
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          zip="dist/convocept-${VERSION}.zip"
+          prerelease=()
+          [[ "${VERSION}" == *-* ]] && prerelease=( --prerelease )
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" --title "Convocept ${VERSION}" --notes-file release-notes.md "${prerelease[@]}"
+            gh release upload "${TAG}" "${zip}" --clobber
+          else
+            gh release create "${TAG}" "${zip}" --verify-tag --title "Convocept ${VERSION}" --notes-file release-notes.md "${prerelease[@]}"
+          fi
