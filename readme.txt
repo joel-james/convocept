@@ -12,17 +12,21 @@ Fast, modern WordPress comments: threaded replies, upvotes, comment subscription
 
 == Description ==
 
-**Convocept is a fast, modern comment system for WordPress that keeps every comment in your own database.** It replaces your theme's comment section with threaded replies, upvotes, email subscriptions and smart spam protection, without loading a single script until your readers reach the comments.
+**[Convocept](https://convocept.com) is a fast, modern comment system for WordPress that keeps every comment in your own database.** It replaces your theme's comment section with threaded replies, upvotes, email subscriptions and smart spam protection, and it loads no script at all until your readers reach the comments.
 
-It is a lightweight **Disqus alternative** with no ads, no tracking and no outside service, and lighter than most comment plugins. Your comments stay native WordPress comments, so Akismet, backups, exports and the Comments screen keep working, and nothing is lost if you ever switch back.
+It is a lightweight **Disqus alternative** with no ads, no tracking and no outside service. Your comments stay native WordPress comments, so Akismet, backups, exports and the Comments screen keep working, and nothing is lost if you ever switch back.
+
+Everything described here is free and fully working. See it in action and read the guides at **[convocept.com](https://convocept.com)**.
 
 = ⚡ Built for speed =
 
 * **0 KB of JavaScript on page load.** A small script (about 6 KB gzipped) loads only when a reader scrolls near the comments or starts typing.
 * **0 extra requests.** Styles are under 4 KB gzipped and inlined next to the comments. No fonts, no icons to download, no third-party scripts.
 * **Server-rendered comments.** Readers and search engines get every visible comment in the page HTML, straight away.
-* **No layout shift.** In our tests a post with 200 comments scored 99–100 in Lighthouse, against 100 for the same post with none.
+* **No layout shift.** In our tests a post with 200 comments scored 99–100 in Lighthouse, against 100 for the same post with no comments.
 * **Cache friendly.** Nothing personal is printed into the page, so WP Rocket, LiteSpeed Cache, Cloudflare and other page caches can serve it to everyone.
+
+How that compares with Disqus, wpDiscuz and default WordPress comments: [Convocept comparisons](https://convocept.com/compare/).
 
 = 💬 A comment section readers enjoy =
 
@@ -34,6 +38,8 @@ It is a lightweight **Disqus alternative** with no ads, no tracking and no outsi
 * **Load more comments** and **show more replies**, so long discussions stay quick.
 * **Comment links** open the right page and highlight the comment.
 * **A clean design that fits any theme**: light or dark, your theme's font and your own accent colour.
+
+The full list, with screenshots: [Convocept features](https://convocept.com/features/).
 
 = 📬 Comment subscriptions built in =
 
@@ -57,6 +63,8 @@ Upload your Disqus export, review a **dry run**, then import with a progress bar
 
 Coming from **wpDiscuz**? Your comments are already WordPress comments, so they appear in Convocept the moment you activate it.
 
+Step-by-step guides: [Migrate to Convocept](https://convocept.com/migrate/). Side by side: [Convocept vs Disqus](https://convocept.com/compare/disqus/) and [Convocept vs wpDiscuz](https://convocept.com/compare/wpdiscuz/).
+
 = 🔍 Good for SEO =
 
 * Comments are in the page HTML, where search engines can read them.
@@ -66,7 +74,7 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 
 = 🔒 Private and accessible =
 
-* **No external requests, no tracking, no cookies of its own** — except WordPress's Gravatar avatars when **Show Avatars** is on in Settings → Discussion (turn it off and Convocept shows initials). No account and no API key.
+* **No external requests, no tracking, no cookies of its own**, except WordPress's Gravatar avatars when **Show Avatars** is on in Settings → Discussion (turn it off and Convocept shows initials). No account and no API key.
 * WordPress's **export and erase personal data** tools cover subscriptions and votes, and Settings → Privacy gets suggested policy text.
 * Choose to store commenters' IP addresses in full, anonymized or not at all.
 * **Accessible:** keyboard friendly, announced to screen readers, and checked against WCAG 2.2 AA in light and dark colours.
@@ -80,11 +88,19 @@ Coming from **wpDiscuz**? Your comments are already WordPress comments, so they 
 * Actions and filters at every step: rendering, submission, spam checks, subscriptions, structured data, importers and settings.
 * A REST API and a WP-CLI import command.
 
-Documentation and the full hooks reference: [Convocept docs](https://docs.foxelabs.com/software/convocept/getting-started).
+Guides and the full hooks reference are in the [Convocept documentation](https://convocept.com/docs/).
 
 = 🗺️ Coming next =
 
-Version 1.1 adds importers for wpDiscuz votes and Subscribe to Comments Reloaded subscribers, an **Insights** dashboard built from your own comment data (no tracking), and a comment moderation screen inside Convocept.
+Version 1.1 adds importers for wpDiscuz votes and Subscribe to Comments Reloaded subscribers, an **Insights** dashboard built from your own comment data (no tracking), and a comment moderation screen inside Convocept. Follow along on the [Convocept roadmap](https://convocept.com/roadmap/).
+
+= 🌐 Learn more =
+
+* [Convocept website](https://convocept.com): features, comparisons and news.
+* [Documentation](https://convocept.com/docs/): installation, settings, theming and hooks.
+* [Migration guides](https://convocept.com/migrate/): from Disqus, wpDiscuz and default WordPress comments.
+* [Support](https://convocept.com/support/): the support forum, migration help and email.
+* [Blog](https://convocept.com/blog/): news and release posts.
 
 == Installation ==
 
@@ -95,15 +111,17 @@ Version 1.1 adds importers for wpDiscuz votes and Subscribe to Comments Reloaded
 
 Comments stay open, closed and moderated exactly as set in **Settings → Discussion**.
 
+A walkthrough of every setting is in the [getting started guide](https://convocept.com/docs/).
+
 == Frequently Asked Questions ==
 
 = Is Convocept a good Disqus alternative? =
 
-Yes. It gives you a modern comment section like Disqus, but your comments stay in your own WordPress database, with no ads, no tracking and no third-party scripts. The built-in importer brings over your Disqus comments with their replies, and you can run it again later without creating duplicates.
+Yes. It gives you a modern comment section like Disqus, but your comments stay in your own WordPress database, with no ads, no tracking and no third-party scripts. The built-in importer brings over your Disqus comments with their replies, and you can run it again later without creating duplicates. See the full [Convocept vs Disqus comparison](https://convocept.com/compare/disqus/).
 
 = How do I migrate from Disqus to WordPress comments? =
 
-In Disqus, open **Admin → Moderation → Export** and download the file it emails you. In WordPress, go to **Comments → Convocept → Import**, upload the file, check the dry run and click **Start import**. For very large exports, use `wp convocept import disqus export.xml.gz`.
+In Disqus, open **Admin → Moderation → Export** and download the file it emails you. In WordPress, go to **Comments → Convocept → Import**, upload the file, check the dry run and click **Start import**. For very large exports, use `wp convocept import disqus export.xml.gz`. The [migration guide](https://convocept.com/migrate/) walks through each step.
 
 = Can I switch from wpDiscuz? =
 
@@ -152,6 +170,10 @@ Convocept makes no external requests and sets no cookies of its own. The one exc
 = Does uninstalling delete my comments? =
 
 No, never. Your comments are WordPress data. Settings, subscriptions and votes are also kept for a reinstall, unless you turn on "Delete all Convocept data when the plugin is deleted" in Comments → Convocept → Advanced.
+
+= Where can I get help? =
+
+Ask in the free WordPress.org support forum for this plugin. The [Convocept support page](https://convocept.com/support/) lists the other ways to reach us, including migration help, and the [documentation](https://convocept.com/docs/) covers every setting.
 
 == Screenshots ==
 
