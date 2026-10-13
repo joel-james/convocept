@@ -7,15 +7,14 @@ Convocept is a free WordPress.org plugin (slug `convocept`, by Foxe Labs, websit
 a very fast, self-hosted replacement for the default WordPress comment UI. Comments stay in the
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
-**Current state (2026-10-13):** 1.0.0 is prepared for release on `dev` (version bumped, readme
-and CHANGELOG rewritten as a first release, assets regenerated, release zip passes Plugin
-Check, final security/correctness review fixes applied). It is not yet submitted to the
-WordPress.org SVN; the slug was reserved with an unreleased React prototype, since deleted.
+**Current state (2026-10-13):** 1.0.0 is released: committed to WordPress.org SVN on 2026-10-13
+(assets r3744273; trunk + `tags/1.0.0` r3744283) from the `npm run release` zip. The SVN
+working copy is `~/Sites/svn/duckdev/convocept` (user `joelcj91`); `assets/` images carry
+`svn:mime-type` (`image/png`, `image/svg+xml`).
 
 - **Done:** M0–M9 (1.0 parts), M11, M12. Milestones are marked ✅ in PLAN.md §8; per-milestone
   decisions are in `docs/decisions.md` (newest first).
-- **Next:** the owner commits 1.0.0 to WordPress.org SVN (trunk + `tags/1.0.0`, `.wordpress-org/`
-  into `assets/`) from `npm run release`, then merges `dev` to `main`. Known follow-ups for 1.0.1:
+- **Next:** merge `dev` to `main` when the owner asks. Known follow-ups for 1.0.1:
   a Cloudflare trusted-proxy preset / notice, one confirmation email for several pending
   subscriptions. Planned for 1.1: M13 Insights, M14 own Comments screen (beside core, not
   replacing it; see decisions.md). Settings live in the `convocept_settings` option, edited on
