@@ -47,7 +47,8 @@ class DiscussionNoticeTest extends TestCase {
 		$this->assertStringContainsString( 'notice-info', $html );
 		$this->assertStringContainsString( 'Posts and Pages', $html );
 		$this->assertStringContainsString( 'threading, comment pages and comment order', $html );
-		$this->assertStringContainsString( 'edit-comments.php?page=convocept&amp;tab=general', $html );
+		// esc_url() writes the ampersand as &#038; on older WordPress versions (6.5) and &amp; on newer ones.
+		$this->assertMatchesRegularExpression( '/edit-comments\.php\?page=convocept&(amp|#038);tab=general/', $html );
 	}
 
 	public function test_it_skips_post_types_that_are_gone(): void {
