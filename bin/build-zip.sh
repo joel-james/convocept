@@ -28,12 +28,12 @@ cd "${ROOT}"
 # deliberately: WordPress.org requires the uncompiled sources for any
 # compiled asset, and the GPL expects the preferred form for modification.
 # vendor/ is not copied; a clean autoloader is generated in the stage below.
+# CHANGELOG.md stays out: readme.txt carries the changelog WordPress shows.
 readonly INCLUDE=(
 	"convocept.php"
 	"uninstall.php"
 	"readme.txt"
 	"LICENSE"
-	"CHANGELOG.md"
 	"composer.json"
 	"package.json"
 	"src"

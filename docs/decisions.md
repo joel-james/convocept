@@ -2,6 +2,10 @@
 
 Decisions not fully covered by `PLAN.md`. Newest first.
 
+## 2026-10-13 — Release zip without CHANGELOG.md
+- `CHANGELOG.md` is left out of the release zip: the directory shows the changelog from
+  `readme.txt`, and nothing in the plugin links to the file. It stays in the repository.
+
 ## 2026-10-13 — WordPress.org icon and banner
 - Both use the convocept.com palette (emerald, amber, purple, blue on black, with black text on
   the hues) and its fonts, Bricolage Grotesque and Figtree, loaded from Google Fonts when
