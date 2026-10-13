@@ -7,7 +7,7 @@ Convocept is a free WordPress.org plugin (slug `convocept`, by Foxe Labs, websit
 a very fast, self-hosted replacement for the default WordPress comment UI. Comments stay in the
 native `wp_comments` / `wp_commentmeta` tables. Paid features ship later as separate add-on plugins.
 
-**Current state (2026-10-13):** 1.0.1 is released on WordPress.org (1.0.0 the same day: assets
+**Current state (2026-10-13):** 1.0.1 is released on WordPress.org (SVN r3744409; 1.0.0 the same day: assets
 r3744273, trunk + `tags/1.0.0` r3744283). 1.0.1 fixes links and inline code in Markdown comments
 on PHP 7.4–8.1 and adds convocept.com links to the readme. Releases come from the
 `npm run release` zip; the SVN working copy is `~/Sites/svn/duckdev/convocept` (user
