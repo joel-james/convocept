@@ -3,6 +3,13 @@
 All notable changes to Convocept. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- On PHP 7.4 to 8.1, comment formatting lost its links, URLs and inline code: the Markdown
+  parser's placeholder pattern held a literal NUL byte, which PHP before 8.2 rejects, so the
+  placeholders were never swapped back (and a warning was logged).
+
 ## [1.0.0] — 2026-10-13
 
 First release.

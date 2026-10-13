@@ -253,8 +253,10 @@ class Parser {
 
 		$html = str_replace( "\n", '<br>', $this->emphasis( esc_html( $text ) ) );
 
+		// The NUL bytes are written as the PCRE escape \x00 in a single-quoted string: PHP before
+		// 8.2 rejects a literal NUL byte inside a pattern ("Null byte in regex").
 		return $this->replace_callback(
-			"/\0(\d+)\0/",
+			'/\x00(\d+)\x00/',
 			function ( $found ) {
 				return $this->placeholders[ (int) $found[1] ] ?? '';
 			},

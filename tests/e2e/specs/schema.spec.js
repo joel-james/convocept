@@ -137,8 +137,9 @@ for ( const theme of THEMES ) {
 			const next = page.locator( 'a.convocept-pagination__next' );
 			await expect( next ).toHaveAttribute( 'rel', 'next' );
 
+			// Plain permalinks use ?cpage=2, pretty ones /comment-page-2/.
 			const href = await next.getAttribute( 'href' );
-			expect( new URL( href ).searchParams.get( 'cpage' ) ).toBe( '2' );
+			expect( href ).toMatch( /comment-page-2|cpage=2/ );
 
 			await page.goto( href );
 			await expect( page.locator( '.convocept-comment' ) ).toHaveCount(
