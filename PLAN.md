@@ -37,7 +37,7 @@ M11, M12.
 
 **Release 1.1.0 — "Migrate from anything, see what works"**
 M8 remaining importers (Subscribe to Comments Reloaded, wpDiscuz votes/subscriptions), onboarding
-checklist with detected-import prompts, M9 Composer setting to hide the Website field,
+checklist with detected-import prompts, M9 comment form field settings,
 M13 Insights (free comment statistics dashboard), M14 Comments screen (moderation inside the
 Convocept app).
 
@@ -410,15 +410,25 @@ and via WP-CLI (`wp convocept import <source>`).
 - Live preview of the thread with current appearance settings.
 - Settings stored in one option (`convocept_settings`), schema-validated via REST settings route.
 - Onboarding: first-run checklist (appearance, subscriptions, import from X detected).
-- **Website field setting (1.1.0):** a Composer toggle (`website_field`, default on) that removes
-  the guest Website field. Requested in a WordPress.org review: the field mostly attracts comments
-  left for backlinks. When off, the template prints no URL input, the cookie-consent label drops
-  "website", and the server clears `comment_author_url` on guest submissions (bots post to
-  wp-comments-post.php directly, so hiding the input alone is not enough). Existing comments keep
-  their stored URL. Logged-in users are unaffected.
+- **Comment form fields (1.1.0):** a Composer page section to customise the guest form. Requested
+  in a WordPress.org review (hiding Website, which mostly attracts comments left for backlinks).
+  - Per built-in field (name, email, website, cookie consent, subscription checkboxes): show or
+    hide, label and placeholder text, and order of the guest fields. Stored in
+    `convocept_settings` under `form_fields`, schema-validated; empty label means the default
+    translated string.
+  - Name and email "required" follows core's `require_name_email` (Settings → Discussion), shown
+    there as a link, not duplicated. Email can't be hidden while it is required or while
+    subscriptions are on (the screen explains why).
+  - A hidden field is enforced on the server too: its value is dropped from guest submissions
+    (bots post to wp-comments-post.php directly). Logged-in users and stored comments are
+    unaffected. The cookie-consent label names only the fields shown.
+  - Extra fields are hook-only in the free core: a `convocept_form_fields` filter plus
+    validate/save hooks (private comment meta `_convocept_field_{key}`, privacy export and erase), so a
+    theme, snippet or add-on can add a field. A visual "custom fields" builder is out of scope.
+  - Still cache-safe: field config is site-wide, never per visitor.
 - **Accept:** all settings persist and apply without page cache issues; admin bundle only loads on
-  its own screen. With the Website field off, a guest POST that includes `url` (JS on and off)
-  saves no author URL.
+  its own screen. With a field hidden, a guest POST that still sends it (JS on and off) stores
+  nothing for it; labels, placeholders and order show in the form on both test themes.
 
 ### M10 — Abilities API & agent readiness (1.2.0)
 - Feature-detect `wp_register_ability` (WP 6.9+). Register abilities: `convocept/list-pending`,
