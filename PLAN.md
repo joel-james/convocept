@@ -37,8 +37,9 @@ M11, M12.
 
 **Release 1.1.0 — "Migrate from anything, see what works"**
 M8 remaining importers (Subscribe to Comments Reloaded, wpDiscuz votes/subscriptions), onboarding
-checklist with detected-import prompts, M13 Insights (free comment statistics dashboard),
-M14 Comments screen (moderation inside the Convocept app).
+checklist with detected-import prompts, M9 Composer setting to hide the Website field,
+M13 Insights (free comment statistics dashboard), M14 Comments screen (moderation inside the
+Convocept app).
 
 **Release 1.2.0 — "Delight"**
 Emoji reactions, optional visible-tab polling, Abilities API (M10), settings live preview,
@@ -409,8 +410,15 @@ and via WP-CLI (`wp convocept import <source>`).
 - Live preview of the thread with current appearance settings.
 - Settings stored in one option (`convocept_settings`), schema-validated via REST settings route.
 - Onboarding: first-run checklist (appearance, subscriptions, import from X detected).
+- **Website field setting (1.1.0):** a Composer toggle (`website_field`, default on) that removes
+  the guest Website field. Requested in a WordPress.org review: the field mostly attracts comments
+  left for backlinks. When off, the template prints no URL input, the cookie-consent label drops
+  "website", and the server clears `comment_author_url` on guest submissions (bots post to
+  wp-comments-post.php directly, so hiding the input alone is not enough). Existing comments keep
+  their stored URL. Logged-in users are unaffected.
 - **Accept:** all settings persist and apply without page cache issues; admin bundle only loads on
-  its own screen.
+  its own screen. With the Website field off, a guest POST that includes `url` (JS on and off)
+  saves no author URL.
 
 ### M10 — Abilities API & agent readiness (1.2.0)
 - Feature-detect `wp_register_ability` (WP 6.9+). Register abilities: `convocept/list-pending`,
