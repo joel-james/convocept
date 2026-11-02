@@ -10,8 +10,7 @@ loads **zero JavaScript until readers reach the comments**. Every comment stays 
 - WordPress.org: [wordpress.org/plugins/convocept](https://wordpress.org/plugins/convocept/)
 - By [Foxe Labs](https://foxelabs.com)
 
-> **Status:** version 1.0.1 is released. See [CHANGELOG.md](CHANGELOG.md) and, for the roadmap,
-> [PLAN.md](PLAN.md).
+> **Status:** version 1.0.1 is released. See [CHANGELOG.md](CHANGELOG.md).
 
 ## Why Convocept
 
@@ -72,8 +71,6 @@ bin/              Build and release scripts
 ### Contributing
 
 - Work happens on `dev`; `main` holds reviewed milestones.
-- Read [CLAUDE.md](CLAUDE.md) for conventions and the definition of done, and
-  [PLAN.md](PLAN.md) for architecture and milestones.
 - Extension hooks are documented in [docs/hooks.md](docs/hooks.md).
 
 ## License
